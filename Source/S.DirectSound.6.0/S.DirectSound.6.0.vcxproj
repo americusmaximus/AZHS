@@ -26,9 +26,13 @@
     <ClInclude Include="Direct.Sound.Basic.hxx" />
     <ClInclude Include="Direct.Sound.VoiceManager.hxx" />
     <ClInclude Include="Module.hxx" />
+    <ClInclude Include="App.Resources.hxx" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Module.cxx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="App.Resources.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
