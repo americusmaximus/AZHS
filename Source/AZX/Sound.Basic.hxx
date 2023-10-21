@@ -1,0 +1,54 @@
+/*
+Copyright (c) 2023 Americus Maximus
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+#pragma once
+
+#define SOUND_EFFECT_TYPE_NONE 0
+#define SOUND_EFFECT_TYPE_CLASSIC 2
+#define SOUND_EFFECT_TYPE_SOFTER_CORRIDOR 3
+#define SOUND_EFFECT_TYPE_SOFTER_ROOM 5
+#define SOUND_EFFECT_TYPE_GENERIC_ROOM 10
+#define SOUND_EFFECT_TYPE_PLAIN 13
+#define SOUND_EFFECT_TYPE_FORREST 15
+#define SOUND_EFFECT_TYPE_MOUNTAINS 17
+#define SOUND_EFFECT_TYPE_CORRIDOR 25
+#define SOUND_EFFECT_TYPE_CITY 20
+#define SOUND_EFFECT_TYPE_PARKING_LOT 23
+#define SOUND_EFFECT_TYPE_ALLEY 27
+#define SOUND_EFFECT_TYPE_GENERIC_ENVIRONMENT 30
+#define SOUND_EFFECT_TYPE_HARDER_ROOM 32
+#define SOUND_EFFECT_TYPE_REVERB 33
+#define SOUND_EDDECT_TYPE_QUARRY 34
+#define SOUND_EFFECT_TYPE_SEWER_PIPES 35
+#define SOUND_EFFECT_TYPE_CAVE 36
+#define SOUND_EFFECT_TYPE_HARDER_SOUND 37
+#define SOUND_EFFECT_TYPE_AUDITORIUM 38
+#define SOUND_EFFECT_TYPE_HALL 40
+#define SOUND_EFFECT_TYPE_ARENA 50
+#define SOUND_EFFECT_TYPE_HANGAR 55
+#define SOUND_EFFECT_TYPE_UNDER_WATER 60
+#define SOUND_EFFECT_TYPE_DIZZY 70
+#define SOUND_EFFECT_TYPE_DRUGGED 73
+#define SOUND_EFFECT_TYPE_PSYCHOTIC 76
+
+#define SOUND_EFFECT_EXTRA_TYPE_HANGAR_FIRST 100
+#define SOUND_EFFECT_EXTRA_TYPE_HANGAR_LAST 120
