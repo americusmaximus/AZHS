@@ -17,10 +17,16 @@ There are multiple goals this project tries to achieve:
 ## Notes
 The original game was compiled by Watcom C/C++ compiler, it contains the following sting: `WATCOM C/C++32 Run-Time system. (c) Copyright by WATCOM International Corp. 1988-1995. All rights reserved.`.
 
-Examination of the game files, indicates that two calling conventions were used: stdcall - for calls to the modules, and watcom calling convention for the much of the rest. See Thanks section below for useful Watcom links.
+Examination of the game files, indicates that three calling conventions were used.
+1. The game uses watcom calling convention internally and stdcall to call renderer and sound modules.
+2. The sound module, `eacsnd.dll`, uses watcom calling concention internally and exports methods with stdcall convention.
+3. The renderers are a mixed bag:
+	1. DirectX 6.0 renderer, `d3da.dll`, uses cdecl calling convention internally and exports methods with stdcall convention.
+	2. DirectX 7.0 renderer, `d3da.dll`, uses cdecl calling convention internally and exports methods with stdcall convention.
+	3. Software renderer, `softtria.dll`, uses watcom calling convention internally and exports methods with stdcall convention.
 
 ### Code Style & Standards
-In order to support Watcom C++ compilation it is required to obstain from newer C++ language features. Keeping it plain and simple here.
+In order to support Watcom C++ compilation it is required to obstain from newer C++ features. Keeping it plain and simple here.
 
 ### Sound Module
 The sound system module, `eacsnd.dll`, is a module that is used by the game to manage sound and sound effects playback. The module is only responsible for playback, and has no insight into anything else. The module calls functions back from the main game to acquire data, signal events, or log messages.
