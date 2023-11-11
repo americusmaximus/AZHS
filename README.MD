@@ -40,14 +40,14 @@ One more thing regarding the callbacks, some are required to be called during th
 
 ### Renderer Modules
 #### DirectX 6
-The game has multiple DirectX 6 renderers available with slightly different design and capabilities. I added all of them, with appropriate patches for proper operations these days. The patches mostly include fixes to crashes caused by writing out of array bounds in a few places, and some tweaks to settings values. Here are the DirectX 6 renderers:
-2. DirectX 6 3DS is a renderer based on the orignal file `d3da.dll` version: 1999.01.15.1121 (6553.1.21.4385) that came with the original game in 1999 and was located in `3dSetup` folder. It looks like it was intended to use with the game, but is totally capable to render the game.
-3. DirectX 6 A is a renderer based on the orignal file `d3da.dll` version: 1999.05.10.1318 (6553.5.16.4888) that came with the original game in 1999.
-4. DirectX 6 M is a a renderer based on the DirectX 6 renderer `dx6a.dll` from the modern patch. Since the patch is a binarry patch to the `DirectX 6 A`, I untangled it as well, for completeness.
+The game has multiple DirectX 6 renderers available with slightly different design and capabilities. I added all of them, with appropriate patches for proper operation these days. The patches mostly include fixes to crashes caused by writing out of array bounds in a few places, and some tweaks to settings values, as well as configuration file support. Here are the DirectX 6 renderers:
+
+1. DirectX 6 3DS is a renderer based on the orignal file `d3da.dll` version: 1999.01.15.1121 (6553.1.21.4385) that came with the original game in 1999 and was located in `3dSetup` folder. It looks like it was intended to use with the game, but is totally capable to render the game.
+2. DirectX 6 A is a renderer based on the orignal file `d3da.dll` version: 1999.05.10.1318 (6553.5.16.4888) that came with the original game in 1999.
+3. DirectX 6 M is a a renderer based on the DirectX 6 renderer `dx6a.dll` from the modern patch. Since the patch is a binarry patch to the `DirectX 6 A`, I untangled it as well, for completeness.
 
 ## Thanks
 1. [My Abandonware](https://www.myabandonware.com/) for providing [Need For Speed: High Stakes](https://www.myabandonware.com/game/need-for-speed-high-stakes-bgf) and the patch 4.50.
-2. [Open Watcom](https://github.com/open-watcom/open-watcom-v2) for providing the compiler. It was instrumental in generating calling convention-compatible code during reverse engineering efforts.
 3. [VEG.BY](https://veg.by/en/projects/nfs4/) for providing modern patch for the game.
 
 ## Legal
