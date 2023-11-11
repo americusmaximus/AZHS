@@ -26,15 +26,28 @@ SOFTWARE.
 #pragma optimize("", off)
 #endif
 
+#define ORIGINAL_SOUND_MODULE_NAME_PATTERN TRUE /* ORIGINAL: TRUE */
+#define ORIGINAL_RENDERER_MODULE_NAME_PATTERN TRUE /* ORIGINAL: TRUE */
+
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+
+#if _MSC_VER == 1200
+typedef unsigned __int64 u64;
+#else
 typedef unsigned long long u64;
+#endif
 
 typedef signed char s8;
 typedef short s16;
 typedef int s32;
+
+#if _MSC_VER == 1200
+typedef __int64 s64;
+#else
 typedef long long s64;
+#endif
 
 typedef float f32;
 typedef double f64;
@@ -77,6 +90,9 @@ struct u32x4 { u32 X, Y, Z, W; };
 
 #define S16_MIN (-32768)
 #define S16_MAX 32767
+
+#define U16_MIN 0
+#define U16_MAX 65535
 
 #define S32_MIN (-2147483648)
 #define S32_MAX 2147483647

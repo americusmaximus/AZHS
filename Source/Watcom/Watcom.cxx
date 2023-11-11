@@ -31,15 +31,19 @@ SOFTWARE.
 
 PIMAGE_NT_HEADERS AcquireHeader(const BYTE* data)
 {
-    const auto dos = (PIMAGE_DOS_HEADER)data;
+    const PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)data;
 
     if (dos->e_magic != IMAGE_DOS_SIGNATURE) { return NULL; };
 
-    const auto nt = (PIMAGE_NT_HEADERS)(data + dos->e_lfanew);
+    const PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(data + dos->e_lfanew);
 
     if (nt->Signature != IMAGE_NT_SIGNATURE) { return NULL; };
 
-    if (nt->FileHeader.Machine != IMAGE_FILE_MACHINE_I386 && nt->FileHeader.Machine != IMAGE_FILE_MACHINE_AMD64) { return NULL; };
+#if _MSC_VER == 1200
+    if (nt->FileHeader.Machine != IMAGE_FILE_MACHINE_I386) { return NULL; }
+#else
+    if (nt->FileHeader.Machine != IMAGE_FILE_MACHINE_I386 && nt->FileHeader.Machine != IMAGE_FILE_MACHINE_AMD64) { return NULL; }
+#endif
 
     return nt;
 }
@@ -66,19 +70,19 @@ PIMAGE_DATA_DIRECTORY AcquireExportDataDirectory(const PIMAGE_OPTIONAL_HEADER he
 
 UINT RelativeVirtualAddressToFileOffset(const BYTE* data, UINT rva)
 {
-    const auto nt = AcquireHeader(data);
+    const PIMAGE_NT_HEADERS nt = AcquireHeader(data);
 
-    const auto file = AcquireFileHeader(nt);
-    const auto optional = AcquireOptionalHeader(nt);
-    const auto sections = AcquireSectionHeader(optional, file);
+    const PIMAGE_FILE_HEADER file = AcquireFileHeader(nt);
+    const PIMAGE_OPTIONAL_HEADER optional = AcquireOptionalHeader(nt);
+    const PIMAGE_SECTION_HEADER sections = AcquireSectionHeader(optional, file);
 
-    for (auto x = 0; x < file->NumberOfSections; x++)
+    for (unsigned int x = 0; x < file->NumberOfSections; x++)
     {
-        const auto section = sections[x];
+        const PIMAGE_SECTION_HEADER section = &sections[x];
 
-        if (rva >= section.VirtualAddress && rva <= section.VirtualAddress + section.Misc.VirtualSize)
+        if (rva >= section->VirtualAddress && rva <= section->VirtualAddress + section->Misc.VirtualSize)
         {
-            return section.PointerToRawData + rva - section.VirtualAddress;
+            return section->PointerToRawData + rva - section->VirtualAddress;
         }
     }
 
@@ -114,7 +118,7 @@ char* AcquireExportName(const BYTE* data, const UINT* addresses, const UINT indx
 
 char* Watcom(char* name)
 {
-    const auto original = name;
+    char* original = name;
 
     while (*name != NULL)
     {
@@ -128,36 +132,36 @@ char* Watcom(char* name)
 
 int HandleFile(const HANDLE file)
 {
-    const auto size = GetFileSize(file, NULL);
+    const unsigned int size = GetFileSize(file, NULL);
     if (size == INVALID_FILE_SIZE) { printf("[ERROR] Unable to get size file size."); return FAILURE_READING_FILE; }
 
-    auto mem = (BYTE*)malloc(size);
+    BYTE* mem = (BYTE*)malloc(size);
     if (mem == NULL) { printf("[ERROR] Unable to allocate memory for the file."); return FAILURE_MEMORY_ALLOCATION; }
 
     DWORD read = 0;
     if (!ReadFile(file, mem, size, &read, NULL)) { free(mem); return FAILURE_READING_FILE; }
     if (size != read) { printf("[ERROR] Unable to read the file."); free(mem); return FAILURE_READING_FILE; }
 
-    const auto header = AcquireHeader(mem);
+    const PIMAGE_NT_HEADERS header = AcquireHeader(mem);
     if (header == NULL) { printf("[ERROR] Unable to process file header."); free(mem); return FAILURE_INVALID_HEADER; }
 
-    const auto optional = AcquireOptionalHeader(header);
+    const PIMAGE_OPTIONAL_HEADER optional = AcquireOptionalHeader(header);
     if (optional == NULL) { printf("[ERROR] Unable to process file header."); free(mem); return FAILURE_INVALID_HEADER; }
 
-    const auto dir = AcquireExportDataDirectory(optional);
+    const PIMAGE_DATA_DIRECTORY dir = AcquireExportDataDirectory(optional);
     if (dir == NULL) { printf("[ERROR] Unable to process file header."); free(mem); return FAILURE_INVALID_HEADER; }
 
-    const auto exports = AcquireExports(mem, dir);
+    const PIMAGE_EXPORT_DIRECTORY exports = AcquireExports(mem, dir);
     if (exports == NULL) { printf("[ERROR] Unable to process file header."); free(mem); return FAILURE_INVALID_HEADER; }
 
-    const auto addresses = AcquireExportNameAddresses(mem, exports);
+    const unsigned int* addresses = AcquireExportNameAddresses(mem, exports);
     if (addresses == NULL) { printf("[ERROR] Unable to process file header."); free(mem); return SUCCESS; }
 
     printf("Export symbols found: %d.\n", exports->NumberOfNames);
 
     for (unsigned int x = 0; x < exports->NumberOfNames; x++)
     {
-        auto value = AcquireExportName(mem, addresses, x);
+        char* value = AcquireExportName(mem, addresses, x);
         printf("[%d] Replacing %s with ", x, value);
         printf("%s\n", Watcom(value));
     }

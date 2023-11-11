@@ -203,7 +203,7 @@ namespace SoundModule
 
         struct
         {
-            SOUNDMODULEUNKNOWN1LAMBDA Lambda1; // 0x0040a940
+            SOUNDMODULEACQUIREDATALAMBDA AcquireData; // 0x0040a940
             SOUNDMODULESTOPSOUNDBUFFERLAMBDA StopBuffer; // 0x0040a944
             SOUNDMODULELOGMESSAGELAMBDA LogMessage; // 0x0040a948
             SOUNDMODULEUNKNOWNLAMBDA Unknown; // 0x0040a94c
@@ -260,6 +260,6 @@ namespace SoundModule
     u32 AcquireAvailableSoundSlotIndex(void);
 
     u32 AcquireSoundPosition(void);
-    void AcquireSoundData(void* data, const s32 size);
+    void AcquireSoundData(void* buffer, const s32 size);
     void StopSoundBuffers(void);
 }

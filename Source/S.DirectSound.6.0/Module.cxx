@@ -636,9 +636,9 @@ namespace SoundModule
 
     // 0x00401620
     // a.k.a. iSNDdirectsetfunctions
-    DLLAPI s32 STDCALLAPI SelectLambdas(const SOUNDMODULEUNKNOWN1LAMBDA p1, const SOUNDMODULESTOPSOUNDBUFFERLAMBDA stop, const SOUNDMODULELOGMESSAGELAMBDA log, const SOUNDMODULEUNKNOWNLAMBDA unknown, const SOUNDMODULEUNKNOWN5LAMBDA p5, const SOUNDMODULEUNKNOWN6LAMBDA p6, const SOUNDMODULEACQUIRESOUNDBUFFERPOSITIONLAMBDA position, const SOUNDMODULEUNKNOWN8LAMBDA p8)
+    DLLAPI s32 STDCALLAPI SelectLambdas(const SOUNDMODULEACQUIREDATALAMBDA acquire, const SOUNDMODULESTOPSOUNDBUFFERLAMBDA stop, const SOUNDMODULELOGMESSAGELAMBDA log, const SOUNDMODULEUNKNOWNLAMBDA unknown, const SOUNDMODULEUNKNOWN5LAMBDA p5, const SOUNDMODULEUNKNOWN6LAMBDA p6, const SOUNDMODULEACQUIRESOUNDBUFFERPOSITIONLAMBDA position, const SOUNDMODULEUNKNOWN8LAMBDA p8)
     {
-        State.Lambdas.Lambda1 = p1;
+        State.Lambdas.AcquireData = acquire;
         State.Lambdas.StopBuffer = stop;
         State.Lambdas.LogMessage = log;
         State.Lambdas.Unknown = unknown;
@@ -753,7 +753,7 @@ namespace SoundModule
     {
         State.Settings.Capabilities = INVALID_SOUND_MODULE_CAPABILITIES;
 
-        return SOUND_MODULE_VERSION;
+        return SOUND_MODULE_VERSION_120005;
     }
 
     // 0x00401230
@@ -1288,7 +1288,7 @@ namespace SoundModule
     }
 
     // 0x00402940
-    void AcquireSoundData(void* data, const s32 size)
+    void AcquireSoundData(void* buffer, const s32 size)
     {
         u32 length = size;
 
@@ -1315,11 +1315,11 @@ namespace SoundModule
 
             State.Settings.Unk11 = State.Settings.Unk11 - len;
 
-            State.Lambdas.Lambda1(data, len);
+            State.Lambdas.AcquireData(buffer, len);
 
             length = length - len;
 
-            data = (void*)((addr)data + (addr)(len << State.Settings.BlockAlignBytes));
+            buffer = (void*)((addr)buffer + (addr)(len << State.Settings.BlockAlignBytes));
         }
 
         if (State.Settings.Is3D) { StopSoundBuffers(); }

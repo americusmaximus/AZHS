@@ -24,7 +24,7 @@ SOFTWARE.
 
 #include "Basic.hxx"
 
-#define SOUND_MODULE_VERSION 0x120005
+#define SOUND_MODULE_VERSION_120005 0x120005
 
 #define SOUND_MODULE_SUCCESS 0
 #define SOUND_MODULE_FAILURE (-1)
@@ -56,12 +56,12 @@ SOFTWARE.
 
 namespace SoundModule
 {
-    typedef const void (STDCALLAPI* SOUNDMODULEUNKNOWN1LAMBDA) (void*, const u32 offset);
+    typedef const void (STDCALLAPI* SOUNDMODULEACQUIREDATALAMBDA) (void* buffer, const u32 size);
     typedef const void (STDCALLAPI* SOUNDMODULESTOPSOUNDBUFFERLAMBDA) (const u32 indx);
     typedef const void (STDCALLAPI* SOUNDMODULELOGMESSAGELAMBDA) (const char* message);
     typedef const void (STDCALLAPI* SOUNDMODULEUNKNOWNLAMBDA) (void);
     typedef const void (STDCALLAPI* SOUNDMODULEUNKNOWN5LAMBDA) (void);
     typedef const void (STDCALLAPI* SOUNDMODULEUNKNOWN6LAMBDA) (const u32 value);
-    typedef const void (STDCALLAPI* SOUNDMODULEACQUIRESOUNDBUFFERPOSITIONLAMBDA) (const u32 p1, const u32 p2, f32x3* position);
-    typedef const void (STDCALLAPI* SOUNDMODULEUNKNOWN8LAMBDA) (const u32 p1, const u32 p2, const u32 p3, const u32 p4, const u32 p5, const u32 p6, void* p7, const u32 p8, const u32 p9);
+    typedef const void (STDCALLAPI* SOUNDMODULEACQUIRESOUNDBUFFERPOSITIONLAMBDA) (const u32 p1, const u32 p2, f32x3* position); // TODO
+    typedef const s32(STDCALLAPI* SOUNDMODULEUNKNOWN8LAMBDA) (const u32 p1, const u32 p2, const u32 p3, const u32 p4, const u32 p5, const u32 p6, void* p7, const u32 p8, const u32 p9); // TODO
 }

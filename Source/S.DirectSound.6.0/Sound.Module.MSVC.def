@@ -1,0 +1,21 @@
+LIBRARY
+EXPORTS
+    _iSNDdirectcaps = AcquireCapabilities
+    _iSNDdirectcreate3dbuf = CreateSoundBuffer
+    _iSNDdirectfxinit = InitializeSoundBuffer
+    _iSNDdirectfxlevel = LevelSoundBuffer
+    _iSNDdirectmixlatency = MixLatency
+    _iSNDdirectplay3d = PlaySoundBuffer
+    _iSNDdirectpos3d = PositionSoundBuffer
+    _iSNDdirectrate = RateSoundBuffer
+    _iSNDdirectrecordpacket = PacketRecording
+    _iSNDdirectrecordstart = StartRecording
+    _iSNDdirectrecordstop = StopRecording
+    _iSNDdirectremovebuf = RemoveSoundBuffer
+    _iSNDdirectserve = Serve
+    _iSNDdirectsetfunctions = SelectLambdas
+    _iSNDdirectstart = Start
+    _iSNDdirectstop = Stop
+    _iSNDdirectstopbuf = StopSoundBuffer
+    _iSNDdirectvol = VolumeSoundBuffer
+    _iSNDdllversion = AcquireVersion

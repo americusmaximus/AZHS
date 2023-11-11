@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Renderers", "Renderers", "{2A763C9F-45DB-4233-8DF1-6FE818C3FBAF}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AZX", "Source\AZX\AZX.vcxproj", "{783971C9-5262-4CB8-B69A-110DE96E728F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Watcom", "Source\Watcom\Watcom.vcxproj", "{B0620679-23C1-43E9-9486-8FF5A97D4C74}"
@@ -14,6 +16,26 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "S.DirectSound.6.0", "Source\S.DirectSound.6.0\S.DirectSound.6.0.vcxproj", "{E5DB011F-06D5-4704-8530-8E27F0FD529D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B0620679-23C1-43E9-9486-8FF5A97D4C74} = {B0620679-23C1-43E9-9486-8FF5A97D4C74}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "R.DirectX.6.0.A", "Source\R.DirectX.6.0.A\R.DirectX.6.0.A.vcxproj", "{0C04D6B1-DDD3-411E-8FD9-121985A316A7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B0620679-23C1-43E9-9486-8FF5A97D4C74} = {B0620679-23C1-43E9-9486-8FF5A97D4C74}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "R.DirectX.6.0.M", "Source\R.DirectX.6.0.M\R.DirectX.6.0.M.vcxproj", "{0278A686-B931-4E9F-80B8-EC1307874ADF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B0620679-23C1-43E9-9486-8FF5A97D4C74} = {B0620679-23C1-43E9-9486-8FF5A97D4C74}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "R.DirectX.6.0.3DS", "Source\R.DirectX.6.0.3DS\R.DirectX.6.0.3DS.vcxproj", "{AA798F3E-A54F-47C4-8790-AF8B59346C66}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B0620679-23C1-43E9-9486-8FF5A97D4C74} = {B0620679-23C1-43E9-9486-8FF5A97D4C74}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1C0D0605-2055-49FB-97F4-4C148AFB170E}"
+	ProjectSection(SolutionItems) = preProject
+		azhs.ini = azhs.ini
 	EndProjectSection
 EndProject
 Global
@@ -41,13 +63,30 @@ Global
 		{B0620679-23C1-43E9-9486-8FF5A97D4C74}.Release|x86.ActiveCfg = Release|Win32
 		{B0620679-23C1-43E9-9486-8FF5A97D4C74}.Release|x86.Build.0 = Release|Win32
 		{E5DB011F-06D5-4704-8530-8E27F0FD529D}.Debug|x64.ActiveCfg = Debug|x64
-		{E5DB011F-06D5-4704-8530-8E27F0FD529D}.Debug|x64.Build.0 = Debug|x64
 		{E5DB011F-06D5-4704-8530-8E27F0FD529D}.Debug|x86.ActiveCfg = Debug|Win32
 		{E5DB011F-06D5-4704-8530-8E27F0FD529D}.Debug|x86.Build.0 = Debug|Win32
 		{E5DB011F-06D5-4704-8530-8E27F0FD529D}.Release|x64.ActiveCfg = Release|x64
-		{E5DB011F-06D5-4704-8530-8E27F0FD529D}.Release|x64.Build.0 = Release|x64
 		{E5DB011F-06D5-4704-8530-8E27F0FD529D}.Release|x86.ActiveCfg = Release|Win32
 		{E5DB011F-06D5-4704-8530-8E27F0FD529D}.Release|x86.Build.0 = Release|Win32
+		{0C04D6B1-DDD3-411E-8FD9-121985A316A7}.Debug|x64.ActiveCfg = Debug|x64
+		{0C04D6B1-DDD3-411E-8FD9-121985A316A7}.Debug|x86.ActiveCfg = Debug|Win32
+		{0C04D6B1-DDD3-411E-8FD9-121985A316A7}.Debug|x86.Build.0 = Debug|Win32
+		{0C04D6B1-DDD3-411E-8FD9-121985A316A7}.Release|x64.ActiveCfg = Release|x64
+		{0C04D6B1-DDD3-411E-8FD9-121985A316A7}.Release|x86.ActiveCfg = Release|Win32
+		{0C04D6B1-DDD3-411E-8FD9-121985A316A7}.Release|x86.Build.0 = Release|Win32
+		{0278A686-B931-4E9F-80B8-EC1307874ADF}.Debug|x64.ActiveCfg = Debug|x64
+		{0278A686-B931-4E9F-80B8-EC1307874ADF}.Debug|x86.ActiveCfg = Debug|Win32
+		{0278A686-B931-4E9F-80B8-EC1307874ADF}.Debug|x86.Build.0 = Debug|Win32
+		{0278A686-B931-4E9F-80B8-EC1307874ADF}.Release|x64.ActiveCfg = Release|x64
+		{0278A686-B931-4E9F-80B8-EC1307874ADF}.Release|x86.ActiveCfg = Release|Win32
+		{0278A686-B931-4E9F-80B8-EC1307874ADF}.Release|x86.Build.0 = Release|Win32
+		{AA798F3E-A54F-47C4-8790-AF8B59346C66}.Debug|x64.ActiveCfg = Debug|x64
+		{AA798F3E-A54F-47C4-8790-AF8B59346C66}.Debug|x64.Build.0 = Debug|x64
+		{AA798F3E-A54F-47C4-8790-AF8B59346C66}.Debug|x86.ActiveCfg = Debug|Win32
+		{AA798F3E-A54F-47C4-8790-AF8B59346C66}.Debug|x86.Build.0 = Debug|Win32
+		{AA798F3E-A54F-47C4-8790-AF8B59346C66}.Release|x64.ActiveCfg = Release|x64
+		{AA798F3E-A54F-47C4-8790-AF8B59346C66}.Release|x86.ActiveCfg = Release|Win32
+		{AA798F3E-A54F-47C4-8790-AF8B59346C66}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +94,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{B0620679-23C1-43E9-9486-8FF5A97D4C74} = {263227B4-6C4B-4F5E-BCCC-55CDC1CA9C1B}
 		{E5DB011F-06D5-4704-8530-8E27F0FD529D} = {BC9AE372-41C9-4C2F-9E6F-FAD06BF8AC92}
+		{0C04D6B1-DDD3-411E-8FD9-121985A316A7} = {2A763C9F-45DB-4233-8DF1-6FE818C3FBAF}
+		{0278A686-B931-4E9F-80B8-EC1307874ADF} = {2A763C9F-45DB-4233-8DF1-6FE818C3FBAF}
+		{AA798F3E-A54F-47C4-8790-AF8B59346C66} = {2A763C9F-45DB-4233-8DF1-6FE818C3FBAF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7AB71839-3022-488E-AAD0-985472F5384B}

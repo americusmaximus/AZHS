@@ -46,7 +46,7 @@ SOFTWARE.
 
 BOOL FileExists(const char* path)
 {
-    const auto attrs = GetFileAttributesA(path);
+    const int attrs = GetFileAttributesA(path);
 
     return (attrs != INVALID_FILE_ATTRIBUTES && !(attrs & FILE_ATTRIBUTE_DIRECTORY));
 }
@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
             argv[PATH_ARGUMENT_INDEX]); return FAILURE_READING_FILE;
     }
 
-    const auto file = CreateFileA(argv[PATH_ARGUMENT_INDEX], GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+    const HANDLE file = CreateFileA(argv[PATH_ARGUMENT_INDEX], GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
 
     if (file == INVALID_HANDLE_VALUE)
     {
@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
         return FAILURE_READING_FILE;
     }
 
-    const auto result = HandleFile(file);
+    const int result = HandleFile(file);
 
     printf("Closing %s...\n", argv[PATH_ARGUMENT_INDEX]);
 

@@ -212,12 +212,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Basic.hxx" />
+    <ClInclude Include="Graphics.Basic.hxx" />
     <ClInclude Include="Mathematics.Basic.hxx" />
     <ClInclude Include="Native.Basic.hxx" />
+    <ClInclude Include="Renderer.Basic.hxx" />
+    <ClInclude Include="RendererModule.Basic.hxx" />
+    <ClInclude Include="RendererModule.Export.hxx" />
+    <ClInclude Include="RendererModule.hxx" />
+    <ClInclude Include="RendererModule.Import.hxx" />
+    <ClInclude Include="RendererModule.Settings.hxx" />
     <ClInclude Include="Sound.Basic.hxx" />
     <ClInclude Include="SoundModule.Basic.hxx" />
     <ClInclude Include="SoundModule.Export.hxx" />
+    <ClInclude Include="SoundModule.hxx" />
     <ClInclude Include="SoundModule.Import.hxx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="RendererModule.cxx" />
+    <ClCompile Include="SoundModule.cxx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
