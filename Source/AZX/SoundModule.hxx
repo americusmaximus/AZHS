@@ -56,9 +56,9 @@ namespace SoundModule
 
     extern SoundModuleContainer SoundModuleState;
 
-    void STDCALLAPI AcquireDataLambda(void* buffer, const u32 size);
-    void STDCALLAPI StopBufferLambda(const u32 indx);
-    void STDCALLAPI AcquireBufferPositionLambda(const u32 p1, const u32 p2, f32x3* position);
+    void STDCALLAPI AcquireSoundDataLambda(void* buffer, const u32 size);
+    void STDCALLAPI StopSoundBufferLambda(const u32 indx);
+    void STDCALLAPI AcquireSoundBufferPositionLambda(const u32 p1, const u32 p2, f32x3* position);
 
     s32 InitializeSoundModule(void);
 

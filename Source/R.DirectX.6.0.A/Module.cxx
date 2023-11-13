@@ -34,7 +34,7 @@ using namespace Settings;
 namespace RendererModule
 {
     // 0x60001000
-    // a.k.a. _THRASH_about
+    // a.k.a. THRASH_about
     DLLAPI RendererModuleDescriptor* STDCALLAPI AcquireDescriptor(void)
     {
         ModuleDescriptor.Signature = RENDERER_MODULE_SIGNATURE_D3D6;
@@ -94,14 +94,14 @@ namespace RendererModule
     }
 
     // 0x60001220
-    // a.k.a. _THRASH_clearwindow
+    // a.k.a. THRASH_clearwindow
     DLLAPI u32 STDCALLAPI ClearGameWindow()
     {
         return ClearRendererViewPort(State.ViewPort.X0, State.ViewPort.Y0, State.ViewPort.X1, State.ViewPort.Y1);
     }
 
     // 0x600012d0
-    // a.k.a. _THRASH_clip
+    // a.k.a. THRASH_clip
     DLLAPI u32 STDCALLAPI ClipGameWindow(const u32 x0, const u32 y0, const u32 x1, const u32 y1)
     {
         State.ViewPort.X0 = x0;
@@ -113,7 +113,7 @@ namespace RendererModule
     }
 
     // 0x60001690
-    // // a.k.a. _THRASH_drawline
+    // // a.k.a. THRASH_drawline
     DLLAPI void STDCALLAPI DrawLine(RVX* a, RVX* b)
     {
         RTLVX vertexes[2];
@@ -125,7 +125,7 @@ namespace RendererModule
     }
 
     // 0x600016d0
-    // a.k.a. _THRASH_drawlinemesh
+    // a.k.a. THRASH_drawlinemesh
     DLLAPI void STDCALLAPI DrawLineMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
         const RTLVX* vs = (RTLVX*)vertexes;
@@ -134,7 +134,7 @@ namespace RendererModule
     }
 
     // 0x60001840
-    // a.k.a. _THRASH_drawlinestrip
+    // a.k.a. THRASH_drawlinestrip
     DLLAPI void STDCALLAPI DrawLineStrip(const u32 count, RVX* vertexes)
     {
         const RTLVX* vs = (RTLVX*)vertexes;
@@ -143,7 +143,7 @@ namespace RendererModule
     }
 
     // 0x60001710
-    // a.k.a. _THRASH_drawlinestrip
+    // a.k.a. THRASH_drawlinestrip
     // NOTE: Never being called by the application.
     DLLAPI void STDCALLAPI DrawLineStrips(const u32 count, RVX* vertexes, const u32* indexes)
     {
@@ -153,14 +153,14 @@ namespace RendererModule
     }
 
     // 0x60001750
-    // a.k.a. _THRASH_drawpoint
+    // a.k.a. THRASH_drawpoint
     DLLAPI void STDCALLAPI DrawPoint(RVX* vertex)
     {
         RenderPoints((RTLVX*)vertex, 1);
     }
 
     // 0x60001770
-    // a.k.a. _THRASH_drawpointmesh
+    // a.k.a. THRASH_drawpointmesh
     DLLAPI void STDCALLAPI DrawPointMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
         const RTLVX* vs = (RTLVX*)vertexes;
@@ -169,7 +169,7 @@ namespace RendererModule
     }
 
     // 0x60001870
-    // a.k.a. _THRASH_drawpointstrip
+    // a.k.a. THRASH_drawpointstrip
     DLLAPI void STDCALLAPI DrawPointStrip(const u32 count, RVX* vertexes)
     {
         const RTLVX* vs = (RTLVX*)vertexes;
@@ -178,28 +178,28 @@ namespace RendererModule
     }
 
     // 0x60001610
-    // a.k.a. _THRASH_drawquad
+    // a.k.a. THRASH_drawquad
     DLLAPI void STDCALLAPI DrawQuad(RVX* a, RVX* b, RVX* c, RVX* d)
     {
         if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d); } // TODO
     }
 
     // 0x60001670
-    // a.k.a. _THRASH_drawquadmesh
+    // a.k.a. THRASH_drawquadmesh
     DLLAPI void STDCALLAPI DrawQuadMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
         RenderQuadMesh((RTLVX*)vertexes, indexes, count);
     }
 
     // 0x60001560
-    // a.k.a. _THRASH_drawtri
+    // a.k.a. THRASH_drawtri
     DLLAPI void STDCALLAPI DrawTriangle(RVX* a, RVX* b, RVX* c)
     {
         if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderTriangle((RTLVX*)a, (RTLVX*)b, (RTLVX*)c); }  // TODO
     }
 
     // 0x60001800
-    // a.k.a. _THRASH_drawtrifan
+    // a.k.a. THRASH_drawtrifan
     DLLAPI void STDCALLAPI DrawTriangleFan(const u32 count, RVX* vertexes)
     {
         const RTLVX* vs = (RTLVX*)vertexes;
@@ -208,7 +208,7 @@ namespace RendererModule
     }
 
     // 0x600015f0
-    // a.k.a. _THRASH_drawtrifan
+    // a.k.a. THRASH_drawtrifan
     // NOTE: Never being called by the application.
     DLLAPI void STDCALLAPI DrawTriangleFans(const u32 count, RVX* vertexes, const u32* indexes)
     {
@@ -216,14 +216,14 @@ namespace RendererModule
     }
 
     // 0x600015b0
-    // a.k.a. _THRASH_drawtrimesh
+    // a.k.a. THRASH_drawtrimesh
     DLLAPI void STDCALLAPI DrawTriangleMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
         RenderTriangleMesh((RTLVX*)vertexes, indexes, count);
     }
 
     // 0x600015d0
-    // a.k.a. _THRASH_drawtristrip
+    // a.k.a. THRASH_drawtristrip
     // NOTE: Triangle strip vertex order: 0 1 2, 1 3 2, 2 3 4, 3 5 4, 4 5 6, ...
     DLLAPI void STDCALLAPI DrawTriangleStrip(const u32 count, RVX* vertexes)
     {
@@ -242,7 +242,7 @@ namespace RendererModule
     }
 
     // 0x600017a0
-    // a.k.a. _THRASH_drawtristrip
+    // a.k.a. THRASH_drawtristrip
     // NOTE: Never being called by the application.
     DLLAPI void STDCALLAPI DrawTriangleStrips(const u32 count, RVX* vertexes, const u32* indexes)
     {
@@ -250,18 +250,18 @@ namespace RendererModule
     }
 
     // 0x60001250
-    // a.k.a. _THRASH_flushwindow
+    // a.k.a. THRASH_flushwindow
     DLLAPI u32 STDCALLAPI FlushGameWindow(void)
     {
         return EndRendererScene();
     }
 
     // 0x600012b0
-    // a.k.a. _THRASH_idle
+    // a.k.a. THRASH_idle
     DLLAPI void STDCALLAPI Idle(void) { }
 
     // 0x600035b0
-    // a.k.a. _THRASH_init
+    // a.k.a. THRASH_init
     DLLAPI u32 STDCALLAPI Init(void)
     {
         State.State.IsInactive = FALSE;
@@ -274,7 +274,7 @@ namespace RendererModule
     }
 
     // 0x60003a20
-    // a.k.a. _THRASH_is
+    // a.k.a. THRASH_is
     DLLAPI u32 STDCALLAPI Is(void)
     {
         const HWND hwnd = GetDesktopWindow();
@@ -311,7 +311,7 @@ namespace RendererModule
     }
 
     // 0x60001320
-    // a.k.a. _THRASH_lockwindow
+    // a.k.a. THRASH_lockwindow
     DLLAPI RendererModuleWindowLock* STDCALLAPI LockGameWindow(void)
     {
         if (State.DX.Surfaces.Window != NULL)
@@ -376,7 +376,7 @@ namespace RendererModule
     }
 
     // 0x60001260
-    // a.k.a. _THRASH_pageflip
+    // a.k.a. THRASH_pageflip
     DLLAPI u32 STDCALLAPI ToggleGameWindow(void)
     {
         if (State.Scene.IsActive) { EndRendererScene(); }
@@ -387,7 +387,7 @@ namespace RendererModule
     }
 
     // 0x60003ae0
-    // a.k.a. _THRASH_readrect
+    // a.k.a. THRASH_readrect
     DLLAPI u32 STDCALLAPI ReadRectangle(const u32 x, const u32 y, const u32 width, const u32 height, u32* data)
     {
         RendererModuleWindowLock* state = LockGameWindow();
@@ -408,7 +408,7 @@ namespace RendererModule
     }
 
     // 0x600035f0
-    // a.k.a. _THRASH_restore
+    // a.k.a. THRASH_restore
     DLLAPI u32 STDCALLAPI RestoreGameWindow(void)
     {
         if (!State.State.IsInactive) { return RENDERER_MODULE_SUCCESS; }
@@ -438,7 +438,7 @@ namespace RendererModule
     }
 
     // 0x60001fa0
-    // a.k.a. _THRASH_selectdisplay
+    // a.k.a. THRASH_selectdisplay
     DLLAPI u32 STDCALLAPI SelectDevice(const s32 indx)
     {
         State.Device.Identifier = NULL;
@@ -496,7 +496,7 @@ namespace RendererModule
     }
 
     // 0x60003e70
-    // a.k.a. _THRASH_setstate
+    // a.k.a. THRASH_setstate
     DLLAPI u32 STDCALLAPI SelectState(const u32 state, void* value)
     {
         u32 result = RENDERER_MODULE_FAILURE;
@@ -1529,7 +1529,7 @@ namespace RendererModule
     }
 
     // 0x60005850
-    // a.k.a. _THRASH_settexture
+    // a.k.a. THRASH_settexture
     DLLAPI u32 STDCALLAPI SelectTexture(RendererTexture* tex)
     {
         const BOOL result = SelectRendererTexture(tex);
@@ -1540,7 +1540,7 @@ namespace RendererModule
     }
 
     // 0x60003660
-    // a.k.a. _THRASH_setvideomode
+    // a.k.a. THRASH_setvideomode
     DLLAPI u32 STDCALLAPI SelectVideoMode(const u32 mode, const u32 pending, const u32 depth)
     {
         State.Window.Bits = depth;
@@ -1589,7 +1589,7 @@ namespace RendererModule
     }
 
     // 0x600012c0
-    // a.k.a. _THRASH_sync
+    // a.k.a. THRASH_sync
     DLLAPI u32 STDCALLAPI SyncGameWindow(const u32)
     {
         UnlockGameWindow(LockGameWindow());
@@ -1598,7 +1598,7 @@ namespace RendererModule
     }
 
     // 0x60005880
-    // a.k.a. _THRASH_talloc
+    // a.k.a. THRASH_talloc
     DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, void* p4, const u32 options)
     {
         State.Textures.Count = State.Textures.Count + 1;
@@ -1665,7 +1665,7 @@ namespace RendererModule
     }
 
     // 0x60005a20
-    // a.k.a. _THRASH_treset
+    // a.k.a. THRASH_treset
     DLLAPI u32 STDCALLAPI ResetTextures(void)
     {
         State.Textures.Count = 0;
@@ -1700,7 +1700,7 @@ namespace RendererModule
     }
 
     // 0x600059f0
-    // a.k.a. _THRASH_tupdate
+    // a.k.a. THRASH_tupdate
     DLLAPI u32 STDCALLAPI UpdateTexture(RendererTexture* tex, const u32* pixels, const u32* palette)
     {
         if (tex == NULL) { return RENDERER_MODULE_FAILURE; }
@@ -1726,7 +1726,7 @@ namespace RendererModule
     }
 
     // 0x600011b0
-    // a.k.a. _THRASH_window
+    // a.k.a. THRASH_window
     DLLAPI u32 STDCALLAPI SelectGameWindow(const u32 indx)
     {
         if (indx == 3 || indx == 5) // TODO
@@ -1756,7 +1756,7 @@ namespace RendererModule
     }
 
     // 0x60003b70
-    // a.k.a. _THRASH_writerect
+    // a.k.a. THRASH_writerect
     DLLAPI u32 STDCALLAPI WriteRectangle(const u32 x, const u32 y, const u32 width, const u32 height, const u32* data)
     {
         RendererModuleWindowLock* state = LockGameWindow();

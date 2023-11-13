@@ -68,9 +68,9 @@ namespace SoundModule
     typedef const void (STDCALLAPI* SOUNDMODULEACQUIREDATALAMBDA) (void* buffer, const u32 size);
     typedef const void (STDCALLAPI* SOUNDMODULESTOPSOUNDBUFFERLAMBDA) (const u32 indx);
     typedef const void (STDCALLAPI* SOUNDMODULELOGMESSAGELAMBDA) (const char* message);
-    typedef const void (STDCALLAPI* SOUNDMODULEUNKNOWN4LAMBDA) (void);
-    typedef const void (STDCALLAPI* SOUNDMODULEUNKNOWN5LAMBDA) (void);
-    typedef const void (STDCALLAPI* SOUNDMODULEUNKNOWN6LAMBDA) (const u32 value);
+    typedef const void (STDCALLAPI* SOUNDMODULEUNKNOWN4LAMBDA) (void*, void*); // TODO
+    typedef const void (STDCALLAPI* SOUNDMODULEUNKNOWN5LAMBDA) (void); // TODO
+    typedef const void (STDCALLAPI* SOUNDMODULEUNKNOWN6LAMBDA) (const u32 value); // TODO
     typedef const void (STDCALLAPI* SOUNDMODULEACQUIRESOUNDBUFFERPOSITIONLAMBDA) (const u32 p1, const u32 p2, f32x3* position); // TODO
     typedef const s32(STDCALLAPI* SOUNDMODULECONVERTSOUNDSAMPLELAMBDA) (const u32 p1, const u32 srcsamplerep, const u32 channels, const u32 p4, const u32 p5, const u32 p6, void* p7, const u32 dstsamplerep, const u32 dstnumchan); // TODO
 }

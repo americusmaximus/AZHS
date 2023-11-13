@@ -27,19 +27,19 @@ namespace SoundModule
     SoundModuleContainer SoundModuleState;
 
     // 0x00548c04
-    void STDCALLAPI AcquireDataLambda(void* buffer, const u32 size)
+    void STDCALLAPI AcquireSoundDataLambda(void* buffer, const u32 size)
     {
         FUN_00565934a(buffer, size);
     }
 
     // 0x00548be0
-    void STDCALLAPI StopBufferLambda(const u32 indx)
+    void STDCALLAPI StopSoundBufferLambda(const u32 indx)
     {
         FUN_00564e04(indx);
     }
 
     // 0x00548bec
-    void STDCALLAPI AcquireBufferPositionLambda(const u32 p1, const u32 p2, f32x3* position)
+    void STDCALLAPI AcquireSoundBufferPositionLambda(const u32 p1, const u32 p2, f32x3* position)
     {
         FUN_00564f70(p1, p2, position);
     }
@@ -65,13 +65,13 @@ namespace SoundModule
         {
             const SOUNDMODULESELECTLAMBDAS lambdas = (SOUNDMODULESELECTLAMBDAS)GetProcAddress(*SoundModuleState.Module._Handle, SOUND_MODULE_SELECT_LAMBDAS_NAME);
 
-            lambdas((SOUNDMODULEACQUIREDATALAMBDA)AcquireDataLambda,
-                (SOUNDMODULESTOPSOUNDBUFFERLAMBDA)StopBufferLambda,
+            lambdas((SOUNDMODULEACQUIREDATALAMBDA)AcquireSoundDataLambda,
+                (SOUNDMODULESTOPSOUNDBUFFERLAMBDA)StopSoundBufferLambda,
                 (SOUNDMODULELOGMESSAGELAMBDA)NULL,
                 (SOUNDMODULEUNKNOWN4LAMBDA)NULL,
                 (SOUNDMODULEUNKNOWN5LAMBDA)FUN_00548c50,
                 (SOUNDMODULEUNKNOWN6LAMBDA)FUN_00548c14,
-                (SOUNDMODULEACQUIRESOUNDBUFFERPOSITIONLAMBDA)AcquireBufferPositionLambda,
+                (SOUNDMODULEACQUIRESOUNDBUFFERPOSITIONLAMBDA)AcquireSoundBufferPositionLambda,
                 (SOUNDMODULECONVERTSOUNDSAMPLELAMBDA)FUN_00548c58);
         }
 
