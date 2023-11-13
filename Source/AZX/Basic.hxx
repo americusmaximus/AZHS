@@ -33,7 +33,7 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 
-#if _MSC_VER == 1200
+#if _MSC_VER <= 1200
 typedef unsigned __int64 u64;
 #else
 typedef unsigned long long u64;
@@ -43,7 +43,7 @@ typedef signed char s8;
 typedef short s16;
 typedef int s32;
 
-#if _MSC_VER == 1200
+#if _MSC_VER <= 1200
 typedef __int64 s64;
 #else
 typedef long long s64;

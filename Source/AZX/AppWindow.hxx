@@ -22,28 +22,16 @@ SOFTWARE.
 
 #pragma once
 
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include "Native.Basic.hxx"
 
-#define SUCCESS 0
+namespace AppWindow
+{
+    struct AppWindowContainer
+    {
+        HWND* _HWND; // 0x009edaa8
+    };
 
-#if _MSC_VER <= 1200
-#define UINT_MAX 0xFFFFFFFF
-#endif
+    extern AppWindowContainer AppWindowState;
 
-#define FAILURE_INVALID_ARGUMENT_COUNT (-1)
-#define FAILURE_READING_FILE (-2)
-#define FAILURE_MEMORY_ALLOCATION (-3)
-#define FAILURE_INVALID_HEADER (-4)
-#define FAILURE_WRITING_FILE (-5)
-
-#ifndef INVALID_FILE_ATTRIBUTES
-#define INVALID_FILE_ATTRIBUTES ((DWORD)-1)
-#endif
-
-#ifndef INVALID_SET_FILE_POINTER
-#define INVALID_SET_FILE_POINTER ((DWORD)-1)
-#endif
-
-int HandleFile(const HANDLE file);
+    HWND AcquireWindow(void);
+}

@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DX63DS"=".\DX63DS\DX63DS.dsp" - Package Owner=<4>
+Project: "DX63DS"=".\R.DirectX.6.0.3DS\R.DirectX.6.0.3DS.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -30,7 +30,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DX6A"=".\DX6A\DX6A.dsp" - Package Owner=<4>
+Project: "DX6A"=".\R.DirectX.6.0.A\R.DirectX.6.0.A.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -45,7 +45,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DX6M"=".\DX6M\DX6M.dsp" - Package Owner=<4>
+Project: "DX6M"=".\R.DirectX.6.0.M\R.DirectX.6.0.M.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -60,7 +60,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Sound"=".\Sound\Sound.dsp" - Package Owner=<4>
+Project: "Sound"=".\S.DirectSound.6.0\S.DirectSound.6.0.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

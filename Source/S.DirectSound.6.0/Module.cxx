@@ -371,7 +371,7 @@ namespace SoundModule
 
     // 0x004030c8
     // a.k.a. iSNDdirectplay3d
-    DLLAPI s32 STDCALLAPI PlaySoundBuffer(const u32 indx, const u32 slot, const BOOL looping, const u32 frequency, const u32 volume, const u32 level, const u32 p4, const u32 p5)
+    DLLAPI s32 STDCALLAPI PlaySoundBuffer(const u32 slot, const u32 indx, const BOOL looping, const u32 frequency, const u32 volume, const u32 level, const u32 p4, const u32 p5)
     {
         if (!State.State.IsInit) { return SOUND_MODULE_FAILURE; }
 
@@ -544,8 +544,7 @@ namespace SoundModule
 
         if (result != DS_OK) { return result; }
 
-        State.Settings.CurrentWrite = State.Settings.CurrentWrite >> State.Settings.BlockAlignBytes;
-        State.Settings.CurrentWrite = State.Settings.CurrentWrite & 0xfffff0;
+        State.Settings.CurrentWrite = (State.Settings.CurrentWrite >> State.Settings.BlockAlignBytes) & SOUND_BUFFER_WRITE_ALIGNMENT_MASK;
 
         {
             const u32 pos = State.Settings.CurrentWrite < State.Settings.MinimumWrite
@@ -619,13 +618,13 @@ namespace SoundModule
             {
                 State.Settings.Unk01 = State.Settings.Unk01 + todo2;
 
-                const u32 lo = todo2 << State.Settings.BlockAlignBytes;
+                const u32 ls = todo2 << State.Settings.BlockAlignBytes;
 
-                result = State.DX.Buffers.Active->Lock(0, lo, &State.Settings.Lock.Data, &State.Settings.Lock.Size, NULL, 0, DSBLOCK_NONE);
+                result = State.DX.Buffers.Active->Lock(0, ls, &State.Settings.Lock.Data, &State.Settings.Lock.Size, NULL, 0, DSBLOCK_NONE);
 
                 if (result == DS_OK) { AcquireSoundData(State.Settings.Lock.Data, todo2); }
 
-                result = State.DX.Buffers.Active->Unlock(State.Settings.Lock.Data, lo, NULL, 0);
+                result = State.DX.Buffers.Active->Unlock(State.Settings.Lock.Data, ls, NULL, 0);
             }
         }
 
@@ -636,16 +635,16 @@ namespace SoundModule
 
     // 0x00401620
     // a.k.a. iSNDdirectsetfunctions
-    DLLAPI s32 STDCALLAPI SelectLambdas(const SOUNDMODULEACQUIREDATALAMBDA acquire, const SOUNDMODULESTOPSOUNDBUFFERLAMBDA stop, const SOUNDMODULELOGMESSAGELAMBDA log, const SOUNDMODULEUNKNOWNLAMBDA unknown, const SOUNDMODULEUNKNOWN5LAMBDA p5, const SOUNDMODULEUNKNOWN6LAMBDA p6, const SOUNDMODULEACQUIRESOUNDBUFFERPOSITIONLAMBDA position, const SOUNDMODULEUNKNOWN8LAMBDA p8)
+    DLLAPI s32 STDCALLAPI SelectLambdas(const SOUNDMODULEACQUIREDATALAMBDA acquire, const SOUNDMODULESTOPSOUNDBUFFERLAMBDA stop, const SOUNDMODULELOGMESSAGELAMBDA log, const SOUNDMODULEUNKNOWN4LAMBDA p4, const SOUNDMODULEUNKNOWN5LAMBDA p5, const SOUNDMODULEUNKNOWN6LAMBDA p6, const SOUNDMODULEACQUIRESOUNDBUFFERPOSITIONLAMBDA position, const SOUNDMODULECONVERTSOUNDSAMPLELAMBDA convert)
     {
         State.Lambdas.AcquireData = acquire;
         State.Lambdas.StopBuffer = stop;
-        State.Lambdas.LogMessage = log;
-        State.Lambdas.Unknown = unknown;
+        State.Lambdas.Log = log;
+        State.Lambdas.Lambda4 = p4;
         State.Lambdas.Lambda5 = p5;
         State.Lambdas.Lambda6 = p6;
         State.Lambdas.AcquireSoundBufferPosition = position;
-        State.Lambdas.Lambda8 = p8;
+        State.Lambdas.ConvertSoundSample = convert;
 
         return SOUND_MODULE_SUCCESS;
     }
@@ -658,10 +657,10 @@ namespace SoundModule
 
         if (!State.Settings.IsEmulated)
         {
-            if (InitializeSounds(options, hwnd, SOUND_MODE_HARDWARE) == DS_OK) { return SOUND_MODULE_SUCCESS; }
+            if (InitializeSounds(SOUND_MODE_HARDWARE, options, hwnd) == DS_OK) { return SOUND_MODULE_SUCCESS; }
         }
 
-        return InitializeSounds(options, hwnd, SOUND_MODE_SOFTWARE);
+        return InitializeSounds(SOUND_MODE_SOFTWARE, options, hwnd);
     }
 
     // 0x0040282c
@@ -753,7 +752,7 @@ namespace SoundModule
     {
         State.Settings.Capabilities = INVALID_SOUND_MODULE_CAPABILITIES;
 
-        return SOUND_MODULE_VERSION_120005;
+        return SOUND_MODULE_VERSION;
     }
 
     // 0x00401230
@@ -766,7 +765,7 @@ namespace SoundModule
         vsprintf(buffer, format, args);
         va_end(args);
 
-        if (State.Lambdas.LogMessage != NULL) { State.Lambdas.LogMessage(buffer); }
+        if (State.Lambdas.Log != NULL) { State.Lambdas.Log(buffer); }
     }
 
     // 0x00401c54
@@ -883,7 +882,7 @@ namespace SoundModule
 
     // 0x004020e0
     // a.k.a. iSNDdirectstart, iSNDstartbuffer
-    s32 InitializeSounds(const u32 options, const HWND hwnd, const SOUND_MODE mode)
+    s32 InitializeSounds(const SOUND_MODE mode, const u32 options, const HWND hwnd)
     {
         s32 result = SOUND_MODULE_FAILURE;
 
@@ -1186,7 +1185,7 @@ namespace SoundModule
             return SOUND_MODULE_FAILURE;
         }
 
-        State.Lambdas.Lambda8(State.Slots[indx].ID, State.Slots[indx].Unk07, State.Slots[indx].Volume,
+        State.Lambdas.ConvertSoundSample(State.Slots[indx].ID, State.Slots[indx].Unk07, State.Slots[indx].Volume,
             State.Slots[indx].Unk04, State.Slots[indx].Unk05, State.Slots[indx].Unk03, data,
             State.Slots[indx].Unk10, State.Slots[indx].Channels);
 
@@ -1345,7 +1344,7 @@ namespace SoundModule
     }
 
     // 0x0040bb1e
-    // NOTE: each value contains a pairs of signed 16-bit values.
+    // NOTE: each value contains a pair of signed 16-bit values.
     // Direct Sound accepts values in the range [-10,000..0].
     // Moreover, it looks like there are two configurations available (A and B).
     const u32 Volume[MAX_SOUND_VOLUME_COUNT] =

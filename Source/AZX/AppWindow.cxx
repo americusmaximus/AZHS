@@ -20,30 +20,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#pragma once
+#include "AppWindow.hxx"
 
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+namespace AppWindow
+{
+    AppWindowContainer AppWindowState;
 
-#define SUCCESS 0
-
-#if _MSC_VER <= 1200
-#define UINT_MAX 0xFFFFFFFF
-#endif
-
-#define FAILURE_INVALID_ARGUMENT_COUNT (-1)
-#define FAILURE_READING_FILE (-2)
-#define FAILURE_MEMORY_ALLOCATION (-3)
-#define FAILURE_INVALID_HEADER (-4)
-#define FAILURE_WRITING_FILE (-5)
-
-#ifndef INVALID_FILE_ATTRIBUTES
-#define INVALID_FILE_ATTRIBUTES ((DWORD)-1)
-#endif
-
-#ifndef INVALID_SET_FILE_POINTER
-#define INVALID_SET_FILE_POINTER ((DWORD)-1)
-#endif
-
-int HandleFile(const HANDLE file);
+    // 0x0054f8c0
+    HWND AcquireWindow(void)
+    {
+        return *AppWindowState._HWND;
+    }
+}

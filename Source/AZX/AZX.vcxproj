@@ -211,6 +211,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AppWindow.hxx" />
     <ClInclude Include="Basic.hxx" />
     <ClInclude Include="Graphics.Basic.hxx" />
     <ClInclude Include="Mathematics.Basic.hxx" />
@@ -222,13 +223,16 @@
     <ClInclude Include="RendererModule.Import.hxx" />
     <ClInclude Include="RendererModule.Settings.hxx" />
     <ClInclude Include="Sound.Basic.hxx" />
+    <ClInclude Include="Sound.hxx" />
     <ClInclude Include="SoundModule.Basic.hxx" />
     <ClInclude Include="SoundModule.Export.hxx" />
     <ClInclude Include="SoundModule.hxx" />
     <ClInclude Include="SoundModule.Import.hxx" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AppWindow.cxx" />
     <ClCompile Include="RendererModule.cxx" />
+    <ClCompile Include="Sound.cxx" />
     <ClCompile Include="SoundModule.cxx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

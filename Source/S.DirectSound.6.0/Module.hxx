@@ -87,6 +87,7 @@ SOFTWARE.
 #define SOUND_BUFFER_POSITION_MULTIPLIER (1.0 / 65536.0)
 
 #define SOUND_BUFFER_POSITION_ALIGNMENT_MASK 0xffff0
+#define SOUND_BUFFER_WRITE_ALIGNMENT_MASK 0xfffff0
 
 namespace SoundModule
 {
@@ -173,8 +174,6 @@ namespace SoundModule
             bool IsEmulated; // 0x0040a8f1
 
             bool Is3D; // 0x0040a8f3
-
-
             u32 Unk01; // 0x0040a8f4
             u32 Unk02; // 0x0040a8f8
             DWORD CurrentWrite; // 0x0040a8fc
@@ -205,12 +204,12 @@ namespace SoundModule
         {
             SOUNDMODULEACQUIREDATALAMBDA AcquireData; // 0x0040a940
             SOUNDMODULESTOPSOUNDBUFFERLAMBDA StopBuffer; // 0x0040a944
-            SOUNDMODULELOGMESSAGELAMBDA LogMessage; // 0x0040a948
-            SOUNDMODULEUNKNOWNLAMBDA Unknown; // 0x0040a94c
+            SOUNDMODULELOGMESSAGELAMBDA Log; // 0x0040a948
+            SOUNDMODULEUNKNOWN4LAMBDA Lambda4; // 0x0040a94c
             SOUNDMODULEUNKNOWN5LAMBDA Lambda5; // 0x0040a950
             SOUNDMODULEUNKNOWN6LAMBDA Lambda6; // 0x0040a954
             SOUNDMODULEACQUIRESOUNDBUFFERPOSITIONLAMBDA AcquireSoundBufferPosition; // 0x0040a958
-            SOUNDMODULEUNKNOWN8LAMBDA Lambda8; // 0x0040a95c
+            SOUNDMODULECONVERTSOUNDSAMPLELAMBDA ConvertSoundSample; // 0x0040a95c
         } Lambdas;
 
         SoundBuffer Buffers[MAX_SOUND_BUFFER_COUNT]; // 0x0040a960
@@ -249,17 +248,15 @@ namespace SoundModule
 
     void Message(const char* format, ...);
 
-    void InitializeSoundExtensions(void);
-    s32 InitializeVoiceManager(const VmMode value, VmMode* out);
-    void ReleaseSoundExtensions(void);
-
-    s32 InitializeSounds(const u32 options, const HWND hwnd, const SOUND_MODE mode);
-    s32 InitializeSoundSlots(void);
-    s32 InitializeSoundSlot(const u32 indx);
     s32 InitializeSoundBuffers(void);
+    s32 InitializeSounds(const SOUND_MODE mode, const u32 options, const HWND hwnd);
+    s32 InitializeSoundSlot(const u32 indx);
+    s32 InitializeSoundSlots(void);
+    s32 InitializeVoiceManager(const VmMode value, VmMode* out);
     u32 AcquireAvailableSoundSlotIndex(void);
-
     u32 AcquireSoundPosition(void);
     void AcquireSoundData(void* buffer, const s32 size);
+    void InitializeSoundExtensions(void);
+    void ReleaseSoundExtensions(void);
     void StopSoundBuffers(void);
 }

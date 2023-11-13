@@ -39,12 +39,13 @@ namespace SoundModule
     }
 
     // 0x00548bec
-    void STDCALLAPI AcquireBufferPosition(const u32 p1, const u32 p2, f32x3* position)
+    void STDCALLAPI AcquireBufferPositionLambda(const u32 p1, const u32 p2, f32x3* position)
     {
         FUN_00564f70(p1, p2, position);
     }
 
     // 0x00548e2c
+    // a.k.a. iSNDloaddll
     s32 InitializeSoundModule(void)
     {
         if (*SoundModuleState.Module._Handle != NULL) { return SOUND_MODULE_SUCCESS; }
@@ -58,7 +59,7 @@ namespace SoundModule
 
             if (version == NULL) { return SOUND_MODULE_FAILURE; }
 
-            if (version() != SOUND_MODULE_VERSION_120005) { return SOUND_MODULE_INVALID_VERSION_FAILURE; }
+            if (version() != SOUND_MODULE_VERSION) { return SOUND_MODULE_INVALID_VERSION_FAILURE; }
         }
 
         {
@@ -66,11 +67,12 @@ namespace SoundModule
 
             lambdas((SOUNDMODULEACQUIREDATALAMBDA)AcquireDataLambda,
                 (SOUNDMODULESTOPSOUNDBUFFERLAMBDA)StopBufferLambda,
-                NULL, NULL,
+                (SOUNDMODULELOGMESSAGELAMBDA)NULL,
+                (SOUNDMODULEUNKNOWN4LAMBDA)NULL,
                 (SOUNDMODULEUNKNOWN5LAMBDA)FUN_00548c50,
                 (SOUNDMODULEUNKNOWN6LAMBDA)FUN_00548c14,
-                (SOUNDMODULEACQUIRESOUNDBUFFERPOSITIONLAMBDA)AcquireBufferPosition,
-                (SOUNDMODULEUNKNOWN8LAMBDA)FUN_00548c58);
+                (SOUNDMODULEACQUIRESOUNDBUFFERPOSITIONLAMBDA)AcquireBufferPositionLambda,
+                (SOUNDMODULECONVERTSOUNDSAMPLELAMBDA)FUN_00548c58);
         }
 
         *SoundModuleState._AcquireCapabilities = (SOUNDMODULEACQUIRECAPABILITIES)GetProcAddress(*SoundModuleState.Module._Handle, SOUND_MODULE_ACQUIRE_CAPABILITIES_NAME);

@@ -39,7 +39,7 @@ PIMAGE_NT_HEADERS AcquireHeader(const BYTE* data)
 
     if (nt->Signature != IMAGE_NT_SIGNATURE) { return NULL; };
 
-#if _MSC_VER == 1200
+#if _MSC_VER <= 1200
     if (nt->FileHeader.Machine != IMAGE_FILE_MACHINE_I386) { return NULL; }
 #else
     if (nt->FileHeader.Machine != IMAGE_FILE_MACHINE_I386 && nt->FileHeader.Machine != IMAGE_FILE_MACHINE_AMD64) { return NULL; }

@@ -20,30 +20,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#pragma once
+#include "AppWindow.hxx"
+#include "Sound.hxx"
+#include "SoundModule.hxx"
 
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+using namespace AppWindow;
+using namespace SoundModule;
 
-#define SUCCESS 0
+namespace Sound
+{
+    SoundContainer SoundState;
 
-#if _MSC_VER <= 1200
-#define UINT_MAX 0xFFFFFFFF
-#endif
+    // 0x0041f3c0
+    BOOL Is3DSoundAvailable(void)
+    {
+        return (AcquireSoundCapabilities() & SOUND_MODULE_CAPABILITIES_3D_BUFFER_SUPPORTED) ? TRUE : FALSE;
+    }
 
-#define FAILURE_INVALID_ARGUMENT_COUNT (-1)
-#define FAILURE_READING_FILE (-2)
-#define FAILURE_MEMORY_ALLOCATION (-3)
-#define FAILURE_INVALID_HEADER (-4)
-#define FAILURE_WRITING_FILE (-5)
+    // 0x0054909c
+    // a.k.a. SNDcaps
+    u32 AcquireSoundCapabilities(void)
+    {
+        if (*SoundState.Lambdas._Unknown001 == NULL) { *SoundState.Lambdas._Unknown001 = FUN_0054b760; }
 
-#ifndef INVALID_FILE_ATTRIBUTES
-#define INVALID_FILE_ATTRIBUTES ((DWORD)-1)
-#endif
+        if (SOUND_MODULE_FAILURE < InitializeSoundModule())
+        {
+            u32 caps = (*SoundModuleState._AcquireCapabilities)(AcquireWindow());
 
-#ifndef INVALID_SET_FILE_POINTER
-#define INVALID_SET_FILE_POINTER ((DWORD)-1)
-#endif
+            if (SOUND_MODULE_CAPABILITIES_NONE < (s32)caps) { caps = caps | SOUND_MODULE_CAPABILITIES_UNKNOWN; }
 
-int HandleFile(const HANDLE file);
+            return caps;
+        }
+
+        return INVALID_SOUND_MODULE_CAPABILITIES;
+    }
+}

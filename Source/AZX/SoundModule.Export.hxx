@@ -34,11 +34,11 @@ namespace SoundModule
     DLLAPI s32 STDCALLAPI LevelSoundBuffer(const u32 indx, const u32 value);
     DLLAPI s32 STDCALLAPI MixLatency(void);
     DLLAPI s32 STDCALLAPI PacketRecording(void*);
-    DLLAPI s32 STDCALLAPI PlaySoundBuffer(const u32 indx, const u32 slot, const BOOL looping, const u32 frequency, const u32 volume, const u32 level, const u32 p4, const u32 p5); // TODO
+    DLLAPI s32 STDCALLAPI PlaySoundBuffer(const u32 slot, const u32 indx, const BOOL looping, const u32 frequency, const u32 volume, const u32 level, const u32 p4, const u32 p5); // TODO
     DLLAPI s32 STDCALLAPI PositionSoundBuffer(const u32 indx, const u32 p2, const u32 p3); // TODO
     DLLAPI s32 STDCALLAPI RateSoundBuffer(const u32 indx, const u32 value);
     DLLAPI s32 STDCALLAPI RemoveSoundBuffer(const u32 indx);
-    DLLAPI s32 STDCALLAPI SelectLambdas(const SOUNDMODULEACQUIREDATALAMBDA acquire, const SOUNDMODULESTOPSOUNDBUFFERLAMBDA stop, const SOUNDMODULELOGMESSAGELAMBDA log, const SOUNDMODULEUNKNOWNLAMBDA unknown, const SOUNDMODULEUNKNOWN5LAMBDA p5, const SOUNDMODULEUNKNOWN6LAMBDA p6, const SOUNDMODULEACQUIRESOUNDBUFFERPOSITIONLAMBDA position, const SOUNDMODULEUNKNOWN8LAMBDA p8); // TODO
+    DLLAPI s32 STDCALLAPI SelectLambdas(const SOUNDMODULEACQUIREDATALAMBDA acquire, const SOUNDMODULESTOPSOUNDBUFFERLAMBDA stop, const SOUNDMODULELOGMESSAGELAMBDA log, const SOUNDMODULEUNKNOWN4LAMBDA p4, const SOUNDMODULEUNKNOWN5LAMBDA p5, const SOUNDMODULEUNKNOWN6LAMBDA p6, const SOUNDMODULEACQUIRESOUNDBUFFERPOSITIONLAMBDA position, const SOUNDMODULECONVERTSOUNDSAMPLELAMBDA convert); // TODO
     DLLAPI s32 STDCALLAPI Serve(void);
     DLLAPI s32 STDCALLAPI Start(const s32 options, const HWND hwnd);
     DLLAPI s32 STDCALLAPI StartRecording(void*, void*, void*, void*);

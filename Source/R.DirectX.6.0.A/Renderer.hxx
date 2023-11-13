@@ -90,7 +90,7 @@ SOFTWARE.
 #define DEFAULT_FOG_START (0.0f)
 #define DEFAULT_FOG_END (1.0f)
 
-#if _MSC_VER == 1200
+#if _MSC_VER <= 1200
 inline void LOGERROR(...) { }
 inline void LOGWARNING(...) { }
 inline void LOGMESSAGE(...) { }

@@ -22,28 +22,24 @@ SOFTWARE.
 
 #pragma once
 
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include "Basic.hxx"
+#include "Native.Basic.hxx"
 
-#define SUCCESS 0
+namespace Sound
+{
+    struct SoundContainer
+    {
+        struct
+        {
+            void** _Unknown001; // 0x009ef384 // TODO
+        } Lambdas;
+    };
 
-#if _MSC_VER <= 1200
-#define UINT_MAX 0xFFFFFFFF
-#endif
+    extern SoundContainer SoundState;
 
-#define FAILURE_INVALID_ARGUMENT_COUNT (-1)
-#define FAILURE_READING_FILE (-2)
-#define FAILURE_MEMORY_ALLOCATION (-3)
-#define FAILURE_INVALID_HEADER (-4)
-#define FAILURE_WRITING_FILE (-5)
+    BOOL Is3DSoundAvailable(void);
+    u32 AcquireSoundCapabilities(void);
 
-#ifndef INVALID_FILE_ATTRIBUTES
-#define INVALID_FILE_ATTRIBUTES ((DWORD)-1)
-#endif
-
-#ifndef INVALID_SET_FILE_POINTER
-#define INVALID_SET_FILE_POINTER ((DWORD)-1)
-#endif
-
-int HandleFile(const HANDLE file);
+    typedef const void(*FUN_0054B760)(void); // TODO
+    static const FUN_0054B760 FUN_0054b760 = (FUN_0054B760)0x0054b760; // TODO
+}
