@@ -31,7 +31,7 @@ Watcom C/C++ compiler was used back in the 90s and early 00's by a lot of games,
 
 ## Thanks
 1. [Archive.org](https://archive.org/) for providing [Microsoft Visual C++ 6](https://archive.org/details/en_vs6_ent) and [Microsoft DirectX 6.0 SDK](https://archive.org/details/directx6sdk).
-2. [Open Watcom](https://github.com/open-watcom/open-watcom-v2) for providing the compiler. It was instrumental in generating calling convention-compatible code during reverse engineering efforts.
+2. [Open Watcom](https://github.com/open-watcom/open-watcom-v2) for providing the compiler.
 
 ## Legal
 Need For Speed, Need For Speed: High Stakes, Windows, Visual Studio, Watcom, DirectX, OpenGL, Vulkan, and others are trademarks of their respective owners.
