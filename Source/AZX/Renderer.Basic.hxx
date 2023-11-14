@@ -24,8 +24,6 @@ SOFTWARE.
 
 #include "Basic.hxx"
 
-// NOTE: These formats correspond to the indexes of the texture formats.
-
 #define RENDERER_PIXEL_FORMAT_NONE 0
 #define RENDERER_PIXEL_FORMAT_16_BIT_555 3
 #define RENDERER_PIXEL_FORMAT_16_BIT_565 4

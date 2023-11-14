@@ -1409,8 +1409,8 @@ namespace RendererModule
                 desc.dwHeight = State.Window.Height;
                 desc.dwWidth = State.Window.Width;
                 desc.ddsCaps.dwCaps = RendererDeviceType == RENDERER_MODULE_DEVICE_TYPE_ACCELERATED
-                    ? DDSCAPS_3DDEVICE | DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN
-                    : DDSCAPS_VIDEOMEMORY | DDSCAPS_3DDEVICE | DDSCAPS_OFFSCREENPLAIN;
+                    ? DDSCAPS_VIDEOMEMORY | DDSCAPS_3DDEVICE | DDSCAPS_OFFSCREENPLAIN
+                    : DDSCAPS_3DDEVICE | DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
 
                 State.DX.Code = State.DX.Instance->CreateSurface(&desc, &State.DX.Surfaces.Back, NULL);
 
@@ -1641,8 +1641,6 @@ namespace RendererModule
         }
 
         State.DX.Device->Release();
-
-        State.DX.Device = NULL;
 
         InitializeConcreteRendererDevice();
 

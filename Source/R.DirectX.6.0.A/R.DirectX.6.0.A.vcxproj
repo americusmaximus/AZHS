@@ -43,7 +43,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{0c04d6b1-ddd3-411e-8fd9-121985a316a7}</ProjectGuid>
-    <RootNamespace>RDirectX60</RootNamespace>
+    <RootNamespace>RDirectX60A</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
