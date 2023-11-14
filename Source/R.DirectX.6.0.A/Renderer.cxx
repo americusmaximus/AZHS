@@ -1920,7 +1920,7 @@ namespace RendererModule
 
         if (State.Textures.Formats.Indexes[3] == INVALID_TEXTURE_FORMAT_INDEX)
         {
-            State.Textures.Formats.Indexes[3] = AcquireRendererDeviceTextureFormatIndex(0, 0, 5, 5, 5, 0);
+            State.Textures.Formats.Indexes[3] = AcquireRendererDeviceTextureFormatIndex(0, 0, 5, 5, 5, FALSE);
             RendererTextureFormatStates[3] = (State.Textures.Formats.Indexes[3] != INVALID_TEXTURE_FORMAT_INDEX) ? 5 : 0; // TODO
         }
         else
