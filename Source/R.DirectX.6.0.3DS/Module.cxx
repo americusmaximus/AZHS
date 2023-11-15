@@ -77,8 +77,8 @@ namespace RendererModule
     {
         State.ViewPort.X0 = x0;
         State.ViewPort.Y0 = y0;
-        State.ViewPort.Y1 = x1;
-        State.ViewPort.X1 = y1;
+        State.ViewPort.X1 = x1;
+        State.ViewPort.Y1 = y1;
 
         return RENDERER_MODULE_SUCCESS;
     }
