@@ -360,7 +360,7 @@ namespace RendererModule
             }
             else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_16)
             {
-                State.Lock.State.Format = (-(u32)(desc.ddpfPixelFormat.dwGBitMask != 0x7e0) & 7) + 4; // TODO
+                State.Lock.State.Format = desc.ddpfPixelFormat.dwGBitMask == 0x7e0 ? 4 : 11; // TODO
             }
             else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_32)
             {
