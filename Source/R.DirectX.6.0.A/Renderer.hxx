@@ -40,6 +40,8 @@ SOFTWARE.
 #include <d3d.h>
 
 #ifdef __WATCOMC__
+#include <mmsystem.h>
+
 #define D3DTA_COMPLEMENT 0x00000010L
 #endif
 
