@@ -39,6 +39,10 @@ SOFTWARE.
 #define DIRECT3D_VERSION 0x600
 #include <d3d.h>
 
+#ifdef __WATCOMC__
+#define D3DTA_COMPLEMENT 0x00000010L
+#endif
+
 #define DDGDI_NONE 0
 #define DDEDM_NONE 0
 #define D3DDP_NONE 0
