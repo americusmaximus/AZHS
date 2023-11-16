@@ -271,7 +271,7 @@ namespace RendererModule
                     IDirect3D2* dx = NULL;
                     result = dd->QueryInterface(IID_IDirect3D2, (void**)&dx);
 
-                    dx->Release();
+                    dd->Release();
 
                     if (result == DD_OK && dx != NULL)
                     {

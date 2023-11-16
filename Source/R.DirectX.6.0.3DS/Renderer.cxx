@@ -2041,7 +2041,7 @@ namespace RendererModule
     }
 
     // 0x60007830
-    BOOL UpdateRendererTexture(Renderer::RendererTexture* tex, const u32* pixels, const u32* palette)
+    BOOL UpdateRendererTexture(RendererTexture* tex, const u32* pixels, const u32* palette)
     {
         if (pixels != NULL)
         {
