@@ -31,6 +31,7 @@ namespace RendererModule
     RendererModuleContainer RendererModuleState;
 
     // 0x0055a580
+    // a.k.a. THRASH_opendll
     BOOL InitializeRendererModule(const char* name)
     {
         *RendererModuleState.Module._Handle = LoadLibraryA(name);

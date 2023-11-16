@@ -2639,8 +2639,8 @@ namespace RendererModule
             }
 
             tex->MemoryType = desc.ddsCaps.dwCaps & DDSCAPS_VIDEOMEMORY
-                ? (desc.ddsCaps.dwCaps & DDSCAPS_NONLOCALVIDMEM ? 2 : 1) // TODO
-                : (desc.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY ? 2 : 0); // TODO
+                ? (desc.ddsCaps.dwCaps & DDSCAPS_NONLOCALVIDMEM ? RENDERER_MODULE_TEXTURE_LOCATION_NON_LOCAL_VIDEO_MEMORY : RENDERER_MODULE_TEXTURE_LOCATION_LOCAL_VIDEO_MEMORY)
+                : (desc.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY ? RENDERER_MODULE_TEXTURE_LOCATION_NON_LOCAL_VIDEO_MEMORY : RENDERER_MODULE_TEXTURE_LOCATION_SYSTEM_MEMORY);
 
             tex->Surface2 = surface;
             tex->Texture2 = texture;

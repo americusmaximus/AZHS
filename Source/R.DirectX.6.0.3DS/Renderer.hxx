@@ -82,6 +82,7 @@ SOFTWARE.
 #define MAX_USABLE_TEXTURE_FORMAT_COUNT 14
 
 #define MAX_TEXTURE_PALETTE_COLOR_COUNT 256
+
 #define MAX_FOG_ALPHA_COUNT 256
 
 #define DEFAULT_FOG_DINSITY (0.5f)
@@ -105,21 +106,27 @@ namespace Renderer
     {
         u32 Width;
         u32 Height;
+
         u32 UnknownFormatIndexValue; // TODO
         s32 FormatIndex; // TODO
         s32 FormatIndexValue; // TODO
 
         void* Unk06; // TODO
+
         u32 MipMapCount;
         RendererTexture* Previous;
-        u32 MemoryType; // TODO definitions for 0, 1, 2
+        u32 MemoryType;
+
         BOOL Unk10; // TODO
-        IDirectDrawSurface4* Surface1; // TODO
-        IDirect3DTexture2* Texture1; // TODO
-        IDirectDrawSurface4* Surface2; // TODO
-        IDirect3DTexture2* Texture2; // TODO
+
+        IDirectDrawSurface4* Surface1;
+        IDirect3DTexture2* Texture1;
+        IDirectDrawSurface4* Surface2;
+        IDirect3DTexture2* Texture2;
         IDirectDrawPalette* Palette;
+
         DDSURFACEDESC2 Descriptor;
+
         u32 Colors;
     };
 }

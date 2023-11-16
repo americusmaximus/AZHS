@@ -1635,7 +1635,7 @@ namespace RendererModule
         tex->Unk11 = (format == RENDERER_PIXEL_FORMAT_16_BIT_555 || format == RENDERER_PIXEL_FORMAT_16_BIT_444) ? 1 : 0; // TODO
 
         tex->Unk06 = p4;
-        tex->MemoryType = 0; // TODO
+        tex->MemoryType = RENDERER_MODULE_TEXTURE_LOCATION_SYSTEM_MEMORY;
 
         tex->Surface1 = NULL;
         tex->Texture1 = NULL;
@@ -1699,11 +1699,11 @@ namespace RendererModule
 
     // 0x600059f0
     // a.k.a. THRASH_tupdate
-    DLLAPI u32 STDCALLAPI UpdateTexture(RendererTexture* tex, const u32* pixels, const u32* palette)
+    DLLAPI RendererTexture* STDCALLAPI UpdateTexture(RendererTexture* tex, const u32* pixels, const u32* palette)
     {
-        if (tex == NULL) { return RENDERER_MODULE_FAILURE; }
+        if (tex == NULL) { return NULL; }
 
-        return UpdateRendererTexture(tex, pixels, palette) ? tex->Width : RENDERER_MODULE_FAILURE;
+        return UpdateRendererTexture(tex, pixels, palette) ? tex : NULL;
     }
 
     // 0x600014c0
