@@ -45,7 +45,7 @@ namespace RendererModule
 
         va_list args;
         va_start(args, format);
-        vsprintf(buffer, format, args);
+        vsnprintf_s(buffer, MAX_MESSAGE_BUFFER_LENGTH, format, args);
         va_end(args);
 
         if (State.Lambdas.Log != NULL) { State.Lambdas.Log(severity, buffer); }

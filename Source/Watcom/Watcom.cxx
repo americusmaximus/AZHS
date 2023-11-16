@@ -91,7 +91,7 @@ UINT RelativeVirtualAddressToFileOffset(const BYTE* data, UINT rva)
 
 PIMAGE_EXPORT_DIRECTORY AcquireExports(const BYTE* data, const PIMAGE_DATA_DIRECTORY dir)
 {
-    const auto addr = RelativeVirtualAddressToFileOffset(data, dir->VirtualAddress);
+    const UINT addr = RelativeVirtualAddressToFileOffset(data, dir->VirtualAddress);
 
     if (addr == UINT_MAX) { return NULL; }
 
@@ -100,7 +100,7 @@ PIMAGE_EXPORT_DIRECTORY AcquireExports(const BYTE* data, const PIMAGE_DATA_DIREC
 
 UINT* AcquireExportNameAddresses(const BYTE* data, const PIMAGE_EXPORT_DIRECTORY dir)
 {
-    const auto addr = RelativeVirtualAddressToFileOffset(data, dir->AddressOfNames);
+    const UINT addr = RelativeVirtualAddressToFileOffset(data, dir->AddressOfNames);
 
     if (addr == UINT_MAX) { return NULL; }
 
@@ -109,7 +109,7 @@ UINT* AcquireExportNameAddresses(const BYTE* data, const PIMAGE_EXPORT_DIRECTORY
 
 char* AcquireExportName(const BYTE* data, const UINT* addresses, const UINT indx)
 {
-    const auto addr = RelativeVirtualAddressToFileOffset(data, addresses[indx]);
+    const UINT addr = RelativeVirtualAddressToFileOffset(data, addresses[indx]);
 
     if (addr == UINT_MAX) { return NULL; }
 

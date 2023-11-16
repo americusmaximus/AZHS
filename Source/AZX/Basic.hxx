@@ -102,3 +102,7 @@ struct u32x4 { u32 X, Y, Z, W; };
 
 #define F32_MIN (1.1754943508e-38f)
 #define F32_MAX (3.4028234664e+38f)
+
+#if defined(__WATCOMC__) || _MSC_VER <= 1200
+#define vsnprintf_s _vsnprintf
+#endif

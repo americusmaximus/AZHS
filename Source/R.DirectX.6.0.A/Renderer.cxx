@@ -111,7 +111,7 @@ namespace RendererModule
 
         va_list args;
         va_start(args, format);
-        vsprintf(buffer, format, args);
+        vsnprintf_s(buffer, MAX_MESSAGE_BUFFER_LENGTH, format, args);
         va_end(args);
 
         if (severity == RENDERER_MODULE_MESSAGE_SEVERITY_ERROR && State.Lambdas.Log != NULL)
@@ -350,7 +350,7 @@ namespace RendererModule
         else
         {
             const HRESULT result = State.DX.Device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
-                RendererVertexType, 
+                RendererVertexType,
                 State.Data.Vertexes.Vertexes, State.Data.Vertexes.Count,
                 State.Data.Indexes.Indexes, State.Data.Indexes.Count,
                 D3DDP_DONOTLIGHT | D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP);
@@ -456,7 +456,7 @@ namespace RendererModule
     BOOL CALLBACK EnumerateDirectDrawDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context, HMONITOR monitor)
     {
         IDirectDraw* instance = NULL;
-        if (DirectDrawCreate(uid, &instance, NULL) != DD_OK) { FALSE; }
+        if (DirectDrawCreate(uid, &instance, NULL) != DD_OK) { return FALSE; }
 
         IDirectDraw4* dd = NULL;
         if (instance->QueryInterface(IID_IDirectDraw4, (void**)&dd) != DD_OK) { return FALSE; }
@@ -836,12 +836,12 @@ namespace RendererModule
     // 0x60002520
     s32 AcquireRendererDeviceModeIndex(const u32 width, const u32 height, const u32 bpp)
     {
-        auto result = 0;
-        auto min = MAX_RENDERER_DEVICE_CAPABILITIES_MODE_SCORE;
+        s32 result = 0;
+        s32 min = MAX_RENDERER_DEVICE_CAPABILITIES_MODE_SCORE;
 
         for (u32 x = 1; x < ModuleDescriptor.Capabilities.Count; x++)
         {
-            const auto score = AcquireRendererDeviceModeScore(&ModuleDescriptor.Capabilities.Capabilities[x], width, height, bpp);
+            const s32 score = AcquireRendererDeviceModeScore(&ModuleDescriptor.Capabilities.Capabilities[x], width, height, bpp);
 
             if (score < min)
             {
