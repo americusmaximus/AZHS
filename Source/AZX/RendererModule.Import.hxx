@@ -22,7 +22,8 @@ SOFTWARE.
 
 #pragma once
 
-#include "Basic.hxx"
+#include "Renderer.Basic.hxx"
+#include "RendererModule.Basic.hxx"
 
 #if ORIGINAL_RENDERER_MODULE_NAME_PATTERN
 #define RENDERER_MODULE_ACQUIRE_DESCRIPTOR_NAME "_THRASH_about@0"
@@ -96,28 +97,28 @@ SOFTWARE.
 
 namespace RendererModule
 {
-    typedef RendererModuleDescriptor* (STDCALLAPI* RENDERERACQUIREDESCRIPTOR)(void);
+    typedef const RendererModuleDescriptor* (STDCALLAPI* RENDERERACQUIREDESCRIPTOR)(void);
     typedef const u32(STDCALLAPI* RENDERERCLEARGAMEWINDOW)(void);
     typedef const u32(STDCALLAPI* RENDERERCLIPGAMEWINDOW)(const u32 x0, const u32 y0, const u32 x1, const u32 y1);
     typedef const u32(STDCALLAPI* RENDERERCREATEGAMEWINDOW)(void*, void*, void*, void*);
     typedef const u32(STDCALLAPI* RENDERERDESTROYGAMEWINDOW)(void*);
-    typedef const void (STDCALLAPI* RENDERERDRAWLINE)(void* a, void* b);
-    typedef const void (STDCALLAPI* RENDERERDRAWLINEMESH)(const u32 count, void*, void*);
-    typedef const void (STDCALLAPI* RENDERERDRAWLINESTRIP)(const u32 count, void* vertexes);
-    typedef const void (STDCALLAPI* RENDERERDRAWLINESTRIPS)(const u32 count, void*, void*);
-    typedef const void (STDCALLAPI* RENDERERDRAWPOINT)(void* vertex);
-    typedef const void (STDCALLAPI* RENDERERDRAWPOINTMESH)(const u32 count, void*, void*);
+    typedef const void (STDCALLAPI* RENDERERDRAWLINE)(Renderer::RVX* a, Renderer::RVX* b);
+    typedef const void (STDCALLAPI* RENDERERDRAWLINEMESH)(const u32 count, Renderer::RVX* vertexes, const u32* indexes);
+    typedef const void (STDCALLAPI* RENDERERDRAWLINESTRIP)(const u32 count, Renderer::RVX* vertexes);
+    typedef const void (STDCALLAPI* RENDERERDRAWLINESTRIPS)(const u32 count, Renderer::RVX* vertexes, const u32* indexes);
+    typedef const void (STDCALLAPI* RENDERERDRAWPOINT)(Renderer::RVX* vertex);
+    typedef const void (STDCALLAPI* RENDERERDRAWPOINTMESH)(const u32 count, Renderer::RVX* vertexes, const u32* indexes);
     typedef const void (STDCALLAPI* RENDERERDRAWPOINTSTRIP)(const u32 count, void* vertexes);
     typedef const void (STDCALLAPI* RENDERERDRAWQUAD)(void*, void*, void*, void*);
     typedef const void (STDCALLAPI* RENDERERDRAWQUADMESH)(void*, void*, void*);
     typedef const void (STDCALLAPI* RENDERERDRAWSPRITE)(void*, void*);
     typedef const void (STDCALLAPI* RENDERERDRAWSPRITEMESH)(void*, void*, void*);
-    typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLE)(void*, void*, void*);
-    typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLEFAN)(void*, void*);
-    typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLEFANS)(void*, void*, void*);
-    typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLEMESH)(void*, void*, void*);
-    typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLESTRIP)(void*, void*);
-    typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLESTRIPS)(void*, void*, void*);
+    typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLE)(Renderer::RVX* a, Renderer::RVX* b, Renderer::RVX* c);
+    typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLEFAN)(const u32 count, Renderer::RVX* vertexes);
+    typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLEFANS)(const u32 count, Renderer::RVX* vertexes, const u32* indexes);
+    typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLEMESH)(const u32 count, Renderer::RVX* vertexes, const u32* indexes));
+    typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLESTRIP)(const u32 count, Renderer::RVX* vertexes);
+    typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLESTRIPS)(const u32 count, Renderer::RVX* vertexes, const u32* indexes);
     typedef const u32(STDCALLAPI* RENDERERFLUSHGAMEWINDOW)(void);
     typedef const u32(STDCALLAPI* RENDERERACQUIRESTATE)(const u32 options);
     typedef Renderer::RendererTexture* (STDCALLAPI* RENDERERACQUIREGAMEWINDOWTEXTURE)(const u32 indx);
@@ -136,7 +137,7 @@ namespace RendererModule
     typedef Renderer::RendererTexture* (STDCALLAPI* RENDERERALLOCATETEXTURE)(const u32 width, const u32 height, const u32 format, void*, const u32 options); // TODO
     typedef const u32(STDCALLAPI* RENDERERRELEASETEXTURE)(void*);
     typedef const u32(STDCALLAPI* RENDERERRESETTEXTURES)(void);
-    typedef Renderer::RendererTexture* (STDCALLAPI* RENDERERUPDATETEXTURE)(Renderer::RendererTexture* tex, void* data, const u32* palette);
+    typedef Renderer::RendererTexture* (STDCALLAPI* RENDERERUPDATETEXTURE)(Renderer::RendererTexture* tex, void* pixels, const u32* palette);
     typedef const u32(STDCALLAPI* RENDERERUPDATETEXTURERECTANGLE)(void*, void*, void*, void*, void*, void*, void*, void*, void*);
     typedef const u32(STDCALLAPI* RENDERERUNLOCKGAMEWINDOW)(const RendererModuleWindowLock* state);
     typedef const u32(STDCALLAPI* RENDERERSELECTGAMEWINDOW)(const u32 indx);
