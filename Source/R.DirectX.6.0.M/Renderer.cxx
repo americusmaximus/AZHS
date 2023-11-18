@@ -912,16 +912,12 @@ namespace RendererModule
 
             u32 indx = 0;
 
-            if (width == GRAPHICS_RESOLUTION_640 && height == GRAPHICS_RESOLUTION_480 && bits == GRAPHICS_BITS_PER_PIXEL_16) { indx = 1; }
-            else if (width == GRAPHICS_RESOLUTION_800 && height == GRAPHICS_RESOLUTION_600 && bits == GRAPHICS_BITS_PER_PIXEL_16) { indx = 2; }
-            else
             {
-                const u32 index = *(u32*)context;
-                if ((MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT - 1) < index) { return DDENUMRET_CANCEL; }
+                indx = *(u32*)context;
 
-                indx = index;
+                if ((MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT - 1) < indx) { return DDENUMRET_CANCEL; }
 
-                *(u32*)context = index + 1;
+                *(u32*)context = indx + 1;
             }
 
             ModuleDescriptor.Capabilities.Capabilities[indx].Width = width;
