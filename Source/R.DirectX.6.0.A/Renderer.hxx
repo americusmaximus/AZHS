@@ -390,6 +390,7 @@ namespace RendererModule
     BOOL AcquireRendererDeviceDepthBufferNotEqualComparisonCapabilities(void);
     BOOL AcquireRendererDeviceState(void);
     BOOL AcquireRendererDeviceStripplingCapabilities(void);
+    BOOL BeginRendererScene(void);
     BOOL CALLBACK EnumerateDirectDrawDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context, HMONITOR monitor);
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height);
     BOOL RenderLines(Renderer::RTLVX* vertexes, const u32 count);
@@ -421,7 +422,6 @@ namespace RendererModule
     u32 AcquireDirectDrawDeviceCount(GUID** uids, HMONITOR** monitors, const char* section);
     u32 AcquirePixelFormat(const DDPIXELFORMAT* format);
     u32 AcquireRendererDeviceCount(void);
-    u32 BeginRendererScene(void);
     u32 ClearRendererViewPort(const u32 x0, const u32 y0, const u32 x1, const u32 y1);
     u32 DisposeRendererTexture(Renderer::RendererTexture* tex);
     u32 EndRendererScene(void);

@@ -145,7 +145,7 @@ namespace RendererModule
 
     // 0x600067d0
     // a.k.a. startrender
-    u32 BeginRendererScene(void)
+    BOOL BeginRendererScene(void)
     {
         if (State.Lock.IsActive)
         {
