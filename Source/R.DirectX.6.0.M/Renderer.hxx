@@ -456,7 +456,7 @@ namespace RendererModule
     void RenderTriangleMesh(Renderer::RTLVX* vertexes, const u32* indexes, const u32 count);
     void SelectRendererDevice(void);
     void SelectRendererDeviceType(const u32 type);
-    void SelectRendererFogAlphas(const u32* input, u8* output);
+    void SelectRendererFogAlphas(const u8* input, u8* output);
     void SelectRendererMaterial(const f32 r, const f32 g, const f32 b);
     void SelectRendererVertexCount(void);
 }

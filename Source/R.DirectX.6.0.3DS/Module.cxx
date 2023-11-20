@@ -905,7 +905,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_FOG_ALPHAS:
         {
-            SelectRendererFogAlphas((u32*)value, RendererFogAlphas);
+            SelectRendererFogAlphas((u8*)value, RendererFogAlphas);
 
             State.Settings.IsFogActive = TRUE;
 

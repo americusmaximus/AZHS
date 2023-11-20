@@ -2876,7 +2876,7 @@ namespace RendererModule
     }
 
     // 0x600057b0
-    void SelectRendererFogAlphas(const u32* input, u8* output)
+    void SelectRendererFogAlphas(const u8* input, u8* output)
     {
         if (input == NULL) { return; }
 
