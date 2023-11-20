@@ -51,7 +51,7 @@ namespace RendererModuleValues
 
     u32 MaximumRendererVertexCount = DEFAULT_RENDERER_VERTEX_COUNT;
 
-    u8 RendererFogAlphas[MAX_FOG_ALPHA_COUNT];
+    u8 RendererFogAlphas[MAX_OUTPUT_FOG_ALPHA_COUNT];
 
     RendererModuleDescriptor ModuleDescriptor;
     RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT];

@@ -52,7 +52,7 @@ namespace RendererModuleValues
 
     extern u32 UnknownFormatValues[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x60012ddc
 
-    extern u8 RendererFogAlphas[MAX_FOG_ALPHA_COUNT]; // 0x60014a54
+    extern u8 RendererFogAlphas[MAX_OUTPUT_FOG_ALPHA_COUNT]; // 0x60014a54
 
     extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x6003bd00
     extern RendererModule::RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT]; // 0x60013e38

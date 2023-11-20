@@ -26,6 +26,7 @@ SOFTWARE.
 #include "Settings.hxx"
 
 #include <malloc.h>
+#include <math.h>
 #include <stdio.h>
 
 #define MAX_MESSAGE_BUFFER_LENGTH 512
@@ -2875,23 +2876,26 @@ namespace RendererModule
     }
 
     // 0x600057b0
-    void SelectRendererFogAlphas(const u32 value, u8* alphas)
+    void SelectRendererFogAlphas(const u32* input, u8* output)
     {
-        if (value == 0) { return; }
+        if (input == NULL) { return; }
 
-        for (u32 x = 0; x < MAX_FOG_ALPHA_COUNT; x++)
+        for (u32 x = 0; x < MAX_OUTPUT_FOG_ALPHA_COUNT; x++)
         {
-            const f32 alpha = value * 0.003921569f * 63.0f;
-            const u32 round = (u32)alpha;
+            const f32 value = roundf(x / 255.0f) * 63.0f;
+            const u32 indx = (u32)value;
 
-            if ((alpha - round) <= 0.0f)
+            const f32 diff = value - indx;
+
+            if (0.0f < diff)
             {
-                alphas[x] = (u8)(-(round + value) - 1);
+                const u8 result = (u8)roundf(input[indx] + (input[indx + 1] - input[indx]) * diff);
+                output[x] = (u8)(MAX_OUTPUT_FOG_ALPHA_VALUE - result);
             }
             else
             {
-                const s32 result = (s32)(((round + 1 + value) - (round + value)) * (alpha - round) + (round + value));
-                alphas[x] = (u8)(-result - 1);
+
+                output[x] = (u8)(MAX_OUTPUT_FOG_ALPHA_VALUE - input[indx]);
             }
         }
     }

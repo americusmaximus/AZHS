@@ -105,4 +105,5 @@ struct u32x4 { u32 X, Y, Z, W; };
 
 #if defined(__WATCOMC__) || _MSC_VER <= 1200
 #define vsnprintf_s _vsnprintf
+#define roundf(x) (x >= 0.0f ? floorf(x + 0.5f) : ceilf(x - 0.5f))
 #endif

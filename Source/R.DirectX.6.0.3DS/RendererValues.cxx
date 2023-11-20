@@ -41,7 +41,7 @@ namespace RendererModuleValues
     u32 RendererVersion = RENDERER_MODULE_VERSION_105;
     s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_ACCELERATED;
 
-    u8 RendererFogAlphas[MAX_FOG_ALPHA_COUNT];
+    u8 RendererFogAlphas[MAX_OUTPUT_FOG_ALPHA_COUNT];
 
     u32 MaximumRendererVertexCount = MAX_RENDERER_VERTEX_COUNT;
 

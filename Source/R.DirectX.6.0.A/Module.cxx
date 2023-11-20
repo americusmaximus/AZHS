@@ -1323,7 +1323,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_FOG_ALPHAS:
         {
-            SelectRendererFogAlphas((u32)value, RendererFogAlphas);
+            SelectRendererFogAlphas((u32*)value, RendererFogAlphas);
 
             SelectRendererState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_NONE);
 

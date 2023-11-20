@@ -87,7 +87,10 @@ SOFTWARE.
 #define MAX_USABLE_TEXTURE_FORMAT_COUNT 14
 
 #define MAX_TEXTURE_PALETTE_COLOR_COUNT 256
-#define MAX_FOG_ALPHA_COUNT 256
+
+#define MAX_INPUT_FOG_ALPHA_COUNT 64
+#define MAX_OUTPUT_FOG_ALPHA_VALUE 255
+#define MAX_OUTPUT_FOG_ALPHA_COUNT 256
 
 #define DEFAULT_FOG_DINSITY (1.0f)
 #define DEFAULT_FOG_COLOR 0x00FF0000
@@ -453,7 +456,7 @@ namespace RendererModule
     void RenderTriangleMesh(Renderer::RTLVX* vertexes, const u32* indexes, const u32 count);
     void SelectRendererDevice(void);
     void SelectRendererDeviceType(const u32 type);
-    void SelectRendererFogAlphas(const u32 value, u8* alphas);
+    void SelectRendererFogAlphas(const u32* input, u8* output);
     void SelectRendererMaterial(const f32 r, const f32 g, const f32 b);
     void SelectRendererVertexCount(void);
 }

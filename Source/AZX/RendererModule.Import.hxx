@@ -116,7 +116,7 @@ namespace RendererModule
     typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLE)(Renderer::RVX* a, Renderer::RVX* b, Renderer::RVX* c);
     typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLEFAN)(const u32 count, Renderer::RVX* vertexes);
     typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLEFANS)(const u32 count, Renderer::RVX* vertexes, const u32* indexes);
-    typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLEMESH)(const u32 count, Renderer::RVX* vertexes, const u32* indexes));
+    typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLEMESH)(const u32 count, Renderer::RVX* vertexes, const u32* indexes);
     typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLESTRIP)(const u32 count, Renderer::RVX* vertexes);
     typedef const void (STDCALLAPI* RENDERERDRAWTRIANGLESTRIPS)(const u32 count, Renderer::RVX* vertexes, const u32* indexes);
     typedef const u32(STDCALLAPI* RENDERERFLUSHGAMEWINDOW)(void);

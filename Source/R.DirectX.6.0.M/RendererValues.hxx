@@ -53,7 +53,7 @@ namespace RendererModuleValues
 
     extern u32 MaximumRendererVertexCount; // 0x600190c4
 
-    extern u8 RendererFogAlphas[MAX_FOG_ALPHA_COUNT]; // 0x6001cf28
+    extern u8 RendererFogAlphas[MAX_OUTPUT_FOG_ALPHA_COUNT]; // 0x6001cf28
 
     extern s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x60019030
     extern u32 RendererPaletteValues[MAX_TEXTURE_PALETTE_COLOR_COUNT]; // 0x60019114
