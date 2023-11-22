@@ -1,1 +1,1 @@
-Please put here Microsoft's DirectX 9.0 SDK x86 library (.lib) files.
+Please put here Microsoft's DirectX 6.0 SDK library (.lib) files.

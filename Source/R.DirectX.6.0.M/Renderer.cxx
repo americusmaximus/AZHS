@@ -3069,7 +3069,7 @@ namespace RendererModule
             RTLVX* c = &vertexes[indexes[x * 4 + 2]];
             RTLVX* d = &vertexes[indexes[x * 4 + 3]];
 
-            if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad(a, b, c, d); }
+            if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad(a, b, c, d); } // TODO
         }
     }
 
