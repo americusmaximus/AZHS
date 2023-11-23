@@ -931,7 +931,7 @@ namespace RendererModule
 
         if (State.DX.Instance->QueryInterface(IID_IDirect3D3, (void**)&State.DX.DirectX) != DD_OK)
         {
-            LOGERROR("Creation of IDirect3D2 failed.\nCheck DX6 installed.\n");
+            LOGERROR("Creation of IDirect3D3 failed.\nCheck DX6 installed.\n"); // ORIGINAL: IDirect3D2
         }
 
         InitializeConcreteRendererDevice();
