@@ -421,7 +421,7 @@ namespace RendererModule
 
                                 const HRESULT result = State.DX.Instance->GetAvailableVidMem(&caps, &total, &free);
 
-                                ModuleDescriptor.MemoryType = result == DD_OK ? total : 0; // TODO
+                                ModuleDescriptor.MemoryType = result == DD_OK ? free : 0;
                             }
                         }
 

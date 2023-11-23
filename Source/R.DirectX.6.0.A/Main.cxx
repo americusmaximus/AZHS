@@ -22,4 +22,4 @@ SOFTWARE.
 
 #include "Native.Basic.hxx"
 
-BOOL APIENTRY Main(HMODULE, DWORD , LPVOID) { return TRUE; }
+BOOL APIENTRY Main(HMODULE, DWORD, LPVOID) { return TRUE; }
