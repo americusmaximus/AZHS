@@ -55,6 +55,7 @@ The game has multiple DirectX 6 renderers available with slightly different desi
 ## Thanks
 1. [My Abandonware](https://www.myabandonware.com/) for providing [Need For Speed: High Stakes](https://www.myabandonware.com/game/need-for-speed-high-stakes-bgf) and the patch 4.50.
 3. [VEG.BY](https://veg.by/en/projects/nfs4/) for providing modern patch for the game.
+4. [GamePressure](https://www.gamepressure.com/download.asp?ID=82146) for providing demo version of the game.
 
 ## Legal
 1. This is not a complete game. Please purchase software you like!
