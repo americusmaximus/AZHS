@@ -74,7 +74,7 @@ namespace RendererModule
         if (RendererDeviceIndex < DEFAULT_RENDERER_DEVICE_INDEX
             && (State.Lambdas.Lambdas.AcquireWindow != NULL || State.Window.HWND != NULL))
         {
-            const char* value = getenv(RENDERER_MODULE_DISPLAY_ENVIRONEMNT_PROPERTY_NAME);
+            const char* value = getenv(RENDERER_MODULE_DISPLAY_ENVIRONMENT_PROPERTY_NAME);
 
             SelectDevice(value == NULL ? DEFAULT_RENDERER_DEVICE_INDEX : atoi(value));
         }
@@ -1729,7 +1729,7 @@ namespace RendererModule
         // Attempt to create texture in RAM.
         {
             {
-                const char* value = getenv(RENDERER_MODULE_AUTO_MIP_MAP_ENVIRONEMNT_PROPERTY_NAME);
+                const char* value = getenv(RENDERER_MODULE_AUTO_MIP_MAP_ENVIRONMENT_PROPERTY_NAME);
 
                 if (value == NULL)
                 {
@@ -1819,7 +1819,7 @@ namespace RendererModule
         // Attempt to create texture in Video Memory or RAM, depending on the device capabilities.
         {
             {
-                const char* value = getenv(RENDERER_MODULE_AUTO_MIP_MAP_ENVIRONEMNT_PROPERTY_NAME);
+                const char* value = getenv(RENDERER_MODULE_AUTO_MIP_MAP_ENVIRONMENT_PROPERTY_NAME);
 
                 if (value == NULL)
                 {

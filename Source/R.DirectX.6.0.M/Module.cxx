@@ -472,7 +472,7 @@ namespace RendererModule
         }
 
         {
-            const char* value = getenv(RENDERER_MODULE_DEVICE_TYPE_ENVIRONEMNT_PROPERTY_NAME);
+            const char* value = getenv(RENDERER_MODULE_DEVICE_TYPE_ENVIRONMENT_PROPERTY_NAME);
 
             if (value != NULL)
             {

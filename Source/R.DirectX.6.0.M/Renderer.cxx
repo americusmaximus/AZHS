@@ -271,7 +271,7 @@ namespace RendererModule
 
             if (State.Lambdas.Lambdas.AcquireWindow != NULL || State.Window.HWND != NULL)
             {
-                const char* value = getenv(RENDERER_MODULE_DISPLAY_ENVIRONEMNT_PROPERTY_NAME);
+                const char* value = getenv(RENDERER_MODULE_DISPLAY_ENVIRONMENT_PROPERTY_NAME);
 
                 SelectDevice(value == NULL ? DEFAULT_RENDERER_DEVICE_INDEX : atoi(value));
             }
@@ -2001,7 +2001,7 @@ namespace RendererModule
         State.DX.Device->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_GOURAUD);
 
         {
-            const char* value = getenv(RENDERER_MODULE_WIRE_FRAME_ENVIRONEMNT_PROPERTY_NAME);
+            const char* value = getenv(RENDERER_MODULE_WIRE_FRAME_DX6_ENVIRONMENT_PROPERTY_NAME);
 
             BOOL found = FALSE;
 
