@@ -60,6 +60,21 @@ Package=<4>
 
 ###############################################################################
 
+Project: "DX7M"=".\R.DirectX.7.0.M\R.DirectX.7.0.M.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Watcom
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "Sound"=".\S.DirectSound.6.0\S.DirectSound.6.0.dsp" - Package Owner=<4>
 
 Package=<5>
