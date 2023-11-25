@@ -579,8 +579,6 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_SHADE_STATE:
         {
-            // NOTE: Original code does not have this if statement.
-            // The positive if comparison always executes in the original code.
             if (SettingsState.FlatShading)
             {
                 if ((u32)value == RENDERER_MODULE_SHADE_FLAT)
