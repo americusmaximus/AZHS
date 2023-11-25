@@ -618,7 +618,7 @@ namespace RendererModule
         {
             SelectRendererState(D3DRENDERSTATE_DITHERENABLE, ((u32)value) != 0 ? TRUE : FALSE);
 
-            result = State.Device.Capabilities.IsDepthAvailable; break;
+            result = State.Device.Capabilities.IsDither; break;
         }
         case RENDERER_MODULE_STATE_SELECT_SHADE_STATE:
         {
