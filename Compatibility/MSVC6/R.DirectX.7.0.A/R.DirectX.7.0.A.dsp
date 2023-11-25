@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="DX7M" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="DX7A" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=DX7M - Win32 Debug
+CFG=DX7A - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "R.DirectX.7.0.M.mak".
+!MESSAGE NMAKE /f "R.DirectX.7.0.A.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "R.DirectX.7.0.M.mak" CFG="DX7M - Win32 Debug"
+!MESSAGE NMAKE /f "R.DirectX.7.0.A.mak" CFG="DX7A - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "DX7M - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "DX7M - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "DX7A - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "DX7A - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "DX7M - Win32 Release"
+!IF  "$(CFG)" == "DX7A - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -42,8 +42,8 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DX7M_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\..\..\Source\AZX" /I "..\..\..\SDK\DX70\Include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DX7M_EXPORTS" /FD /c
+# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DX7A_EXPORTS" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\..\..\Source\AZX" /I "..\..\..\SDK\DX70\Include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DX7A_EXPORTS" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -54,13 +54,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ddraw.lib dxguid.lib /nologo /dll /machine:I386 /out:"Release/DX7M.DLL" /libpath:"..\..\..\SDK\DX70\Lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ddraw.lib dxguid.lib /nologo /dll /machine:I386 /out:"Release/DX7A.DLL" /libpath:"..\..\..\SDK\DX70\Lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=..\Watcom\Release\Watcom.exe Release\DX7M.dll
+PostBuild_Cmds=..\Watcom\Release\Watcom.exe Release\DX7A.dll
 # End Special Build Tool
 
-!ELSEIF  "$(CFG)" == "DX7M - Win32 Debug"
+!ELSEIF  "$(CFG)" == "DX7A - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -73,8 +73,8 @@ PostBuild_Cmds=..\Watcom\Release\Watcom.exe Release\DX7M.dll
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DX7M_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\..\Source\AZX" /I "..\..\..\SDK\DX70\Include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DX7M_EXPORTS" /FD /GZ /c
+# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DX7A_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\..\Source\AZX" /I "..\..\..\SDK\DX70\Include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DX7A_EXPORTS" /FD /GZ /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -85,40 +85,40 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ddraw.lib dxguid.lib /nologo /dll /debug /machine:I386 /out:"Debug/DX7M.DLL" /pdbtype:sept /libpath:"..\..\..\SDK\DX70\Lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ddraw.lib dxguid.lib /nologo /dll /debug /machine:I386 /out:"Debug/DX7A.DLL" /pdbtype:sept /libpath:"..\..\..\SDK\DX70\Lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=..\Watcom\Debug\Watcom.exe Debug\DX7M.dll
+PostBuild_Cmds=..\Watcom\Debug\Watcom.exe Debug\DX7A.dll
 # End Special Build Tool
 
 !ENDIF 
 
 # Begin Target
 
-# Name "DX7M - Win32 Release"
-# Name "DX7M - Win32 Debug"
+# Name "DX7A - Win32 Release"
+# Name "DX7A - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\..\Source\R.DirectX.7.0.M\Main.cxx
+SOURCE=..\..\..\Source\R.DirectX.7.0.A\Main.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Source\R.DirectX.7.0.M\Module.cxx
+SOURCE=..\..\..\Source\R.DirectX.7.0.A\Module.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Source\R.DirectX.7.0.M\Renderer.cxx
+SOURCE=..\..\..\Source\R.DirectX.7.0.A\Renderer.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Source\R.DirectX.7.0.M\Renderer.Module.Watcom.def
+SOURCE=..\..\..\Source\R.DirectX.7.0.A\Renderer.Module.Watcom.def
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Source\R.DirectX.7.0.M\RendererValues.cxx
+SOURCE=..\..\..\Source\R.DirectX.7.0.A\RendererValues.cxx
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -126,15 +126,15 @@ SOURCE=..\..\..\Source\R.DirectX.7.0.M\RendererValues.cxx
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\..\Source\R.DirectX.7.0.M\Module.hxx
+SOURCE=..\..\..\Source\R.DirectX.7.0.A\Module.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Source\R.DirectX.7.0.M\Renderer.hxx
+SOURCE=..\..\..\Source\R.DirectX.7.0.A\Renderer.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Source\R.DirectX.7.0.M\RendererValues.hxx
+SOURCE=..\..\..\Source\R.DirectX.7.0.A\RendererValues.hxx
 # End Source File
 # End Group
 # Begin Group "Resource Files"

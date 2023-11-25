@@ -22,44 +22,15 @@ SOFTWARE.
 
 #pragma once
 
-#ifdef __WATCOMC__
-#include <RendererModule.Export.hxx>
+#include "Renderer.hxx"
+
+#define RENDERER_MODULE_NAME "DX7 3rash"
+
+#ifdef _WIN64
+#define RENDERER_MODULE_TITLE_NAME "DirectX 7.0 (x64)"
 #else
-#include "RendererModule.Export.hxx"
+#define RENDERER_MODULE_TITLE_NAME "DirectX 7.0 (x32)"
 #endif
 
-#define DIRECTDRAW_VERSION 0x700
-#include <ddraw.h>
-
-#ifdef __WATCOMC__
-#undef PURE
-#define PURE
-#endif
-
-#define DIRECT3D_VERSION 0x700
-#include <d3d.h>
-
-#ifdef __WATCOMC__
-#include <mmsystem.h>
-#endif
-
-#define RENDERER_STATE_INACTIVE 0
-#define RENDERER_STATE_ACTIVE 1
-
-namespace Renderer
-{
-
-}
-
-namespace RendererModule
-{
-    struct RendererModuleState
-    {
-        struct
-        {
-            u32 Count; // 0x600186e0
-        } Devices;
-    };
-
-    extern RendererModuleState State;
-}
+// ORIGINAL: Daniel Kennett, Thursday 04:50PM Jan 18, 2001
+#define RENDERER_MODULE_AUTHOR "Americus Maximus"

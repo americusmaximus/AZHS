@@ -40,8 +40,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{c5d00ae9-e888-47a4-b166-1555a8d4bcc5}</ProjectGuid>
-    <RootNamespace>RDirectX70M</RootNamespace>
+    <ProjectGuid>{8d757399-6cbd-4d9b-ba17-8769bfa20b99}</ProjectGuid>
+    <RootNamespace>RDirectX70A</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

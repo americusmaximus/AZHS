@@ -20,14 +20,17 @@ Watcom C/C++ compiler was used back in the 90s and early 00's by a lot of games,
 ### Requirements
 1. [Microsoft Visual C++ 6](https://archive.org/details/en_vs6_ent)
 2. [Microsoft DirectX 6.0 SDK](https://archive.org/details/directx6sdk)
+2. [Microsoft DirectX 7.0 SDK](https://archive.org/details/dx7sdk-7001)
 
 ### Build & Use
 1. Install DirectX 6 SDK.
 2. Copy `Include` and `Lib` folders from the SDK to `SDK/60`.
-3. Open Visual Studio solution `AutoZone.dsw` under `Compatibility/MSVC6`.
-4. Compile the solution.
-5. Pick a file you need in the appropriate sub folder, rename appropriately, and copy to the game folder.
-6. Enjoy!
+3. Install DirectX 7 SDK.
+4. Copy `Include` and `Lib` folders from the SDK to `SDK/70`.
+5. Open Visual Studio solution `AutoZone.dsw` under `Compatibility/MSVC6`.
+6. Compile the solution.
+7. Pick a file you need in the appropriate sub folder, rename appropriately, and copy to the game folder.
+8. Enjoy!
 
 ## Thanks
 1. [Archive.org](https://archive.org/) for providing [Microsoft Visual C++ 6](https://archive.org/details/en_vs6_ent) and [Microsoft DirectX 6.0 SDK](https://archive.org/details/directx6sdk).

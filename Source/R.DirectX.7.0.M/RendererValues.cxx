@@ -20,46 +20,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#pragma once
+#include "RendererValues.hxx"
 
-#ifdef __WATCOMC__
-#include <RendererModule.Export.hxx>
-#else
-#include "RendererModule.Export.hxx"
-#endif
+using namespace Renderer;
+using namespace RendererModule;
 
-#define DIRECTDRAW_VERSION 0x700
-#include <ddraw.h>
-
-#ifdef __WATCOMC__
-#undef PURE
-#define PURE
-#endif
-
-#define DIRECT3D_VERSION 0x700
-#include <d3d.h>
-
-#ifdef __WATCOMC__
-#include <mmsystem.h>
-#endif
-
-#define RENDERER_STATE_INACTIVE 0
-#define RENDERER_STATE_ACTIVE 1
-
-namespace Renderer
+namespace RendererModuleValues
 {
-
-}
-
-namespace RendererModule
-{
-    struct RendererModuleState
-    {
-        struct
-        {
-            u32 Count; // 0x600186e0
-        } Devices;
-    };
-
-    extern RendererModuleState State;
+    s32 RendererState = DEFAULT_RENDERER_STATE;
 }

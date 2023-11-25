@@ -22,44 +22,14 @@ SOFTWARE.
 
 #pragma once
 
-#ifdef __WATCOMC__
-#include <RendererModule.Export.hxx>
-#else
-#include "RendererModule.Export.hxx"
-#endif
+#include "Renderer.hxx"
 
-#define DIRECTDRAW_VERSION 0x700
-#include <ddraw.h>
+#define DEFAULT_RENDERER_DEVICE_INDEX 0
+#define INVALID_RENDERER_DEVICE_INDEX (-1)
 
-#ifdef __WATCOMC__
-#undef PURE
-#define PURE
-#endif
+#define DEFAULT_RENDERER_STATE (-1)
 
-#define DIRECT3D_VERSION 0x700
-#include <d3d.h>
-
-#ifdef __WATCOMC__
-#include <mmsystem.h>
-#endif
-
-#define RENDERER_STATE_INACTIVE 0
-#define RENDERER_STATE_ACTIVE 1
-
-namespace Renderer
+namespace RendererModuleValues
 {
-
-}
-
-namespace RendererModule
-{
-    struct RendererModuleState
-    {
-        struct
-        {
-            u32 Count; // 0x600186e0
-        } Devices;
-    };
-
-    extern RendererModuleState State;
+    extern s32 RendererState; // 0x600170b8
 }

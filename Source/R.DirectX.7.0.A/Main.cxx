@@ -20,46 +20,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#pragma once
+#include "Native.Basic.hxx"
 
-#ifdef __WATCOMC__
-#include <RendererModule.Export.hxx>
-#else
-#include "RendererModule.Export.hxx"
-#endif
-
-#define DIRECTDRAW_VERSION 0x700
-#include <ddraw.h>
-
-#ifdef __WATCOMC__
-#undef PURE
-#define PURE
-#endif
-
-#define DIRECT3D_VERSION 0x700
-#include <d3d.h>
-
-#ifdef __WATCOMC__
-#include <mmsystem.h>
-#endif
-
-#define RENDERER_STATE_INACTIVE 0
-#define RENDERER_STATE_ACTIVE 1
-
-namespace Renderer
-{
-
-}
-
-namespace RendererModule
-{
-    struct RendererModuleState
-    {
-        struct
-        {
-            u32 Count; // 0x600186e0
-        } Devices;
-    };
-
-    extern RendererModuleState State;
-}
+BOOL APIENTRY Main(HMODULE, DWORD, LPVOID) { return TRUE; }
