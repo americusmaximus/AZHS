@@ -21,8 +21,13 @@ SOFTWARE.
 */
 
 #include "Native.Basic.hxx"
-#include "RendererModule.Settings.hxx"
 #include "Settings.hxx"
+
+#ifdef __WATCOMC__
+#include <RendererModule.Settings.hxx>
+#else
+#include "RendererModule.Settings.hxx"
+#endif
 
 namespace Settings
 {
