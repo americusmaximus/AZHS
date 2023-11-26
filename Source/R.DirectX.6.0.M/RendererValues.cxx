@@ -45,7 +45,7 @@ namespace RendererModuleValues
     f32 RendererFogStart = DEFAULT_FOG_START;
     f32 RendererFogEnd = DEFAULT_FOG_END;
 
-    s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_ACCELERATED;
+    s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_0_ACCELERATED;
     u32 RendererVersion = RENDERER_MODULE_VERSION_106;
     u32 RendererLineVertexSize = sizeof(RTLVX);
 

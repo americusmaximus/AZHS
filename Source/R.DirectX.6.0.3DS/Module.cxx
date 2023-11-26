@@ -446,11 +446,11 @@ namespace RendererModule
             {
                 const s32 val = atoi(value);
 
-                if (val != RENDERER_MODULE_DEVICE_TYPE_ACCELERATED)
+                if (val != RENDERER_MODULE_DEVICE_TYPE_0_ACCELERATED)
                 {
-                    if (val == RENDERER_MODULE_DEVICE_TYPE_RGB)
+                    if (val == RENDERER_MODULE_DEVICE_TYPE_0_RGB)
                     {
-                        SelectState(RENDERER_MODULE_STATE_SELECT_DEVICE_TYPE, (void*)RENDERER_MODULE_DEVICE_TYPE_RGB);
+                        SelectState(RENDERER_MODULE_STATE_SELECT_DEVICE_TYPE, (void*)RENDERER_MODULE_DEVICE_TYPE_0_RGB);
                     }
 
                     return RENDERER_MODULE_SUCCESS;
@@ -458,7 +458,7 @@ namespace RendererModule
             }
         }
 
-        SelectState(RENDERER_MODULE_STATE_SELECT_DEVICE_TYPE, (void*)RENDERER_MODULE_DEVICE_TYPE_ACCELERATED);
+        SelectState(RENDERER_MODULE_STATE_SELECT_DEVICE_TYPE, (void*)RENDERER_MODULE_DEVICE_TYPE_0_ACCELERATED);
 
         return RENDERER_MODULE_SUCCESS;
     }
@@ -659,7 +659,7 @@ namespace RendererModule
             case RENDERER_MODULE_TEXTURE_MIP_FILTER_POINT_ADVANCED: { SelectRendererTextureStage(RENDERER_TEXTURE_STAGE_0, D3DTSS_MIPFILTER, D3DTFP_POINT); return RENDERER_MODULE_FAILURE; }
             case RENDERER_MODULE_TEXTURE_MIP_FILTER_LINEAR:
             {
-                if (!State.Device.Capabilities.IsDepthComparisonAvailable)
+                if (!State.Device.Capabilities.IsTrilinearInterpolationAvailable)
                 {
                     SelectRendererTextureStage(RENDERER_TEXTURE_STAGE_0, D3DTSS_MIPFILTER, D3DTFP_POINT);
 

@@ -230,8 +230,8 @@ namespace RendererModule
                 BOOL IsDither; // 0x6003bc78
                 BOOL IsWBuffer; // 0x6003bc7c
                 BOOL IsWindowMode; // 0x6003bc80
-                BOOL IsDepthComparisonAvailable; // 0x6003bc84
-                BOOL IsStripplingAvailable; // 0x6003bc88
+                BOOL IsTrilinearInterpolationAvailable; // 0x6003bc84
+                BOOL IsDepthBufferRemovalAvailable; // 0x6003bc88
                 BOOL IsPerspectiveTextures; // 0x6003bc8c
                 BOOL IsAlphaFlatBlending; // 0x6003bc90
                 BOOL IsAlphaProperBlending; // 0x6003bc94
@@ -329,9 +329,9 @@ namespace RendererModule
 
     void Message(const u32 severity, const char* format, ...);
 
-    BOOL AcquireRendererDeviceDepthBufferNotEqualComparisonCapabilities(void);
+    BOOL AcquireRendererDeviceDepthBufferRemovalCapabilities(void);
     BOOL AcquireRendererDeviceState(void);
-    BOOL AcquireRendererDeviceStripplingCapabilities(void);
+    BOOL AcquireRendererDeviceTrilinearInterpolationCapabilities(void);
     BOOL BeginRendererScene(void);
     BOOL CALLBACK EnumerateRendererDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context);
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height);

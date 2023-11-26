@@ -240,8 +240,8 @@ namespace RendererModule
                 BOOL IsDither; // 0x6004e5fc
                 BOOL IsWBuffer; // 0x6004e600
                 BOOL IsWindowMode; // 0x6004e604
-                BOOL IsDepthComparisonAvailable; // 0x6004e608
-                BOOL IsStripplingAvailable; // 0x6004e60c
+                BOOL IsTrilinearInterpolationAvailable; // 0x6004e608
+                BOOL IsDepthBufferRemovalAvailable; // 0x6004e60c
                 BOOL IsPerspectiveTextures; // 0x6004e610
                 BOOL IsAlphaFlatBlending; // 0x6004e614
                 BOOL IsAlphaProperBlending; // 0x6004e618
@@ -251,7 +251,7 @@ namespace RendererModule
                 u32 AntiAliasing; // 0x6004e628
                 BOOL IsColorBlending; // 0x6004e62c
                 BOOL IsAnisotropyAvailable; // 0x6004e630
-                BOOL IsPimaryGammaAvailable; // 0x6004e634
+                BOOL IsPrimaryGammaAvailable; // 0x6004e634
                 BOOL IsStencilBuffer; // 0x6004e638
                 BOOL IsSpecularBlending; // 0x6004e63c
 
@@ -392,9 +392,9 @@ namespace RendererModule
     void Message(const u32 severity, const char* format, ...);
 
     BOOL AcquireRendererDeviceAccelerationState(const u32 indx);
-    BOOL AcquireRendererDeviceDepthBufferNotEqualComparisonCapabilities(void);
+    BOOL AcquireRendererDeviceDepthBufferRemovalCapabilities(void);
     BOOL AcquireRendererDeviceState(void);
-    BOOL AcquireRendererDeviceStripplingCapabilities(void);
+    BOOL AcquireRendererDeviceTrilinearInterpolationCapabilities(void);
     BOOL BeginRendererScene(void);
     BOOL CALLBACK EnumerateDirectDrawDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context, HMONITOR monitor);
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height);
@@ -419,7 +419,7 @@ namespace RendererModule
     inline u32 AcquireFogAlphaIndex(const f32 value) { return (u32)((1.0f - value * 0.000015259022f) * 255.0f + 0.5f); }
     Renderer::RendererTexture* AllocateRendererTexture(const u32 size);
     Renderer::RendererTexture* InitializeRendererTexture(void);
-    s32 AcquireRendererDeviceModeIndex(const u32 width, const u32 height, const u32 bpp);
+    s32 AcquireMinimumRendererDeviceResolutionModeIndex(const u32 width, const u32 height, const u32 bpp);
     s32 AcquireRendererDeviceModeScore(const RendererModuleDescriptorDeviceCapabilities* caps, const u32 width, const u32 height, const u32 bpp);
     s32 AcquireRendererDeviceTextureFormatIndex(const u32 palette, const u32 alpha, const u32 red, const u32 green, const u32 blue, const BOOL dxt);
     s32 AcquireSettingsValue(const s32 value, const char* section, const char* name);
@@ -446,7 +446,7 @@ namespace RendererModule
     void AcquireRendererDeviceTextureFormats(void);
     void AcquireRendererModuleDescriptor(RendererModuleDescriptor* desc, const char* section);
     void AcquireWindowModeCapabilities(void);
-    void AssignRendererDeviceModeIndex(const s32 src, const u32 dst);
+    void AssignRendererDeviceResolutionMode(const s32 src, const u32 dst);
     void AttemptRenderScene(void);
     void InitializeConcreteRendererDevice(void);
     void InitializeRendererModuleState(const u32 mode, const u32 pending, const u32 depth, const char* section);

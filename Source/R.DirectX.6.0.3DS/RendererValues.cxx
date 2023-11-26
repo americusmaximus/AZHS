@@ -39,7 +39,7 @@ namespace RendererModuleValues
     f32 RendererDepthBias;
 
     u32 RendererVersion = RENDERER_MODULE_VERSION_105;
-    s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_ACCELERATED;
+    s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_0_ACCELERATED;
 
     u8 RendererFogAlphas[MAX_OUTPUT_FOG_ALPHA_COUNT];
 

@@ -29,6 +29,7 @@ namespace Settings
     struct SettingsContainer
     {
         BOOL FlatShading;
+        BOOL Accelerate;
     };
 
     extern SettingsContainer SettingsState;

@@ -236,8 +236,8 @@ namespace RendererModule
                 BOOL IsDither; // 0x6004e5fc
                 BOOL IsWBuffer; // 0x6004e600
                 BOOL IsWindowMode; // 0x6004e604
-                BOOL IsDepthComparisonAvailable; // 0x6004e608
-                BOOL IsStripplingAvailable; // 0x6004e60c
+                BOOL IsTrilinearInterpolationAvailable; // 0x6004e608
+                BOOL IsDepthBufferRemovalAvailable; // 0x6004e60c
                 BOOL IsPerspectiveTextures; // 0x6004e610
                 BOOL IsAlphaFlatBlending; // 0x6004e614
                 BOOL IsAlphaProperBlending; // 0x6004e618
@@ -247,7 +247,7 @@ namespace RendererModule
                 u32 AntiAliasing; // 0x6004e628
                 BOOL IsColorBlending; // 0x6004e62c
                 BOOL IsAnisotropyAvailable; // 0x6004e630
-                BOOL IsPimaryGammaAvailable; // 0x6004e634
+                BOOL IsPrimaryGammaAvailable; // 0x6004e634
                 BOOL IsStencilBuffer; // 0x6004e638
                 BOOL IsSpecularBlending; // 0x6004e63c
 
@@ -388,9 +388,9 @@ namespace RendererModule
     void Message(const u32 severity, const char* format, ...);
 
     BOOL AcquireRendererDeviceAccelerationState(const u32 indx);
-    BOOL AcquireRendererDeviceDepthBufferNotEqualComparisonCapabilities(void);
+    BOOL AcquireRendererDeviceDepthBufferRemovalCapabilities(void);
     BOOL AcquireRendererDeviceState(void);
-    BOOL AcquireRendererDeviceStripplingCapabilities(void);
+    BOOL AcquireRendererDeviceTrilinearInterpolationCapabilities(void);
     BOOL BeginRendererScene(void);
     BOOL CALLBACK EnumerateDirectDrawDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context, HMONITOR monitor);
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height);

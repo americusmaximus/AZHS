@@ -25,6 +25,7 @@ SOFTWARE.
 #define RENDERER_MODULE_SETTINGS_FILE_NAME ".\\azhs.ini"
 
 #define RENDERER_MODULE_SETTINGS_SECTION_DX6_NAME "DX6"
+#define RENDERER_MODULE_SETTINGS_SECTION_DX7_NAME "DX7"
 
 // Indicates whether flat shading is active/enabled.
 // In practice means whether to overwrite the vertex color with white color or not.
@@ -36,3 +37,7 @@ SOFTWARE.
 // In practice, on some systems, like mine, leads to a drastic performance drop, thus making this a configuration item.
 // DEFAULT: TRUE
 #define RENDERER_MODULE_SETTINGS_VERTEX_BUFFER_PROPERTY_NAME "VertexBuffer"
+
+// Indicates whether the hardware accelerated device should be picked first, despite the command from the game.
+// DEFAULT: FALSE
+#define RENDERER_MODULE_SETTINGS_ACCELERATE_GRAPHICS_PROPERTY_NAME "Accelerate"

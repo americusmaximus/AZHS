@@ -120,6 +120,10 @@ SOURCE=..\..\..\Source\R.DirectX.7.0.A\Renderer.Module.Watcom.def
 
 SOURCE=..\..\..\Source\R.DirectX.7.0.A\RendererValues.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Source\R.DirectX.7.0.A\Settings.cxx
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -135,6 +139,10 @@ SOURCE=..\..\..\Source\R.DirectX.7.0.A\Renderer.hxx
 # Begin Source File
 
 SOURCE=..\..\..\Source\R.DirectX.7.0.A\RendererValues.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Source\R.DirectX.7.0.A\Settings.hxx
 # End Source File
 # End Group
 # Begin Group "Resource Files"

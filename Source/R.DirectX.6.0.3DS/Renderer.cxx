@@ -23,6 +23,7 @@ SOFTWARE.
 #include "Graphics.Basic.hxx"
 #include "Renderer.hxx"
 #include "RendererValues.hxx"
+#include "Settings.hxx"
 
 #include <math.h>
 #include <stdio.h>
@@ -31,6 +32,7 @@ SOFTWARE.
 
 using namespace Renderer;
 using namespace RendererModuleValues;
+using namespace Settings;
 
 namespace RendererModule
 {
@@ -888,7 +890,7 @@ namespace RendererModule
                 desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
                 desc.dwHeight = State.Window.Height;
                 desc.dwWidth = State.Window.Width;
-                desc.ddsCaps.dwCaps = RendererDeviceType == RENDERER_MODULE_DEVICE_TYPE_ACCELERATED
+                desc.ddsCaps.dwCaps = RendererDeviceType == RENDERER_MODULE_DEVICE_TYPE_0_ACCELERATED
                     ? DDSCAPS_VIDEOMEMORY | DDSCAPS_3DDEVICE | DDSCAPS_OFFSCREENPLAIN
                     : DDSCAPS_3DDEVICE | DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
 
@@ -1028,9 +1030,9 @@ namespace RendererModule
                 State.Device.Capabilities.IsWindowMode = (hal.dwCaps2 & DDCAPS2_CANRENDERWINDOWED) != 0;
             }
 
-            State.Device.Capabilities.IsDepthComparisonAvailable = AcquireRendererDeviceDepthBufferNotEqualComparisonCapabilities();
+            State.Device.Capabilities.IsTrilinearInterpolationAvailable = AcquireRendererDeviceTrilinearInterpolationCapabilities();
 
-            State.Device.Capabilities.IsStripplingAvailable = AcquireRendererDeviceStripplingCapabilities();
+            State.Device.Capabilities.IsDepthBufferRemovalAvailable = AcquireRendererDeviceDepthBufferRemovalCapabilities();
         }
 
         if ((State.Device.Capabilities.DepthBits & DEPTH_BIT_MASK_32_BIT) == 0)
@@ -1115,9 +1117,18 @@ namespace RendererModule
     {
         HRESULT result = DD_OK;
 
+        if (SettingsState.Accelerate)
+        {
+            const HRESULT res = State.DX.DirectX->CreateDevice(IID_IDirect3DHALDevice,
+                State.DX.Active.Surfaces.Back != NULL ? State.DX.Active.Surfaces.Back : State.DX.Active.Surfaces.Main,
+                &State.DX.Device, NULL);
+
+            if (res == DD_OK) { return; }
+        }
+
         switch (RendererDeviceType)
         {
-        case RENDERER_MODULE_DEVICE_TYPE_RAMP:
+        case RENDERER_MODULE_DEVICE_TYPE_0_RAMP:
         {
             State.DX.Active.IsSoft = TRUE;
 
@@ -1126,7 +1137,7 @@ namespace RendererModule
 
             break;
         }
-        case RENDERER_MODULE_DEVICE_TYPE_RGB:
+        case RENDERER_MODULE_DEVICE_TYPE_0_RGB:
         {
             State.DX.Active.IsSoft = TRUE;
 
@@ -1135,7 +1146,7 @@ namespace RendererModule
 
             break;
         }
-        case RENDERER_MODULE_DEVICE_TYPE_MMX:
+        case RENDERER_MODULE_DEVICE_TYPE_0_MMX:
         {
             State.DX.Active.IsSoft = TRUE;
 
@@ -1144,8 +1155,8 @@ namespace RendererModule
 
             break;
         }
-        case RENDERER_MODULE_DEVICE_TYPE_INVALID:
-        case RENDERER_MODULE_DEVICE_TYPE_ACCELERATED:
+        case RENDERER_MODULE_DEVICE_TYPE_0_INVALID:
+        case RENDERER_MODULE_DEVICE_TYPE_0_ACCELERATED:
         {
             State.DX.Active.IsSoft = FALSE;
 
@@ -1161,7 +1172,7 @@ namespace RendererModule
     }
 
     // 0x60004fc0
-    BOOL AcquireRendererDeviceDepthBufferNotEqualComparisonCapabilities(void)
+    BOOL AcquireRendererDeviceTrilinearInterpolationCapabilities(void)
     {
         D3DDEVICEDESC hal;
         ZeroMemory(&hal, sizeof(D3DDEVICEDESC));
@@ -1175,11 +1186,11 @@ namespace RendererModule
 
         State.DX.Device->GetCaps(&hal, &hel);
 
-        return (hal.dpcTriCaps.dwAlphaCmpCaps & D3DPCMPCAPS_NOTEQUAL) != 0;
+        return (hal.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_LINEARMIPLINEAR) != 0;
     }
     
     // 0x60005020
-    BOOL AcquireRendererDeviceStripplingCapabilities(void)
+    BOOL AcquireRendererDeviceDepthBufferRemovalCapabilities(void)
     {
         D3DDEVICEDESC hal;
         ZeroMemory(&hal, sizeof(D3DDEVICEDESC));
@@ -1193,14 +1204,14 @@ namespace RendererModule
 
         State.DX.Device->GetCaps(&hal, &hel);
 
-        return (hal.dpcLineCaps.dwStippleHeight & 0x8000) != 0;
+        return (hal.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ZBUFFERLESSHSR) != 0;
     }
 
     // 0x60004a90
     // a.k.a. createzbuffer
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height)
     {
-        if (State.Device.Capabilities.IsStripplingAvailable) { return TRUE; }
+        if (State.Device.Capabilities.IsDepthBufferRemovalAvailable) { return TRUE; }
 
         DDPIXELFORMAT format;
         ZeroMemory(&format, sizeof(DDPIXELFORMAT));
