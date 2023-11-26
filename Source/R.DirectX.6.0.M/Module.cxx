@@ -460,7 +460,7 @@ namespace RendererModule
             name = State.Devices.Enumeration.Names[indx];
         }
 
-        strcpy(State.Device.Name, name);
+        strncpy(State.Device.Name, name, MAX_ENUMERATE_RENDERER_DEVICE_NAME_LENGTH);
 
         if (State.Lambdas.Lambdas.AcquireWindow == NULL)
         {

@@ -389,6 +389,8 @@ namespace RendererModule
 
     extern RendererModuleState State;
 
+    void Message(const u32 severity, const char* format, ...);
+
     BOOL AcquireRendererDeviceAccelerationState(const u32 indx);
     BOOL AcquireRendererDeviceDepthBufferNotEqualComparisonCapabilities(void);
     BOOL AcquireRendererDeviceState(void);
@@ -453,7 +455,6 @@ namespace RendererModule
     void InitializeVertex(Renderer::RTLVX* dst, const Renderer::RTLVX* src);
     void InitializeViewPort(void);
     void InitializeViewPort(void);
-    void Message(const u32 severity, const char* format, ...);
     void ReleaseRendererDevice(void);
     void ReleaseRendererDeviceSurfaces(void);
     void ReleaseRendererTexture(Renderer::RendererTexture* tex);
