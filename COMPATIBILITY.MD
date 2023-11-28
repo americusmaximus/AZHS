@@ -33,7 +33,7 @@ Watcom C/C++ compiler was used back in the 90s and early 00's by a lot of games,
 8. Enjoy!
 
 ## Thanks
-1. [Archive.org](https://archive.org/) for providing [Microsoft Visual C++ 6](https://archive.org/details/en_vs6_ent) and [Microsoft DirectX 6.0 SDK](https://archive.org/details/directx6sdk).
+1. [Archive.org](https://archive.org/) for providing [Microsoft Visual C++ 6](https://archive.org/details/en_vs6_ent), [Microsoft DirectX 6.0 SDK](https://archive.org/details/directx6sdk), and [Microsoft DirectX 7.0 SDK](https://archive.org/details/dx7sdk-7001).
 2. [Open Watcom](https://github.com/open-watcom/open-watcom-v2) for providing the compiler.
 
 ## Legal
