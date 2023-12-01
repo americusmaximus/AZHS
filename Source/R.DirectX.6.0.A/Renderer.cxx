@@ -1511,8 +1511,8 @@ namespace RendererModule
             State.Device.Capabilities.IsAntiAliasEdges = (hal.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ANTIALIASEDGES) != 0;
             State.Device.Capabilities.IsAnisotropyAvailable = (hal.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ANISOTROPY) != 0;
             State.Device.Capabilities.IsMipMapBiasAvailable = (hal.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_MIPMAPLODBIAS) != 0;
-            State.Device.Capabilities.IsWBuffer = (hal.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_WBUFFER) != 0;
-            State.Device.Capabilities.IsDither = (hal.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_DITHER) != 0;
+            State.Device.Capabilities.IsWBufferAvailable = (hal.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_WBUFFER) != 0;
+            State.Device.Capabilities.IsDitherAvailable = (hal.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_DITHER) != 0;
 
             State.Device.Capabilities.IsPerspectiveTextures = hal.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_PERSPECTIVE;
             State.Device.Capabilities.IsAlphaTextures = (hal.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_ALPHA) != 0;
@@ -2284,7 +2284,7 @@ namespace RendererModule
 
         SelectState(RENDERER_MODULE_STATE_SELECT_FOG_COLOR,
             (void*)AcquireSettingsValue(GRAPCHICS_COLOR_WHITE, section, "FOGCOLOUR"));
-        SelectState(RENDERER_MODULE_STATE_SELECT_ALPHA_STATE,
+        SelectState(RENDERER_MODULE_STATE_SELECT_BLEND_STATE,
             (void*)AcquireSettingsValue(RENDERER_MODULE_ALPHA_BLEND_SOURCE_INVERSE_SOURCE, section, "ALPHA"));
         SelectState(RENDERER_MODULE_STATE_SELECT_TEXTURE_ADDRESS_STATE,
             (void*)AcquireSettingsValue(RENDERER_MODULE_TEXTURE_ADDRESS_CLAMP, section, "TEXTURECLAMP"));
@@ -2305,18 +2305,17 @@ namespace RendererModule
             SelectState(RENDERER_MODULE_STATE_SELECT_MIP_MAP_LOD_BIAS_STATE, (void*)(u32)(*(u32*)&value));
         }
 
-        SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_STATE, (void*)((depth < 1) - 1 & 2)); // TODO
-        SelectState(RENDERER_MODULE_STATE_MAX_PENDING,
-            (void*)AcquireSettingsValue(pending - 2U & ((int)(pending - 2U) < 0) - 1, section, "MAXPENDING")); // TODO
+        SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_STATE, (void*)(((depth < 1) - 1) & 2)); // TODO
+        SelectState(RENDERER_MODULE_STATE_MAX_PENDING_STATE,
+            (void*)AcquireSettingsValue(pending - 2U & ((s32)(pending - 2U) < 0) - 1, section, "MAXPENDING")); // TODO
         SelectState(RENDERER_MODULE_STATE_SELECT_VERTEX_TYPE, (void*)RENDERER_MODULE_VERTEX_TYPE_RTLVX);
         SelectState(RENDERER_MODULE_STATE_SELECT_TEXTURE_STAGE_BLEND_STATE, (void*)RENDERER_MODULE_TEXTURE_STAGE_BLEND_NORMAL);
-        SelectState(RENDERER_MODULE_STATE_SELECT_TEXTURE_STAGE_1 | RENDERER_MODULE_STATE_29, (void*)0x0); // TODO
-        SelectState(RENDERER_MODULE_STATE_SELECT_BACK_BUFFER_TYPE,
-            (void*)AcquireSettingsValue(RENDERER_MODULE_BACK_BUFFER_TYPE_1, section, "BACKBUFFERTYPE"));
+        SelectState(MAKETEXTURESTAGEMASK(RENDERER_TEXTURE_STAGE_1) | RENDERER_MODULE_STATE_SELECT_WINDOW_LOCK_STATE, (void*)NULL);
+        SelectState(RENDERER_MODULE_STATE_SELECT_BACK_BUFFER_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_BACK_BUFFER_ACTIVE, section, "BACKBUFFERTYPE"));
         SelectState(RENDERER_MODULE_STATE_SELECT_FLAT_FANS_STATE,
-            (void*)AcquireSettingsValue(RENDERER_MODULE_STATE_FLAT_FANS_1, section, "FLATFANS"));
-        SelectState(RENDERER_MODULE_STATE_SELECT_LINE_WIDTH,
-            (void*)AcquireSettingsValue(1, section, "LINEWIDTH"));
+            (void*)AcquireSettingsValue(RENDERER_MODULE_STATE_FLAT_FANS_ACTIVE, section, "FLATFANS"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_LINE_WIDTH, (void*)AcquireSettingsValue(1, section, "LINEWIDTH"));
         SelectState(RENDERER_MODULE_STATE_SELECT_PALETTE,
             (void*)AcquireSettingsValue((u32)(u32*)(void*)RendererPaletteValues, section, "DEFAULTPALETTE"));
         SelectState(RENDERER_MODULE_STATE_SELECT_STENCIL_STATE,
@@ -2399,7 +2398,7 @@ namespace RendererModule
             desc.dwHeight = tex->Height;
             desc.dwWidth = tex->Width;
 
-            if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_UNKNOWN_DXT1)
+            if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1)
             {
                 ZeroMemory(&desc.ddpfPixelFormat, sizeof(DDPIXELFORMAT));
 
@@ -2471,7 +2470,7 @@ namespace RendererModule
 
             desc.dwTextureStage = tex->Stage;
 
-            if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_UNKNOWN_DXT1)
+            if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1)
             {
                 ZeroMemory(&desc.ddpfPixelFormat, sizeof(DDPIXELFORMAT));
 
@@ -2628,7 +2627,7 @@ namespace RendererModule
 
             desc.dwSize = sizeof(DDSURFACEDESC2);
 
-            if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_UNKNOWN_DXT1) { desc.dwFlags = DDSD_LINEARSIZE; }
+            if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1) { desc.dwFlags = DDSD_LINEARSIZE; }
 
             if (surface->GetSurfaceDesc(&desc) != DD_OK)
             {
@@ -2699,7 +2698,7 @@ namespace RendererModule
     {
         if (pixels != NULL)
         {
-            tex->Descriptor.lpSurface = tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_UNKNOWN_DXT1
+            tex->Descriptor.lpSurface = tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1
                 ? (void*)(((addr)pixels) + (addr)8) : (void*)pixels; // TODO
 
             tex->Descriptor.dwFlags = DDSD_LPSURFACE;
@@ -2791,7 +2790,7 @@ namespace RendererModule
 
                 if (pitch == tex->Descriptor.lPitch)
                 {
-                    tex->Descriptor.lpSurface = tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_UNKNOWN_DXT1
+                    tex->Descriptor.lpSurface = tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1
                         ? (void*)(((addr)pixels) + (addr)(offset + 8)) // TOOD
                         : (void*)(((addr)pixels) + (addr)offset);
                 }
@@ -2799,7 +2798,7 @@ namespace RendererModule
                 {
                     if (data == NULL)
                     {
-                        data = tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_UNKNOWN_DXT1
+                        data = tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1
                             ? (u32*)(((addr)pixels) + (addr)(offset + 8)) // TOOD
                             : (u32*)(((addr)pixels) + (addr)offset);
                     }

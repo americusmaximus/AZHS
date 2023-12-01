@@ -50,7 +50,7 @@ namespace RendererModule
     DLLAPI void STDCALLAPI DrawTriangleStrip(const u32 count, Renderer::RVX* vertexes);
     DLLAPI void STDCALLAPI DrawTriangleStrips(const u32 count, Renderer::RVX* vertexes, const u32* indexes);
     DLLAPI u32 STDCALLAPI FlushGameWindow(void);
-    DLLAPI u32 STDCALLAPI AcquireState(const u32 options);
+    DLLAPI u32 STDCALLAPI AcquireState(const u32 state);
     DLLAPI Renderer::RendererTexture* STDCALLAPI AcquireGameWindowTexture(const u32 indx);
     DLLAPI void STDCALLAPI Idle(void);
     DLLAPI u32 STDCALLAPI Init(void);
@@ -63,7 +63,7 @@ namespace RendererModule
     DLLAPI u32 STDCALLAPI SelectState(const u32 state, void* value);
     DLLAPI u32 STDCALLAPI SelectTexture(Renderer::RendererTexture* tex);
     DLLAPI u32 STDCALLAPI SelectVideoMode(const u32 mode, const u32 pending, const u32 depth);
-    DLLAPI u32 STDCALLAPI SyncGameWindow(const u32);
+    DLLAPI u32 STDCALLAPI SyncGameWindow(const u32 type);
     DLLAPI Renderer::RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, void*, const u32 options); // TODO
     DLLAPI u32 STDCALLAPI ReleaseTexture(void*);
     DLLAPI u32 STDCALLAPI ResetTextures(void);

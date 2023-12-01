@@ -237,8 +237,8 @@ namespace RendererModule
 
                 BOOL IsDepthAvailable; // 0x6004e5f0
 
-                BOOL IsDither; // 0x6004e5fc
-                BOOL IsWBuffer; // 0x6004e600
+                BOOL IsDitherAvailable; // 0x6004e5fc
+                BOOL IsWBufferAvailable; // 0x6004e600
                 BOOL IsWindowMode; // 0x6004e604
                 BOOL IsTrilinearInterpolationAvailable; // 0x6004e608
                 BOOL IsDepthBufferRemovalAvailable; // 0x6004e60c
