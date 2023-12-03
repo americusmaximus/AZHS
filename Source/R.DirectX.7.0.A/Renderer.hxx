@@ -276,6 +276,8 @@ namespace RendererModule
                 u32 Count; // 0x60058878
 
                 u16 Indexes[MAX_RENDERER_INDEX_COUNT]; // 0x60038868
+
+                u16 Large[MAX_RENDERER_INDEX_COUNT]; // 0x6005ac40
             } Indexes;
 
             struct
@@ -509,6 +511,8 @@ namespace RendererModule
     BOOL EndRendererScene(void);
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height, IDirectDrawSurface7* input, IDirectDrawSurface7* outout);
     BOOL RenderPoints(Renderer::RVX* vertexes, const u32 count);
+    BOOL RenderTriangleFans(Renderer::RVX* vertexes, const u32 vertexCount, const u32 indexCount, const u32* indexes);
+    BOOL RenderTriangleStrips(Renderer::RVX* vertexes, const u32 vertexCount, const u32 indexCount, const u32* indexes);
     BOOL RestoreRendererSurfaces(void);
     BOOL SelectRendererState(const D3DRENDERSTATETYPE type, const DWORD value);
     BOOL SelectRendererTexture(Renderer::RendererTexture* tex);
@@ -558,7 +562,7 @@ namespace RendererModule
     void InitializeConcreteRendererDevice(void);
     void InitializeRendererModuleState(const u32 mode, const u32 pending, const u32 depth, const char* section);
     void InitializeRendererState(void);
-    void InitializeRenderState55(void);
+    void InitializeRenderState55(void); // TODO
     void InitializeTextureStateStates(void);
     void InitializeViewPort(void);
     void ReleaseRendererDevice(void);
@@ -570,6 +574,8 @@ namespace RendererModule
     void RenderLineMesh(Renderer::RVX* vertexes, const u32* indexes, const u32 count);
     void RenderQuad(Renderer::RVX* a, Renderer::RVX* b, Renderer::RVX* c, Renderer::RVX* d);
     void RenderQuadMesh(Renderer::RVX* vertexes, const u32* indexes, const u32 count);
+    void RenderTriangle(Renderer::RVX* a, Renderer::RVX* b, Renderer::RVX* c);
+    void RenderTriangleMesh(Renderer::RVX* vertexes, const u32* indexes, const u32 count);
     void SelectRendererDevice(void);
     void SelectRendererDeviceType(const u32 type);
     void SelectRendererFogAlphas(const u8* input, u8* output);

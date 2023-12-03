@@ -114,6 +114,7 @@ struct u32x4 { u32 X, Y, Z, W; };
 
 #include <float.h>
 #define isfinite(x) _finite(x)
+#define isnan(x) _isnan(x)
 #endif
 
 #if defined(__WATCOMC__)

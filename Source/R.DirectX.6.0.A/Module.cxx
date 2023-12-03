@@ -130,8 +130,8 @@ namespace RendererModule
     {
         for (u32 x = 0; x < count; x++)
         {
-            RVX* a = (RVX*)((addr)vertexes + (addr)(indexes[x * 2 + 0] * RendererLineVertexSize));
-            RVX* b = (RVX*)((addr)vertexes + (addr)(indexes[x * 2 + 1] * RendererLineVertexSize));
+            RVX* a = (RVX*)((addr)vertexes + (addr)indexes[x * 2 + 0] * (addr)RendererLineVertexSize);
+            RVX* b = (RVX*)((addr)vertexes + (addr)indexes[x * 2 + 1] * (addr)RendererLineVertexSize);
 
             DrawLine(a, b);
         }
@@ -199,7 +199,7 @@ namespace RendererModule
     // a.k.a. THRASH_drawtri
     DLLAPI void STDCALLAPI DrawTriangle(RVX* a, RVX* b, RVX* c)
     {
-        if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderTriangle((RTLVX*)a, (RTLVX*)b, (RTLVX*)c); }  // TODO
+        if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderTriangle(a, b, c); }  // TODO
     }
 
     // 0x60001800
@@ -216,14 +216,14 @@ namespace RendererModule
     // NOTE: Never being called by the application.
     DLLAPI void STDCALLAPI DrawTriangleFans(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        RenderTriangleFans((RTLVX*)vertexes, count + 2, count, indexes);
+        RenderTriangleFans(vertexes, count + 2, count, indexes);
     }
 
     // 0x600015b0
     // a.k.a. THRASH_drawtrimesh
     DLLAPI void STDCALLAPI DrawTriangleMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        RenderTriangleMesh((RTLVX*)vertexes, indexes, count);
+        RenderTriangleMesh(vertexes, indexes, count);
     }
 
     // 0x600015d0
@@ -250,7 +250,7 @@ namespace RendererModule
     // NOTE: Never being called by the application.
     DLLAPI void STDCALLAPI DrawTriangleStrips(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        RenderTriangleStrips((RTLVX*)vertexes, count + 2, count, indexes);
+        RenderTriangleStrips(vertexes, count + 2, count, indexes);
     }
 
     // 0x60001250
@@ -1334,7 +1334,7 @@ namespace RendererModule
 
             State.Settings.IsFogActive = TRUE;
 
-            DAT_6001d030 = 0x10;
+            DAT_6001d030 = 0x10; // TODO
 
             result = RENDERER_MODULE_SUCCESS; break;
         }

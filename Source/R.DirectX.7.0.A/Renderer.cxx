@@ -3694,8 +3694,8 @@ namespace RendererModule
             }
         }
 
-        State.Data.Indexes.Indexes[State.Data.Indexes.Count * 2 + 0] = State.Data.Vertexes.Count + 0;
-        State.Data.Indexes.Indexes[State.Data.Indexes.Count * 2 + 1] = State.Data.Vertexes.Count + 1;
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 0] = State.Data.Vertexes.Count + 0;
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 1] = State.Data.Vertexes.Count + 1;
 
         State.Data.Indexes.Count = State.Data.Indexes.Count + 2;
         State.Data.Vertexes.Count = State.Data.Vertexes.Count + 2;
@@ -3716,7 +3716,7 @@ namespace RendererModule
             {
                 void* v = (void*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 0)));
 
-                const u16 indx = *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 2 + 0)));
+                const u16 indx = *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 2+ 0)));
 
                 void* a = (void*)((addr)vertexes + (addr)(RendererVertexSize * indx));
 
@@ -3740,7 +3740,7 @@ namespace RendererModule
             {
                 void* v = (void*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 1)));
                 
-                const u16 indx = *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 2 + 0)));
+                const u16 indx = *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 2 + 1)));
                 
                 void* b = (void*)((addr)vertexes + (addr)(RendererVertexSize * indx));
 
@@ -3760,8 +3760,8 @@ namespace RendererModule
                 }
             }
 
-            State.Data.Indexes.Indexes[State.Data.Indexes.Count * 2 + 0] = State.Data.Vertexes.Count + 0;
-            State.Data.Indexes.Indexes[State.Data.Indexes.Count * 2 + 1] = State.Data.Vertexes.Count + 1;
+            State.Data.Indexes.Indexes[State.Data.Indexes.Count + 0] = State.Data.Vertexes.Count + 0;
+            State.Data.Indexes.Indexes[State.Data.Indexes.Count + 1] = State.Data.Vertexes.Count + 1;
 
             State.Data.Indexes.Count = State.Data.Indexes.Count + 2;
             State.Data.Vertexes.Count = State.Data.Vertexes.Count + 2;
@@ -3861,7 +3861,7 @@ namespace RendererModule
             }
         }
 
-        // C
+        // D
         {
             RVX* v = (RVX*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 3)));
 
@@ -3895,6 +3895,10 @@ namespace RendererModule
     // 0x60007650
     void RenderQuadMesh(RVX* vertexes, const u32* indexes, const u32 count)
     {
+        if (RendererModuleValues::RendererPrimitiveType != D3DPT_TRIANGLELIST) { RendererRenderScene(); }
+
+        RendererModuleValues::RendererPrimitiveType = D3DPT_TRIANGLELIST;
+
         for (u32 x = 0; x < count; x++)
         {
             if (MaximumRendererVertexCount - 4 < State.Data.Vertexes.Count) { RendererRenderScene(); }
@@ -3911,5 +3915,211 @@ namespace RendererModule
 
             if (State.Settings.Cull == 1 || ((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad(a, b, c, d); } // TODO
         }
+    }
+
+    // 0x60006fe0
+    void RenderTriangle(RVX* a, RVX* b, RVX* c)
+    {
+        if (RendererModuleValues::RendererPrimitiveType != D3DPT_TRIANGLELIST) { RendererRenderScene(); }
+
+        RendererModuleValues::RendererPrimitiveType = D3DPT_TRIANGLELIST;
+
+        if (MaximumRendererVertexCount - 3 < State.Data.Vertexes.Count) { RendererRenderScene(); }
+
+        // A
+        {
+            RVX* v = (RVX*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 0)));
+
+            CopyMemory(v, a, RendererVertexSize);
+
+            {
+                RTLVX* vertex = (RTLVX*)v;
+
+                if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
+
+                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                {
+                    vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
+                }
+
+                vertex->XYZ.Z = RendererDepthBias + vertex->XYZ.Z;
+            }
+        }
+
+        // B
+        {
+            RVX* v = (RVX*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 1)));
+
+            CopyMemory(v, b, RendererVertexSize);
+
+            {
+                RTLVX* vertex = (RTLVX*)v;
+
+                if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
+
+                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                {
+                    vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
+                }
+
+                vertex->XYZ.Z = RendererDepthBias + vertex->XYZ.Z;
+            }
+        }
+
+        // C
+        {
+            RVX* v = (RVX*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 2)));
+
+            CopyMemory(v, c, RendererVertexSize);
+
+            {
+                RTLVX* vertex = (RTLVX*)v;
+
+                if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
+
+                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                {
+                    vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
+                }
+
+                vertex->XYZ.Z = RendererDepthBias + vertex->XYZ.Z;
+            }
+        }
+
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 0] = State.Data.Vertexes.Count + 0;
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 1] = State.Data.Vertexes.Count + 1;
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 2] = State.Data.Vertexes.Count + 2;
+
+        State.Data.Indexes.Count = State.Data.Indexes.Count + 3;
+        State.Data.Vertexes.Count = State.Data.Vertexes.Count + 3;
+    }
+
+    // 0x60008270
+    BOOL RenderTriangleFans(RVX* vertexes, const u32 vertexCount, const u32 indexCount, const u32* indexes)
+    {
+        u32 max = 0;
+
+        for (u32 x = 0; x < indexCount + 2; x++)
+        {
+            State.Data.Indexes.Large[x] = indexes[x];
+
+            if (max < indexes[x]) { max = indexes[x]; }
+        }
+
+        if (!State.Scene.IsActive) { BeginRendererScene(); }
+
+        return State.DX.Device->DrawIndexedPrimitive(D3DPT_TRIANGLEFAN, RendererVertexType,
+            vertexes, max + 1, State.Data.Indexes.Large, indexCount + 2, D3DDP_NONE) == DD_OK;
+    }
+
+    // 0x600072a0
+    void RenderTriangleMesh(RVX* vertexes, const u32* indexes, const u32 count)
+    {
+        if (RendererModuleValues::RendererPrimitiveType != D3DPT_TRIANGLELIST) { RendererRenderScene(); }
+
+        RendererModuleValues::RendererPrimitiveType = D3DPT_TRIANGLELIST;
+
+        for (u32 x = 0; x < count; x++)
+        {
+            if (MaximumRendererVertexCount - 3 < State.Data.Vertexes.Count) { RendererRenderScene(); }
+
+            const u16 ia = *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 3 + 0)));
+            const u16 ib = *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 3 + 1)));
+            const u16 ic = *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 3 + 2)));
+
+            RVX* a = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * ia));
+            RVX* b = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * ib));
+            RVX* c = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * ic));
+
+            if (State.Settings.Cull == 1 || ((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderTriangle(a, b, c); } // TODO
+        }
+    }
+
+    // 0x60007e60
+    BOOL RenderTriangleStrips(RVX* vertexes, const u32 vertexCount, const u32 indexCount, const u32* indexes)
+    {
+        if (RendererModuleValues::RendererPrimitiveType != D3DPT_TRIANGLESTRIP) { RendererRenderScene(); }
+
+        RendererModuleValues::RendererPrimitiveType = D3DPT_TRIANGLESTRIP;
+
+        if ((MaximumRendererVertexCount - vertexCount + 3) < State.Data.Vertexes.Count) { RendererRenderScene(); }
+
+        for (u32 x = 0; x < vertexCount; x++)
+        {
+            // A
+            {
+                RVX* a = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 3 + 0)))));
+
+                RVX* v = (RVX*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 0)));
+
+                CopyMemory(v, a, RendererVertexSize);
+
+                {
+                    RTLVX* vertex = (RTLVX*)v;
+
+                    if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
+
+                    if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                    {
+                        vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
+                    }
+
+                    vertex->XYZ.Z = RendererDepthBias + vertex->XYZ.Z;
+                }
+            }
+
+            // B
+            {
+                RVX* b = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 3 + 1)))));
+
+                RVX* v = (RVX*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 1)));
+
+                CopyMemory(v, b, RendererVertexSize);
+
+                {
+                    RTLVX* vertex = (RTLVX*)v;
+
+                    if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
+
+                    if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                    {
+                        vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
+                    }
+
+                    vertex->XYZ.Z = RendererDepthBias + vertex->XYZ.Z;
+                }
+            }
+
+            // C
+            {
+                RVX* c = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 3 + 2)))));
+
+                RVX* v = (RVX*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 2)));
+
+                CopyMemory(v, c, RendererVertexSize);
+
+                {
+                    RTLVX* vertex = (RTLVX*)v;
+
+                    if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
+
+                    if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                    {
+                        vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
+                    }
+
+                    vertex->XYZ.Z = RendererDepthBias + vertex->XYZ.Z;
+                }
+            }
+
+            State.Data.Indexes.Indexes[State.Data.Indexes.Count + 0] = State.Data.Vertexes.Count + 0;
+            State.Data.Indexes.Indexes[State.Data.Indexes.Count + 1] = State.Data.Vertexes.Count + 1;
+            State.Data.Indexes.Indexes[State.Data.Indexes.Count + 2] = State.Data.Vertexes.Count + 2;
+
+            State.Data.Indexes.Count = State.Data.Indexes.Count + 3;
+            State.Data.Vertexes.Count = State.Data.Vertexes.Count + 3;
+        }
+
+        return TRUE;
     }
 }

@@ -396,8 +396,8 @@ namespace RendererModule
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height);
     BOOL RenderLines(Renderer::RVX* vertexes, const u32 count);
     BOOL RenderPoints(Renderer::RVX* vertexes, const u32 count);
-    BOOL RenderTriangleFans(Renderer::RTLVX* vertexes, const u32 vertexCount, const u32 indexCount, const u32* indexes);
-    BOOL RenderTriangleStrips(Renderer::RTLVX* vertexes, const u32 vertexCount, const u32 indexCount, const u32* indexes);
+    BOOL RenderTriangleFans(Renderer::RVX* vertexes, const u32 vertexCount, const u32 indexCount, const u32* indexes);
+    BOOL RenderTriangleStrips(Renderer::RVX* vertexes, const u32 vertexCount, const u32 indexCount, const u32* indexes);
     BOOL RestoreRendererSurfaces(void);
     BOOL RestoreRendererTextures(void);
     BOOL SelectRendererState(const D3DRENDERSTATETYPE type, const DWORD value);
@@ -453,8 +453,8 @@ namespace RendererModule
     void ReleaseRendererTexture(Renderer::RendererTexture* tex);
     void RenderQuad(Renderer::RVX* a, Renderer::RVX* b, Renderer::RVX* c, Renderer::RVX* d);
     void RenderQuadMesh(Renderer::RVX* vertexes, const u32* indexes, const u32 count);
-    void RenderTriangle(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
-    void RenderTriangleMesh(Renderer::RTLVX* vertexes, const u32* indexes, const u32 count);
+    void RenderTriangle(Renderer::RVX* a, Renderer::RVX* b, Renderer::RVX* c);
+    void RenderTriangleMesh(Renderer::RVX* vertexes, const u32* indexes, const u32 count);
     void SelectRendererDevice(void);
     void SelectRendererDeviceType(const u32 type);
     void SelectRendererFogAlphas(const u8* input, u8* output);

@@ -63,7 +63,7 @@ namespace RendererModule
     // 0x60001880
     // a.k.a. THRASH_createwindow
     // NOTE: Never being called by the application.
-    DLLAPI u32 STDCALLAPI CreateGameWindow(void*, void*, void*, void*)
+    DLLAPI u32 STDCALLAPI CreateGameWindow(const u32 width, const u32 height, const u32 format, void*)
     {
         // TODO NOT IMPLEMENTED
 
@@ -73,7 +73,7 @@ namespace RendererModule
     // 0x60001910
     // a.k.a. THRASH_destroywindow
     // NOTE: Never being called by the application.
-    DLLAPI u32 STDCALLAPI DestroyGameWindow(void*)
+    DLLAPI u32 STDCALLAPI DestroyGameWindow(const u32 indx)
     {
         // TODO NOT IMPLEMENTED
 
@@ -147,7 +147,7 @@ namespace RendererModule
     // 0x60001bf0
     // a.k.a. THRASH_drawsprite
     // NOTE: Never being called by the application.
-    DLLAPI void STDCALLAPI DrawSprite(void*, void*)
+    DLLAPI void STDCALLAPI DrawSprite(RVX* a, RVX* b)
     {
         // TODO NOT IMPLEMENTED
     }
@@ -155,7 +155,7 @@ namespace RendererModule
     // 0x60001c50
     // a.k.a. THRASH_drawspritemesh
     // NOTE: Never being called by the application.
-    DLLAPI void STDCALLAPI DrawSpriteMesh(void*, void*, void*)
+    DLLAPI void STDCALLAPI DrawSpriteMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
         // TODO NOT IMPLEMENTED
     }
@@ -424,7 +424,7 @@ namespace RendererModule
     // 0x60008f60
     // a.k.a. THRASH_tupdaterect
     // NOTE: Never being called by the application.
-    DLLAPI u32 STDCALLAPI UpdateTextureRectangle(void*, void*, void*, void*, void*, void*, void*, void*, void*)
+    DLLAPI u32 STDCALLAPI UpdateTextureRectangle(RendererTexture* tex, const u32* pixels, const u32* palette, const u32 x, const u32 y, const s32 width, const s32 height, const u32 size, void*)
     {
         // TODO NOT IMPLEMENTED
 

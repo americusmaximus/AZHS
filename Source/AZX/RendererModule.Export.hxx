@@ -41,8 +41,8 @@ namespace RendererModule
     DLLAPI void STDCALLAPI DrawPointStrip(const u32 count, Renderer::RVX* vertexes);
     DLLAPI void STDCALLAPI DrawQuad(Renderer::RVX* a, Renderer::RVX* b, Renderer::RVX* c, Renderer::RVX* d);
     DLLAPI void STDCALLAPI DrawQuadMesh(const u32 count, Renderer::RVX* vertexes, const u32* indexes);
-    DLLAPI void STDCALLAPI DrawSprite(void*, void*);
-    DLLAPI void STDCALLAPI DrawSpriteMesh(void*, void*, void*);
+    DLLAPI void STDCALLAPI DrawSprite(Renderer::RVX* a, Renderer::RVX* b);
+    DLLAPI void STDCALLAPI DrawSpriteMesh(const u32 count, Renderer::RVX* vertexes, const u32* indexes);
     DLLAPI void STDCALLAPI DrawTriangle(Renderer::RVX* a, Renderer::RVX* b, Renderer::RVX* c);
     DLLAPI void STDCALLAPI DrawTriangleFan(const u32 count, Renderer::RVX* vertexes);
     DLLAPI void STDCALLAPI DrawTriangleFans(const u32 count, Renderer::RVX* vertexes, const u32* indexes);
