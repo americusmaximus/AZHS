@@ -58,7 +58,7 @@ namespace RendererModuleValues
 
     u32 RendererTextureHint = RENDERER_MODULE_TEXTURE_HINT_DYNAMIC;
 
-    u32 DAT_60017130 = 4; // TODO
+    u32 RendererIndexSize = RENDERER_MODULE_INDEX_SIZE_4;
 
     D3DCMPFUNC RendererDepthFunction = D3DCMP_LESSEQUAL;
     D3DCMPFUNC RendererAlphaFunction = D3DCMP_GREATER;

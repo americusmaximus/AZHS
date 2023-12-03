@@ -282,7 +282,7 @@ namespace RendererModule
             {
                 u32 Count; // 0x60058874
 
-                u32 Vertexes[200000]; // 0x60018868 // TODO
+                u32 Vertexes[32768]; // 0x60018868 // TODO
             } Vertexes;
         } Data;
 
@@ -508,10 +508,14 @@ namespace RendererModule
     BOOL CALLBACK EnumerateDirectDrawDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context, HMONITOR monitor);
     BOOL EndRendererScene(void);
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height, IDirectDrawSurface7* input, IDirectDrawSurface7* outout);
+    BOOL RenderPoints(Renderer::RVX* vertexes, const u32 count);
     BOOL RestoreRendererSurfaces(void);
     BOOL SelectRendererState(const D3DRENDERSTATETYPE type, const DWORD value);
     BOOL SelectRendererTexture(Renderer::RendererTexture* tex);
     BOOL SelectRendererTextureStage(const u32 stage, const D3DTEXTURESTAGESTATETYPE type, const DWORD value);
+    BOOL UpdateRendererTexture(Renderer::RendererTexture* tex, const u32* pixels);
+    BOOL UpdateRendererTexture(Renderer::RendererTexture* tex, const u32* pixels, const u32* palette);
+    BOOL UpdateRendererTexture(Renderer::RendererTexture* tex, const u32* pixels, const u32* palette, const u32 x, const u32 y, const u32 width, const u32 height, const u32 size);
     const char* AcquireRendererMessage(const HRESULT code);
     const char* AcquireRendererMessageDescription(const HRESULT code);
     HRESULT CALLBACK EnumerateDirectDrawAcceleratedDevices(LPSTR description, LPSTR name, LPD3DDEVICEDESC7 desc, LPVOID context);
@@ -519,6 +523,7 @@ namespace RendererModule
     HRESULT CALLBACK EnumerateRendererDeviceModes(LPDDSURFACEDESC2 desc, LPVOID context);
     HRESULT CALLBACK EnumerateRendererDevicePixelFormats(LPDDPIXELFORMAT format, LPVOID context);
     HRESULT CALLBACK EnumerateRendererDeviceTextureFormats(LPDDPIXELFORMAT format, LPVOID context);
+    inline f32 AcquireNormal(const f32x3* a, const f32x3* b, const f32x3* c) { return (b->X - a->X) * (c->Y - a->Y) - (c->X - a->X) * (b->Y - a->Y); };
     Renderer::RendererTexture* AllocateRendererTexture(const u32 size);
     Renderer::RendererTexture* AllocateRendererTexture(const u32 width, const u32 height, const u32 format, void* p4, const u32 options, const BOOL destination);
     Renderer::RendererTexture* InitializeRendererTexture(void);
@@ -561,6 +566,10 @@ namespace RendererModule
     void ReleaseRendererTexture(Renderer::RendererTexture* tex);
     void ReleaseRendererWindows(void);
     void RendererRenderScene(void);
+    void RenderLine(Renderer::RVX* a, Renderer::RVX* b);
+    void RenderLineMesh(Renderer::RVX* vertexes, const u32* indexes, const u32 count);
+    void RenderQuad(Renderer::RVX* a, Renderer::RVX* b, Renderer::RVX* c, Renderer::RVX* d);
+    void RenderQuadMesh(Renderer::RVX* vertexes, const u32* indexes, const u32 count);
     void SelectRendererDevice(void);
     void SelectRendererDeviceType(const u32 type);
     void SelectRendererFogAlphas(const u8* input, u8* output);

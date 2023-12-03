@@ -100,8 +100,8 @@ namespace RendererModule
     typedef const RendererModuleDescriptor* (STDCALLAPI* RENDERERACQUIREDESCRIPTOR)(void);
     typedef const u32(STDCALLAPI* RENDERERCLEARGAMEWINDOW)(void);
     typedef const u32(STDCALLAPI* RENDERERCLIPGAMEWINDOW)(const u32 x0, const u32 y0, const u32 x1, const u32 y1);
-    typedef const u32(STDCALLAPI* RENDERERCREATEGAMEWINDOW)(void*, void*, void*, void*);
-    typedef const u32(STDCALLAPI* RENDERERDESTROYGAMEWINDOW)(void*);
+    typedef const u32(STDCALLAPI* RENDERERCREATEGAMEWINDOW)(const u32 width, const u32 height, const u32 format, void*);
+    typedef const u32(STDCALLAPI* RENDERERDESTROYGAMEWINDOW)(const u32 indx);
     typedef const void (STDCALLAPI* RENDERERDRAWLINE)(Renderer::RVX* a, Renderer::RVX* b);
     typedef const void (STDCALLAPI* RENDERERDRAWLINEMESH)(const u32 count, Renderer::RVX* vertexes, const u32* indexes);
     typedef const void (STDCALLAPI* RENDERERDRAWLINESTRIP)(const u32 count, Renderer::RVX* vertexes);

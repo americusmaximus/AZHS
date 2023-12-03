@@ -25,6 +25,7 @@ SOFTWARE.
 #include "RendererValues.hxx"
 #include "Settings.hxx"
 
+#include <malloc.h>
 #include <math.h>
 #include <stdio.h>
 
@@ -2625,10 +2626,10 @@ namespace RendererModule
         {
             switch ((u32)value)
             {
-            case 1: { DAT_60017130 = 1; break; } // TODO
-            case 2: { DAT_60017130 = 2; break; } // TODO
-            case 4: { DAT_60017130 = 4; break; } // TODO
-            case 8: { DAT_60017130 = 8; break; } // TODO
+            case RENDERER_MODULE_INDEX_SIZE_1: { RendererIndexSize = RENDERER_MODULE_INDEX_SIZE_1; break; }
+            case RENDERER_MODULE_INDEX_SIZE_2: { RendererIndexSize = RENDERER_MODULE_INDEX_SIZE_2; break; }
+            case RENDERER_MODULE_INDEX_SIZE_4: { RendererIndexSize = RENDERER_MODULE_INDEX_SIZE_4; break; }
+            case RENDERER_MODULE_INDEX_SIZE_8: { RendererIndexSize = RENDERER_MODULE_INDEX_SIZE_8; break; }
             default: { return RENDERER_MODULE_FAILURE; }
             }
 
@@ -3424,5 +3425,491 @@ namespace RendererModule
         }
 
         State.Window.Count = 0;
+    }
+
+    // 0x6000cf50
+    BOOL UpdateRendererTexture(RendererTexture* tex, const u32* pixels, const u32* palette)
+    {
+        if (pixels == NULL && palette == NULL) { return FALSE; }
+
+        if (pixels != NULL)
+        {
+            tex->Descriptor.dwFlags = DDSD_LPSURFACE;
+
+            tex->Descriptor.lpSurface =
+                (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1 || tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT3)
+                ? (void*)((addr)pixels + (addr)8) : (void*)pixels;
+
+            if (tex->Surface->SetSurfaceDesc(&tex->Descriptor, 0) != DD_OK) { return FALSE; }
+
+            if (State.Scene.IsActive)
+            {
+                AttemptRenderScene();
+                EndRendererScene();
+            }
+
+            if (tex->Texture->Blt(NULL, tex->Surface, NULL, DDBLT_WAIT, NULL) != DD_OK) { return FALSE; }
+        }
+
+        if (palette != NULL && tex->Unk04 != NULL)
+        {
+            PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
+
+            for (u32 x = 0; x < MAX_TEXTURE_PALETTE_COLOR_COUNT; x++)
+            {
+                entries[x].peRed = (u8)((palette[x] >> 16) & 0xff);
+                entries[x].peGreen = (u8)((palette[x] >> 8) & 0xff);
+                entries[x].peBlue = (u8)((palette[x] >> 0) & 0xff);
+                entries[x].peFlags = 0;
+            }
+
+            if (tex->Palette->SetEntries(0, 0, tex->Colors, entries) != DD_OK) { return FALSE; }
+
+            if (tex->Texture->SetPalette(tex->Palette) != DD_OK) { return FALSE; }
+        }
+
+        if (tex->MipMapCount != 0) { UpdateRendererTexture(tex, pixels); }
+
+        return TRUE;
+    }
+
+    // 0x6000d0c0
+    BOOL UpdateRendererTexture(RendererTexture* tex, const u32* pixels)
+    {
+        if (tex->MipMapCount == 0 || tex->MipMapCount == 1) { return TRUE; }
+
+        IDirectDrawSurface7* s1 = tex->Surface;
+        IDirectDrawSurface7* s2 = tex->Texture;
+
+        s1->AddRef();
+        s2->AddRef();
+
+        DDSCAPS2 caps;
+        ZeroMemory(&caps, sizeof(DDSCAPS2));
+
+        DDSURFACEDESC2 desc;
+        ZeroMemory(&desc, sizeof(DDSURFACEDESC2));
+
+        desc.dwSize = sizeof(DDSURFACEDESC2);
+
+        u32 offset = (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1
+            || tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT3) ? 8 : 0; // TODO
+
+        void* allocated = NULL;
+        u32* data = NULL;
+
+        for (u32 x = 0; x < tex->MipMapCount; x++)
+        {
+            if (pixels != NULL)
+            {
+                s1->GetSurfaceDesc(&desc);
+
+                if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1
+                    || tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT3)
+                {
+                    desc.lPitch = desc.lPitch / desc.dwHeight;
+                }
+
+                offset = offset + desc.dwHeight * desc.lPitch;
+
+                caps.dwCaps = DDSCAPS_MIPMAP | DDSCAPS_TEXTURE;
+
+                {
+                    IDirectDrawSurface7* attached = NULL;
+                    s1->GetAttachedSurface(&caps, &attached);
+                    s1->Release();
+
+                    s1 = attached;
+                }
+
+                {
+                    IDirectDrawSurface7* attached = NULL;
+                    s2->GetAttachedSurface(&caps, &attached);
+                    s2->Release();
+
+                    s2 = attached;
+                }
+
+                s1->GetSurfaceDesc(&tex->Descriptor);
+
+                tex->Descriptor.dwFlags = DDSD_LPSURFACE;
+
+                const u32 pitch = (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1
+                    || tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT3)
+                    ? tex->Descriptor.lPitch
+                    : (tex->Descriptor.ddpfPixelFormat.dwRGBBitCount * ((tex->Descriptor.dwWidth + 7) >> 3));
+
+                if (pitch == tex->Descriptor.lPitch)
+                {
+                    tex->Descriptor.lpSurface = (void*)((addr)pixels + (addr)offset);
+                }
+                else
+                {
+                    if (allocated == NULL)
+                    {
+                        allocated = _alloca((desc.lPitch * desc.dwHeight + 3) & 0xfffffffc);
+                        memset(allocated, 0xff, (desc.lPitch * desc.dwHeight + 3) & 0xfffffffc);
+                    }
+
+                    if (data == NULL) { data = (u32*)((addr)pixels + (addr)offset); }
+
+                    tex->Descriptor.lpSurface = allocated;
+
+                    for (u32 xx = 0; xx < tex->Descriptor.dwHeight; xx++)
+                    {
+                        CopyMemory(allocated, &data[xx * pitch], pitch);
+                    }
+                }
+
+                s1->SetSurfaceDesc(&tex->Descriptor, 0);
+                s2->Blt(NULL, s1, NULL, DDBLT_WAIT, NULL);
+            }
+
+            s1->Release();
+            s2->Release();
+        }
+
+        return TRUE;
+    }
+
+    // 0x6000cd50
+    BOOL UpdateRendererTexture(RendererTexture* tex, const u32* pixels, const u32* palette, const u32 x, const u32 y, const u32 width, const u32 height, const u32 size)
+    {
+        if (pixels != NULL)
+        {
+            RECT source;
+
+            source.left = x;
+            source.right = x + width;
+            source.top = y;
+            source.bottom = y + height;
+
+            RECT destination;
+
+            destination.left = 0;
+            destination.right = width;
+            destination.top = 0;
+            destination.bottom = height;
+
+            tex->Descriptor.dwFlags = DDSD_LPSURFACE;
+
+            tex->Descriptor.lpSurface =
+                (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1 || tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT3)
+                ? (void*)((addr)pixels + (addr)8) : (void*)pixels;
+
+            if (tex->Descriptor.lPitch != size)
+            {
+                void* allocated = _alloca((tex->Descriptor.lPitch * height + 3) & 0xfffffffc);
+                memset(allocated, 0xff, (tex->Descriptor.lPitch * height + 3) & 0xfffffffc);
+
+                tex->Descriptor.lpSurface = (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1
+                    || tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT3)
+                    ? (void*)((addr)allocated + (addr)8) : allocated;
+
+                for (u32 xx = 0; xx < height; xx++)
+                {
+                    CopyMemory(allocated, &pixels[xx * size], size);
+                }
+            }
+
+            if (tex->Surface->SetSurfaceDesc(&tex->Descriptor, 0) != DD_OK) { return FALSE; }
+
+            if (State.Scene.IsActive)
+            {
+                AttemptRenderScene();
+                EndRendererScene();
+            }
+
+            if (tex->Texture->Blt(&source, tex->Surface, &destination, DDBLT_WAIT, NULL) != DD_OK) { return FALSE; }
+        }
+
+        if (palette != NULL && tex->Unk04 != NULL)
+        {
+            PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
+
+            for (u32 x = 0; x < MAX_TEXTURE_PALETTE_COLOR_COUNT; x++)
+            {
+                entries[x].peRed = (u8)((palette[x] >> 16) & 0xff);
+                entries[x].peGreen = (u8)((palette[x] >> 8) & 0xff);
+                entries[x].peBlue = (u8)((palette[x] >> 0) & 0xff);
+                entries[x].peFlags = 0;
+            }
+
+            if (tex->Palette->SetEntries(0, 0, tex->Colors, entries) != DD_OK) { return FALSE; }
+
+            if (tex->Texture->SetPalette(tex->Palette) != DD_OK) { return FALSE; }
+        }
+
+        if (tex->MipMapCount != 0) { UpdateRendererTexture(tex, pixels); }
+
+        return TRUE;
+    }
+
+    // 0x600082f0
+    void RenderLine(RVX* a, RVX* b)
+    {
+        if (RendererModuleValues::RendererPrimitiveType != D3DPT_LINELIST) { RendererRenderScene(); }
+
+        RendererModuleValues::RendererPrimitiveType = D3DPT_LINELIST;
+
+        if (MaximumRendererVertexCount - 2 < State.Data.Vertexes.Count) { RendererRenderScene(); }
+
+        // A
+        {
+            RVX* v = (RVX*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 0)));
+
+            CopyMemory(v, a, RendererVertexSize);
+
+            {
+                RTLVX* vertex = (RTLVX*)v;
+
+                if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
+
+                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                {
+                    vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
+                }
+
+                vertex->XYZ.Z = RendererDepthBias + vertex->XYZ.Z;
+            }
+        }
+
+        // B
+        {
+            RVX* v = (RVX*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 1)));
+
+            CopyMemory(v, b, RendererVertexSize);
+
+            {
+                RTLVX* vertex = (RTLVX*)v;
+
+                if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
+
+                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                {
+                    vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
+                }
+
+                vertex->XYZ.Z = RendererDepthBias + vertex->XYZ.Z;
+            }
+        }
+
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count * 2 + 0] = State.Data.Vertexes.Count + 0;
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count * 2 + 1] = State.Data.Vertexes.Count + 1;
+
+        State.Data.Indexes.Count = State.Data.Indexes.Count + 2;
+        State.Data.Vertexes.Count = State.Data.Vertexes.Count + 2;
+    }
+
+    // 0x600084e0
+    void RenderLineMesh(RVX* vertexes, const u32* indexes, const u32 count)
+    {
+        if (RendererModuleValues::RendererPrimitiveType != D3DPT_LINELIST) { RendererRenderScene(); }
+
+        RendererModuleValues::RendererPrimitiveType = D3DPT_LINELIST;
+
+        for (u32 x = 0; x < count; x++)
+        {
+            if (MaximumRendererVertexCount - 2 < State.Data.Vertexes.Count) { RendererRenderScene(); }
+
+            // A
+            {
+                void* v = (void*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 0)));
+
+                const u16 indx = *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 2 + 0)));
+
+                void* a = (void*)((addr)vertexes + (addr)(RendererVertexSize * indx));
+
+                CopyMemory(v, a, RendererVertexSize);
+
+                {
+                    RTLVX* vertex = (RTLVX*)v;
+
+                    if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
+
+                    if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                    {
+                        vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
+                    }
+
+                    vertex->XYZ.Z = RendererDepthBias + vertex->XYZ.Z;
+                }
+            }
+
+            // B
+            {
+                void* v = (void*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 1)));
+                
+                const u16 indx = *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 2 + 0)));
+                
+                void* b = (void*)((addr)vertexes + (addr)(RendererVertexSize * indx));
+
+                CopyMemory(v, b, RendererVertexSize);
+
+                {
+                    RTLVX* vertex = (RTLVX*)v;
+
+                    if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
+
+                    if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                    {
+                        vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
+                    }
+
+                    vertex->XYZ.Z = RendererDepthBias + vertex->XYZ.Z;
+                }
+            }
+
+            State.Data.Indexes.Indexes[State.Data.Indexes.Count * 2 + 0] = State.Data.Vertexes.Count + 0;
+            State.Data.Indexes.Indexes[State.Data.Indexes.Count * 2 + 1] = State.Data.Vertexes.Count + 1;
+
+            State.Data.Indexes.Count = State.Data.Indexes.Count + 2;
+            State.Data.Vertexes.Count = State.Data.Vertexes.Count + 2;
+        }
+    }
+
+    // 0x60008730
+    BOOL RenderPoints(RVX* vertexes, const u32 count)
+    {
+        if (!State.Scene.IsActive) { BeginRendererScene(); }
+
+        AttemptRenderScene();
+
+        for (u32 x = 0; x < count; x++)
+        {
+            RTLVX* vertex = (RTLVX*)((addr)vertexes + (addr)(RendererVertexSize * x));
+
+            if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
+
+            if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+            {
+                vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
+            }
+
+            vertex->XYZ.Z = RendererDepthBias + vertex->XYZ.Z;
+        }
+
+        return State.DX.Device->DrawPrimitive(D3DPT_POINTLIST, RendererVertexType, vertexes, count, D3DDP_NONE) == DD_OK;
+    }
+
+    // 0x60007af0
+    void RenderQuad(RVX* a, RVX* b, RVX* c, RVX* d)
+    {
+        if (RendererModuleValues::RendererPrimitiveType != D3DPT_TRIANGLELIST) { RendererRenderScene(); }
+
+        RendererModuleValues::RendererPrimitiveType = D3DPT_TRIANGLELIST;
+
+        if (MaximumRendererVertexCount - 4 < State.Data.Vertexes.Count) { RendererRenderScene(); }
+
+        // A
+        {
+            RVX* v = (RVX*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 0)));
+
+            CopyMemory(v, a, RendererVertexSize);
+
+            {
+                RTLVX* vertex = (RTLVX*)v;
+
+                if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
+
+                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                {
+                    vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
+                }
+
+                vertex->XYZ.Z = RendererDepthBias + vertex->XYZ.Z;
+            }
+        }
+
+        // B
+        {
+            RVX* v = (RVX*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 1)));
+
+            CopyMemory(v, b, RendererVertexSize);
+
+            {
+                RTLVX* vertex = (RTLVX*)v;
+
+                if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
+
+                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                {
+                    vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
+                }
+
+                vertex->XYZ.Z = RendererDepthBias + vertex->XYZ.Z;
+            }
+        }
+
+        // C
+        {
+            RVX* v = (RVX*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 2)));
+
+            CopyMemory(v, c, RendererVertexSize);
+
+            {
+                RTLVX* vertex = (RTLVX*)v;
+
+                if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
+
+                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                {
+                    vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
+                }
+
+                vertex->XYZ.Z = RendererDepthBias + vertex->XYZ.Z;
+            }
+        }
+
+        // C
+        {
+            RVX* v = (RVX*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 3)));
+
+            CopyMemory(v, d, RendererVertexSize);
+
+            {
+                RTLVX* vertex = (RTLVX*)v;
+
+                if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
+
+                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                {
+                    vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
+                }
+
+                vertex->XYZ.Z = RendererDepthBias + vertex->XYZ.Z;
+            }
+        }
+
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 0] = State.Data.Vertexes.Count + 0;
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 1] = State.Data.Vertexes.Count + 1;
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 2] = State.Data.Vertexes.Count + 2;
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 3] = State.Data.Vertexes.Count + 0;
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 4] = State.Data.Vertexes.Count + 2;
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 5] = State.Data.Vertexes.Count + 3;
+
+        State.Data.Indexes.Count = State.Data.Indexes.Count + 6;
+        State.Data.Vertexes.Count = State.Data.Vertexes.Count + 4;
+    }
+
+    // 0x60007650
+    void RenderQuadMesh(RVX* vertexes, const u32* indexes, const u32 count)
+    {
+        for (u32 x = 0; x < count; x++)
+        {
+            if (MaximumRendererVertexCount - 4 < State.Data.Vertexes.Count) { RendererRenderScene(); }
+
+            const u16 ia = *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 4 + 0)));
+            const u16 ib = *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 4 + 1)));
+            const u16 ic = *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 4 + 2)));
+            const u16 id = *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 4 + 3)));
+
+            RVX* a = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * ia));
+            RVX* b = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * ib));
+            RVX* c = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * ic));
+            RVX* d = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * id));
+
+            if (State.Settings.Cull == 1 || ((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad(a, b, c, d); } // TODO
+        }
     }
 }

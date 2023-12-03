@@ -274,10 +274,15 @@ SOFTWARE.
 #define RENDERER_MODULE_ACCELERATION_NORMAL 0
 #define RENDERER_MODULE_ACCELERATION_TRANSFORM_AND_LIGHT 1
 
-#define RENDERER_MODULE_SELECT_TRANSFORM_WORLD_MATRIX_0 0
-#define RENDERER_MODULE_SELECT_TRANSFORM_WORLD_MATRIX_1 1
-#define RENDERER_MODULE_SELECT_TRANSFORM_WORLD_MATRIX_2 2
-#define RENDERER_MODULE_SELECT_TRANSFORM_WORLD_MATRIX_3 3
+#define RENDERER_MODULE_TRANSFORM_WORLD_MATRIX_0 0
+#define RENDERER_MODULE_TRANSFORM_WORLD_MATRIX_1 1
+#define RENDERER_MODULE_TRANSFORM_WORLD_MATRIX_2 2
+#define RENDERER_MODULE_TRANSFORM_WORLD_MATRIX_3 3
+
+#define RENDERER_MODULE_INDEX_SIZE_1 1 /* U8 */
+#define RENDERER_MODULE_INDEX_SIZE_2 2 /* U16 */
+#define RENDERER_MODULE_INDEX_SIZE_4 4 /* U32 */
+#define RENDERER_MODULE_INDEX_SIZE_8 8 /* U64 */
 
 #define RENDERER_MODULE_STATE_NONE 0
 #define RENDERER_MODULE_STATE_SELECT_TEXTURE 1
@@ -493,7 +498,8 @@ namespace RendererModule
         u32 Width;
         u32 Height;
 
-        // NOTE: This is an extra field added to match IDirectDrawSurface4::Unlock method.
+        // NOTE: DirectX 6.0
+        // This is an extra field added to match IDirectDrawSurface4::Unlock method.
         // I don't know how it worked originally, but but only IDirectDrawSurface4::Unlock accepts RECT as a parameter,
         // while the original renderers (DX6) passes the pointer to the data itself into Unlock.
         // This matches IDirectDrawSurface3::Unlock, but IDirectDrawSurface3 is never created anywhere,
@@ -671,6 +677,8 @@ namespace RendererModule
 
         u32 MemorySize;
         u32 MemoryType;
+
+        // DirectX 6.0
 
         const char* Author;
 

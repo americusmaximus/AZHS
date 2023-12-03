@@ -121,16 +121,20 @@ namespace RendererModule
         InitializeVertex(&vertexes[0], (RTLVX*)a);
         InitializeVertex(&vertexes[1], (RTLVX*)b);
 
-        RenderLines(vertexes, 2);
+        RenderLines((RVX*)vertexes, 2);
     }
 
     // 0x600016d0
     // a.k.a. THRASH_drawlinemesh
     DLLAPI void STDCALLAPI DrawLineMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        const RTLVX* vs = (RTLVX*)vertexes;
+        for (u32 x = 0; x < count; x++)
+        {
+            RVX* a = (RVX*)((addr)vertexes + (addr)(indexes[x * 2 + 0] * RendererLineVertexSize));
+            RVX* b = (RVX*)((addr)vertexes + (addr)(indexes[x * 2 + 1] * RendererLineVertexSize));
 
-        for (u32 x = 0; x < count; x++) { DrawLine((RVX*)&vs[indexes[x * 2 + 0]], (RVX*)&vs[indexes[x * 2 + 1]]); }
+            DrawLine(a, b);
+        }
     }
 
     // 0x60001840
@@ -156,7 +160,7 @@ namespace RendererModule
     // a.k.a. THRASH_drawpoint
     DLLAPI void STDCALLAPI DrawPoint(RVX* vertex)
     {
-        RenderPoints((RTLVX*)vertex, 1);
+        RenderPoints(vertex, 1);
     }
 
     // 0x60001770
@@ -181,14 +185,14 @@ namespace RendererModule
     // a.k.a. THRASH_drawquad
     DLLAPI void STDCALLAPI DrawQuad(RVX* a, RVX* b, RVX* c, RVX* d)
     {
-        if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d); } // TODO
+        if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad(a, b, c, d); } // TODO
     }
 
     // 0x60001670
     // a.k.a. THRASH_drawquadmesh
     DLLAPI void STDCALLAPI DrawQuadMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        RenderQuadMesh((RTLVX*)vertexes, indexes, count);
+        RenderQuadMesh(vertexes, indexes, count);
     }
 
     // 0x60001560

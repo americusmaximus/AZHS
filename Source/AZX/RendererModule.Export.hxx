@@ -68,7 +68,7 @@ namespace RendererModule
     DLLAPI u32 STDCALLAPI ReleaseTexture(Renderer::RendererTexture* tex);
     DLLAPI u32 STDCALLAPI ResetTextures(void);
     DLLAPI Renderer::RendererTexture* STDCALLAPI UpdateTexture(Renderer::RendererTexture* tex, const u32* pixels, const u32* palette);
-    DLLAPI u32 STDCALLAPI UpdateTextureRectangle(void*, void*, void*, void*, void*, void*, void*, void*, void*);
+    DLLAPI u32 STDCALLAPI UpdateTextureRectangle(Renderer::RendererTexture* tex, const u32* pixels, const u32* palette, const u32 x, const u32 y, const s32 width, const s32 height, const u32 size, void*);
     DLLAPI u32 STDCALLAPI UnlockGameWindow(const RendererModuleWindowLock* state);
     DLLAPI u32 STDCALLAPI SelectGameWindow(const u32 indx);
     DLLAPI u32 STDCALLAPI WriteRectangle(const u32 x, const u32 y, const u32 width, const u32 height, const u32* data);

@@ -109,6 +109,11 @@ struct u32x4 { u32 X, Y, Z, W; };
 
 #if !defined(__WATCOMC__) && _MSC_VER <= 1200
 #define roundf(x) (x >= 0.0f ? floorf(x + 0.5f) : ceilf(x - 0.5f))
+#define round(x) (x < 0.0 ? ceil(x - 0.5) : floor(x + 0.5))
+#define exp2(x) pow(2.0, x)
+
+#include <float.h>
+#define isfinite(x) _finite(x)
 #endif
 
 #if defined(__WATCOMC__)

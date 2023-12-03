@@ -2266,7 +2266,7 @@ namespace RendererModule
 
             if (State.Settings.IsFogActive)
             {
-                vertexes[x].Specular = ((u32)RendererFogAlphas[AcquireFogAlphaIndex(vertexes[x].RHW)]) << 24;
+                vertexes[x].Specular = ((u32)RendererFogAlphas[(u32)(vertexes[x].XYZ.Z * 255.0f + 0.5f)]) << 24;
             }
 
             vertexes[x].XYZ.Z = RendererDepthBias + vertexes[x].XYZ.Z;

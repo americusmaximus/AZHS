@@ -61,7 +61,7 @@ namespace RendererModuleValues
 
     extern u32 RendererTextureHint; // 0x600170f4
 
-    extern u32 DAT_60017130; // 0x60017130
+    extern u32 RendererIndexSize; // 0x60017130
 
     extern D3DCMPFUNC RendererDepthFunction; // 0x600170d4
     extern D3DCMPFUNC RendererAlphaFunction; // 0x600170d8

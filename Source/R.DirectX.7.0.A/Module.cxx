@@ -177,21 +177,23 @@ namespace RendererModule
     // // a.k.a. THRASH_drawline
     DLLAPI void STDCALLAPI DrawLine(RVX* a, RVX* b)
     {
-        // TODO NOT IMPLEMENTED
+        RenderLine(a, b);
     }
 
     // 0x60001b30
     // a.k.a. THRASH_drawlinemesh
     DLLAPI void STDCALLAPI DrawLineMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        RenderLineMesh(vertexes, indexes, count);
     }
 
     // 0x60001d20
     // a.k.a. THRASH_drawlinestrip
     DLLAPI void STDCALLAPI DrawLineStrip(const u32 count, RVX* vertexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { DrawLine((RVX*)&vs[x + 0], (RVX*)&vs[x + 1]); }
     }
 
     // 0x60001b50
@@ -199,42 +201,53 @@ namespace RendererModule
     // NOTE: Never being called by the application.
     DLLAPI void STDCALLAPI DrawLineStrips(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { DrawLine((RVX*)&vs[indexes[x + 0]], (RVX*)&vs[indexes[x + 1]]); }
     }
 
     // 0x60001b90
     // a.k.a. THRASH_drawpoint
     DLLAPI void STDCALLAPI DrawPoint(RVX* vertex)
     {
-        // TODO NOT IMPLEMENTED
+        RenderPoints(vertex, 1);
     }
 
     // 0x60001bb0
     // a.k.a. THRASH_drawpointmesh
     DLLAPI void STDCALLAPI DrawPointMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++)
+        {
+            const u16 index = *(u16*)((addr)indexes + (addr)(x * RendererIndexSize));
+
+            DrawPoint((RVX*)&vs[index]);
+        }
     }
 
     // 0x60001d50
     // a.k.a. THRASH_drawpointstrip
     DLLAPI void STDCALLAPI DrawPointStrip(const u32 count, RVX* vertexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { DrawPoint((RVX*)&vs[x]); }
     }
 
     // 0x60001a90
     // a.k.a. THRASH_drawquad
     DLLAPI void STDCALLAPI DrawQuad(RVX* a, RVX* b, RVX* c, RVX* d)
     {
-        // TODO NOT IMPLEMENTED
+        if (State.Settings.Cull == 1 || ((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad(a, b, c, d); } // TODO
     }
 
     // 0x60001af0
     // a.k.a. THRASH_drawquadmesh
     DLLAPI void STDCALLAPI DrawQuadMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        RenderQuadMesh(vertexes, indexes, count);
     }
 
     // 0x60001bf0
@@ -1976,10 +1989,10 @@ namespace RendererModule
         {
             switch ((u32)value)
             {
-            case RENDERER_MODULE_SELECT_TRANSFORM_WORLD_MATRIX_0: { State.DX.Device->SetTransform(D3DTRANSFORMSTATE_WORLD, (D3DMATRIX*)value); break; }
-            case RENDERER_MODULE_SELECT_TRANSFORM_WORLD_MATRIX_1: { State.DX.Device->SetTransform(D3DTRANSFORMSTATE_WORLD1, (D3DMATRIX*)value); break; }
-            case RENDERER_MODULE_SELECT_TRANSFORM_WORLD_MATRIX_2: { State.DX.Device->SetTransform(D3DTRANSFORMSTATE_WORLD2, (D3DMATRIX*)value); break; }
-            case RENDERER_MODULE_SELECT_TRANSFORM_WORLD_MATRIX_3: { State.DX.Device->SetTransform(D3DTRANSFORMSTATE_WORLD3, (D3DMATRIX*)value); break; }
+            case RENDERER_MODULE_TRANSFORM_WORLD_MATRIX_0: { State.DX.Device->SetTransform(D3DTRANSFORMSTATE_WORLD, (D3DMATRIX*)value); break; }
+            case RENDERER_MODULE_TRANSFORM_WORLD_MATRIX_1: { State.DX.Device->SetTransform(D3DTRANSFORMSTATE_WORLD1, (D3DMATRIX*)value); break; }
+            case RENDERER_MODULE_TRANSFORM_WORLD_MATRIX_2: { State.DX.Device->SetTransform(D3DTRANSFORMSTATE_WORLD2, (D3DMATRIX*)value); break; }
+            case RENDERER_MODULE_TRANSFORM_WORLD_MATRIX_3: { State.DX.Device->SetTransform(D3DTRANSFORMSTATE_WORLD3, (D3DMATRIX*)value); break; }
             }
 
             result = RENDERER_MODULE_SUCCESS; break;
@@ -2000,10 +2013,10 @@ namespace RendererModule
         {
             switch ((u32)value)
             {
-            case RENDERER_MODULE_SELECT_TRANSFORM_WORLD_MATRIX_0: { State.DX.Device->MultiplyTransform(D3DTRANSFORMSTATE_WORLD, (D3DMATRIX*)value); break; }
-            case RENDERER_MODULE_SELECT_TRANSFORM_WORLD_MATRIX_1: { State.DX.Device->MultiplyTransform(D3DTRANSFORMSTATE_WORLD1, (D3DMATRIX*)value); break; }
-            case RENDERER_MODULE_SELECT_TRANSFORM_WORLD_MATRIX_2: { State.DX.Device->MultiplyTransform(D3DTRANSFORMSTATE_WORLD2, (D3DMATRIX*)value); break; }
-            case RENDERER_MODULE_SELECT_TRANSFORM_WORLD_MATRIX_3: { State.DX.Device->MultiplyTransform(D3DTRANSFORMSTATE_WORLD3, (D3DMATRIX*)value); break; }
+            case RENDERER_MODULE_TRANSFORM_WORLD_MATRIX_0: { State.DX.Device->MultiplyTransform(D3DTRANSFORMSTATE_WORLD, (D3DMATRIX*)value); break; }
+            case RENDERER_MODULE_TRANSFORM_WORLD_MATRIX_1: { State.DX.Device->MultiplyTransform(D3DTRANSFORMSTATE_WORLD1, (D3DMATRIX*)value); break; }
+            case RENDERER_MODULE_TRANSFORM_WORLD_MATRIX_2: { State.DX.Device->MultiplyTransform(D3DTRANSFORMSTATE_WORLD2, (D3DMATRIX*)value); break; }
+            case RENDERER_MODULE_TRANSFORM_WORLD_MATRIX_3: { State.DX.Device->MultiplyTransform(D3DTRANSFORMSTATE_WORLD3, (D3DMATRIX*)value); break; }
             }
 
             result = RENDERER_MODULE_SUCCESS; break;
@@ -2024,10 +2037,10 @@ namespace RendererModule
         {
             switch ((u32)value)
             {
-            case RENDERER_MODULE_SELECT_TRANSFORM_WORLD_MATRIX_0: { State.DX.Device->GetTransform(D3DTRANSFORMSTATE_WORLD, (D3DMATRIX*)value); break; }
-            case RENDERER_MODULE_SELECT_TRANSFORM_WORLD_MATRIX_1: { State.DX.Device->GetTransform(D3DTRANSFORMSTATE_WORLD1, (D3DMATRIX*)value); break; }
-            case RENDERER_MODULE_SELECT_TRANSFORM_WORLD_MATRIX_2: { State.DX.Device->GetTransform(D3DTRANSFORMSTATE_WORLD2, (D3DMATRIX*)value); break; }
-            case RENDERER_MODULE_SELECT_TRANSFORM_WORLD_MATRIX_3: { State.DX.Device->GetTransform(D3DTRANSFORMSTATE_WORLD3, (D3DMATRIX*)value); break; }
+            case RENDERER_MODULE_TRANSFORM_WORLD_MATRIX_0: { State.DX.Device->GetTransform(D3DTRANSFORMSTATE_WORLD, (D3DMATRIX*)value); break; }
+            case RENDERER_MODULE_TRANSFORM_WORLD_MATRIX_1: { State.DX.Device->GetTransform(D3DTRANSFORMSTATE_WORLD1, (D3DMATRIX*)value); break; }
+            case RENDERER_MODULE_TRANSFORM_WORLD_MATRIX_2: { State.DX.Device->GetTransform(D3DTRANSFORMSTATE_WORLD2, (D3DMATRIX*)value); break; }
+            case RENDERER_MODULE_TRANSFORM_WORLD_MATRIX_3: { State.DX.Device->GetTransform(D3DTRANSFORMSTATE_WORLD3, (D3DMATRIX*)value); break; }
             }
 
             result = RENDERER_MODULE_SUCCESS; break;
@@ -2607,7 +2620,13 @@ namespace RendererModule
     // a.k.a. THRASH_tupdate
     DLLAPI RendererTexture* STDCALLAPI UpdateTexture(RendererTexture* tex, const u32* pixels, const u32* palette)
     {
-        // TODO NOT IMPLEMENTED
+        if (State.DX.Active.Instance != NULL)
+        {
+            if (State.DX.Active.Instance->TestCooperativeLevel() == DD_OK && tex != NULL)
+            {
+                return UpdateRendererTexture(tex, pixels, palette) ? tex : NULL;
+            }
+        }
 
         return NULL;
     }
@@ -2615,11 +2634,14 @@ namespace RendererModule
     // 0x60008f60
     // a.k.a. THRASH_tupdaterect
     // NOTE: Never being called by the application.
-    DLLAPI u32 STDCALLAPI UpdateTextureRectangle(void*, void*, void*, void*, void*, void*, void*, void*, void*)
+    DLLAPI u32 STDCALLAPI UpdateTextureRectangle(RendererTexture* tex, const u32* pixels, const u32* palette, const u32 x, const u32 y, const s32 width, const s32 height, const u32 size, void*)
     {
-        // TODO NOT IMPLEMENTED
+        if (tex != NULL && pixels != NULL && 0 < width && 0 < height)
+        {
+            return UpdateRendererTexture(tex, pixels, palette, x, y, width, height, size) ? (u32)tex : NULL;
+        }
 
-        return RENDERER_MODULE_FAILURE;
+        return NULL;
     }
 
     // 0x60001830
