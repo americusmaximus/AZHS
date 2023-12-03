@@ -22,20 +22,16 @@ SOFTWARE.
 
 #pragma once
 
-#include "Renderer.hxx"
+#include "Basic.hxx"
 
-#define RENDERER_MODULE_NAME "DX7 3rash"
-
-#ifdef _WIN64
-#define RENDERER_MODULE_TITLE_NAME "DirectX 7.0 (x64)"
-#else
-#define RENDERER_MODULE_TITLE_NAME "DirectX 7.0 (x32)"
-#endif
-
-// ORIGINAL: Daniel Kennett, Thursday 04:50PM Jan 18, 2001
-#define RENDERER_MODULE_AUTHOR "Americus Maximus"
-
-namespace RendererModule
+namespace Settings
 {
-    void ReleaseRendererModule(void);
+    struct SettingsContainer
+    {
+        BOOL Accelerate;
+    };
+
+    extern SettingsContainer SettingsState;
+
+    void InitializeSettings(void);
 }

@@ -20,6 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include "Graphics.Basic.hxx"
 #include "RendererValues.hxx"
 
 using namespace Renderer;
@@ -27,5 +28,68 @@ using namespace RendererModule;
 
 namespace RendererModuleValues
 {
+    u32 RendererVersion = RENDERER_MODULE_VERSION_107;
+    u32 RendererLineVertexSize = sizeof(RTLVX);
+
     s32 RendererState = DEFAULT_RENDERER_STATE;
+
+    s32 RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
+
+    s32 RendererDeviceType;
+
+    D3DPRIMITIVETYPE RendererPrimitiveType = D3DPT_TRIANGLELIST;
+    u32 RendererVertexType = D3DFVF_TLVERTEX;
+    u32 RendererVertexSize = sizeof(RTLVX);
+    u32 MaximumRendererVertexCount = MAX_RENDERER_VERTEX_COUNT;
+
+    f32 RendererDepthBias;
+
+    u32 RendererClearColor = GRAPCHICS_COLOR_WHITE;
+    f32 RendererClearDepth = DEFAULT_RENDERER_MODULE_CLEAR_DEPTH_VALUE;
+
+    f32 RendererFogStart = DEFAULT_FOG_START;
+    f32 RendererFogEnd = DEFAULT_FOG_END;
+    u32 RendererFogColor = DEFAULT_FOG_COLOR;
+    f32 RendererFogDensity = DEFAULT_FOG_DINSITY;
+    u32 RendererShadeMode = RENDERER_MODULE_SHADE_GOURAUD;
+
+    u32 RendererToggleOptions = DDFLIP_WAIT;
+    u32 RendererBlitOptions = DDBLT_DONOTWAIT;
+
+    u32 RendererTextureHint = RENDERER_MODULE_TEXTURE_HINT_DYNAMIC;
+
+    u32 DAT_60017130 = 4; // TODO
+
+    D3DCMPFUNC RendererDepthFunction = D3DCMP_LESSEQUAL;
+    D3DCMPFUNC RendererAlphaFunction = D3DCMP_GREATER;
+
+    u8 RendererFogAlphas[MAX_OUTPUT_FOG_ALPHA_COUNT];
+
+    RendererModule::MinMax MinMax[6] =
+    {
+        { 0x0,   0x4a },
+        { 0x64,  0x6a },
+        { 0xc8,  0xd7 },
+        { 0x12c, 0x13b },
+        { 0x190, 0x19f },
+        { 0x2bc, 0x2cb }
+    }; // TODO
+
+    RendererModuleDescriptor ModuleDescriptor;
+    RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT];
+
+    s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT] =
+    {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1
+    }; // TODO
+
+    s32 UnknownArray06[6] =
+    {
+        0, 0, 0, 0, 5, -1
+    }; // TODO
+
+    u32 UnknownFormatValues[MAX_USABLE_TEXTURE_FORMAT_COUNT] =
+    {
+       0, 1, 1, 2, 2, 3, 4, 2, 1, 2, 2, 2, 3, 0, 0, 0, 0, 0, 2, 3, 2, 0
+    }; // TODO
 }

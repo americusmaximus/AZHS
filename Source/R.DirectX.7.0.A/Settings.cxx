@@ -22,20 +22,24 @@ SOFTWARE.
 
 #pragma once
 
-#include "Renderer.hxx"
+#include "Native.Basic.hxx"
+#include "Settings.hxx"
 
-#define RENDERER_MODULE_NAME "DX7 3rash"
-
-#ifdef _WIN64
-#define RENDERER_MODULE_TITLE_NAME "DirectX 7.0 (x64)"
+#ifdef __WATCOMC__
+#include <RendererModule.Settings.hxx>
 #else
-#define RENDERER_MODULE_TITLE_NAME "DirectX 7.0 (x32)"
+#include "RendererModule.Settings.hxx"
 #endif
 
-// ORIGINAL: Daniel Kennett, Thursday 04:50PM Jan 18, 2001
-#define RENDERER_MODULE_AUTHOR "Americus Maximus"
-
-namespace RendererModule
+namespace Settings
 {
-    void ReleaseRendererModule(void);
+    SettingsContainer SettingsState;
+
+    void InitializeSettings(void)
+    {
+        SettingsState.Accelerate = GetPrivateProfileIntA(RENDERER_MODULE_SETTINGS_SECTION_DX7_NAME,
+            RENDERER_MODULE_SETTINGS_ACCELERATE_GRAPHICS_PROPERTY_NAME, FALSE, RENDERER_MODULE_SETTINGS_FILE_NAME);
+        SettingsState.FlatShading = GetPrivateProfileIntA(RENDERER_MODULE_SETTINGS_SECTION_DX6_NAME,
+            RENDERER_MODULE_SETTINGS_FLAT_SHADING_PROPERTY_NAME, TRUE, RENDERER_MODULE_SETTINGS_FILE_NAME);
+    }
 }

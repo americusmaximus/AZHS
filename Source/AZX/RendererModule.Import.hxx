@@ -135,7 +135,7 @@ namespace RendererModule
     typedef const u32(STDCALLAPI* RENDERERSELECTVIDEOMODE)(const u32 mode, const u32 pending, const u32 depth);
     typedef const u32(STDCALLAPI* RENDERERSYNCGAMEWINDOW)(const u32);
     typedef Renderer::RendererTexture* (STDCALLAPI* RENDERERALLOCATETEXTURE)(const u32 width, const u32 height, const u32 format, void*, const u32 options); // TODO
-    typedef const u32(STDCALLAPI* RENDERERRELEASETEXTURE)(void*);
+    typedef const u32(STDCALLAPI* RENDERERRELEASETEXTURE)(Renderer::RendererTexture* tex);
     typedef const u32(STDCALLAPI* RENDERERRESETTEXTURES)(void);
     typedef Renderer::RendererTexture* (STDCALLAPI* RENDERERUPDATETEXTURE)(Renderer::RendererTexture* tex, void* pixels, const u32* palette);
     typedef const u32(STDCALLAPI* RENDERERUPDATETEXTURERECTANGLE)(void*, void*, void*, void*, void*, void*, void*, void*, void*);

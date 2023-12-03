@@ -44,6 +44,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "R.DirectX.7.0.M", "Source\R
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "R.DirectX.7.0.A", "Source\R.DirectX.7.0.A\R.DirectX.7.0.A.vcxproj", "{8D757399-6CBD-4D9B-BA17-8769BFA20B99}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B0620679-23C1-43E9-9486-8FF5A97D4C74} = {B0620679-23C1-43E9-9486-8FF5A97D4C74}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -23,11 +23,13 @@ SOFTWARE.
 #include "Graphics.Basic.hxx"
 #include "Module.hxx"
 #include "RendererValues.hxx"
+#include "Settings.hxx"
 
 #include <stdlib.h>
 
 using namespace Renderer;
 using namespace RendererModuleValues;
+using namespace Settings;
 
 namespace RendererModule
 {
@@ -242,7 +244,12 @@ namespace RendererModule
     {
         RendererState = RENDERER_STATE_INACTIVE;
 
-        // TODO NOT IMPLEMENTED
+        InitializeSettings();
+
+        AcquireRendererDeviceCount();
+        FUN_60001f20();
+        _DAT_60018694 = 1;
+        atexit(FUN_600036b0);
 
         return State.Devices.Count;
     }
@@ -389,7 +396,7 @@ namespace RendererModule
     // 0x60008eb0
     // a.k.a. THRASH_tfree
     // NOTE: Never being called by the application.
-    DLLAPI u32 STDCALLAPI ReleaseTexture(void*)
+    DLLAPI u32 STDCALLAPI ReleaseTexture(RendererTexture* tex)
     {
         // TODO NOT IMPLEMENTED
 
@@ -425,7 +432,7 @@ namespace RendererModule
     }
 
     // 0x60001830
-    // a.k.a.  _THRASH_unlockwindow
+    // a.k.a. THRASH_unlockwindow
     DLLAPI u32 STDCALLAPI UnlockGameWindow(const RendererModuleWindowLock* state)
     {
         // TODO NOT IMPLEMENTED

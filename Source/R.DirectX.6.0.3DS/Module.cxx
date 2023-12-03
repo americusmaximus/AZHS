@@ -1206,7 +1206,11 @@ namespace RendererModule
             if (State.Textures.Current->Texture2 != NULL) { State.Textures.Current->Texture2->Release(); }
             if (State.Textures.Current->Palette != NULL) { State.Textures.Current->Palette->Release(); }
 
+            RendererTexture* tex = State.Textures.Current;
+
             State.Textures.Current = State.Textures.Current->Previous;
+
+            ReleaseRendererTexture(tex);
         }
 
         State.Textures.Current = NULL;
@@ -1226,7 +1230,7 @@ namespace RendererModule
     }
 
     // 0x600013e0
-    // a.k.a.  _THRASH_unlockwindow
+    // a.k.a. THRASH_unlockwindow
     DLLAPI u32 STDCALLAPI UnlockGameWindow(const RendererModuleWindowLock* state)
     {
         if (State.Lock.IsActive && State.Lock.Surface != NULL)
