@@ -31,9 +31,10 @@ SOFTWARE.
 
 #define MAX_MESSAGE_BUFFER_LENGTH 512
 
-#define MAX_SETTINGS_BUFFER_LENGTH 80
 #define MAX_RENDERER_MESSAGE_BUFFER_LENGTH 80
 #define MAX_RENDERER_MESSAGE_DESCRIPTION_BUFFER_LENGTH 64
+
+#define MAX_SETTINGS_BUFFER_LENGTH 80
 
 #define MAX_RENDERER_DEVICE_FORMAT_SCORE 10000
 
@@ -144,7 +145,7 @@ namespace RendererModule
                 DDDEVICEIDENTIFIER2 identifier;
                 ZeroMemory(&identifier, sizeof(DDDEVICEIDENTIFIER2));
 
-                dd->GetDeviceIdentifier(&identifier, DDGDI_NONE);
+                dd->GetDeviceIdentifier(&identifier, DDGDI_GETHOSTIDENTIFIER);
 
                 strncpy(State.Devices.Enumeration.Names[indx], identifier.szDescription, MAX_ENUMERATE_RENDERER_DEVICE_NAME_LENGTH);
 
