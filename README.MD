@@ -20,8 +20,8 @@ Examination of the game files, indicates that three calling conventions were use
 1. The game was compiled with Watcom compiler, and uses watcom calling convention internally and stdcall to call renderer and sound modules.
 2. The sound module was compiled with Watcom compiler, `eacsnd.dll`, uses watcom calling concention internally and exports methods with stdcall convention.
 3. The renderers are a mixed bag:
-	1. DirectX 6.0 renderer module was compiled with Visual C++ compiler, `d3da.dll`, uses cdecl calling convention internally and exports methods with stdcall convention.
-	2. DirectX 7.0 renderer module was compiled with Visual C++ compiler, `d3da.dll`, uses cdecl calling convention internally and exports methods with stdcall convention.
+	1. DirectX 6 renderer module was compiled with Visual C++ compiler, `d3da.dll`, uses cdecl calling convention internally and exports methods with stdcall convention.
+	2. DirectX 7 renderer module was compiled with Visual C++ compiler, `d3da.dll`, uses cdecl calling convention internally and exports methods with stdcall convention.
 	3. Software renderer module was compiled with Watcom compiler, `softtria.dll`, uses watcom calling convention internally and exports methods with stdcall convention.
 
 ### Compatibility, Code Style & Standards
@@ -32,7 +32,7 @@ Modern Visual Studio makes the binary dependent on modern runtime libraries that
 ### Sound Module
 The sound system module, `eacsnd.dll`, is a module that is used by the game to manage sound and sound effects playback. The module is only responsible for playback, and has no insight into anything else. The module calls functions back from the main game to acquire data, signal events, or log messages.
 
-Based on the structure sizes, the original module uses DirectSound version prior to 7.0, since no other inputs or hints were given, I selected version 6.0 for the project, and it aligns well with the release dates.
+Based on the structure sizes, the original module uses DirectSound version prior to 7, since no other inputs or hints were given, I selected version 6 for the project, and it aligns well with the release dates.
 
 The original game requires the sound system to be present, no graceful error handling is happening if the file is missing. Moreover, the game mostly expects the module to be valid as well, it does not perform checks whether all required methods were imported correctly, and just assumes they were.
 
@@ -47,9 +47,10 @@ The game has multiple DirectX 6 renderers available with slightly different desi
 3. DirectX 6 M is a a renderer based on the DirectX 6 renderer `dx6a.dll` from the modern patch. Since the patch is a binarry patch to the `DirectX 6 A`, I untangled it as well, for completeness.
 
 #### DirectX 7
-The original game acquired DirectX 7.0 renderer with the patch 4.50 in 2001, which brought not only the new renderer, but also removed SafeDisk security features. The renderer is moctly unchanged, besides some extra checks to avoid crashes on modern systems.
+The original game acquired DirectX 7 renderer with the patch 4.50 in 2001, which brought not only the new renderer, but also removed SafeDisk security features. The renderer is moctly unchanged, besides some extra checks to avoid crashes on modern systems.
+
 1. DirectX 7 A is a renderer based on the original file `d3da.dll` version: 2001.01.18.1651 (8193.1.24.5713) that came with the 4.50 patch in 2001.
-2. DirectX 7 M is a renderer based on the DirectX 7 renderer from the modern patch, which according to the author is based on DirectX 7 renderer from Motor City Online.
+2. DirectX 7 M is a renderer based on the DirectX 7 renderer from the modern patch, which according to the author is based on DirectX 7 renderer from [Motor City Online](https://github.com/americusmaximus/AZMCO).
 
 ## Other Similar Projects
 ### Predecessors
