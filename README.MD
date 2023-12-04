@@ -46,9 +46,15 @@ The game has multiple DirectX 6 renderers available with slightly different desi
 2. DirectX 6 A is a renderer based on the orignal file `d3da.dll` version: 1999.05.10.1318 (6553.5.16.4888) that came with the original game in 1999.
 3. DirectX 6 M is a a renderer based on the DirectX 6 renderer `dx6a.dll` from the modern patch. Since the patch is a binarry patch to the `DirectX 6 A`, I untangled it as well, for completeness.
 
+#### DirectX 7
+The original game acquired DirectX 7.0 renderer with the patch 4.50 in 2001, which brought not only the new renderer, but also removed SafeDisk security features. The renderer is moctly unchanged, besides some extra checks to avoid crashes on modern systems.
+1. DirectX 7 A is a renderer based on the original file `d3da.dll` version: 2001.01.18.1651 (8193.1.24.5713) that came with the 4.50 patch in 2001.
+2. DirectX 7 M is a renderer based on the DirectX 7 renderer from the modern patch, which according to the author is based on DirectX 7 renderer from Motor City Online.
+
 ## Other Similar Projects
 ### Predecessors
 1. [AutoZone Hot Pursuit](https://github.com/americusmaximus/AZHP)
+
 ### Successors
 1. [AutoZone Motor City Online](https://github.com/americusmaximus/AZMCO)
 
