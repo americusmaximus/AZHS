@@ -442,7 +442,7 @@ namespace RendererModule
             DDCAPS hel;
             ZeroMemory(&hel, sizeof(DDCAPS));
 
-            hel.dwSize = sizeof(hel);
+            hel.dwSize = sizeof(DDCAPS);
 
             if (State.DX.Instance->GetCaps(&hal, &hel) == DD_OK)
             {
@@ -829,24 +829,7 @@ namespace RendererModule
                     DDCAPS hel;
                     ZeroMemory(&hel, sizeof(DDCAPS));
 
-                    hel.dwSize = sizeof(hel);
-
-                    if (State.DX.Instance->GetCaps(&hal, &hel) == DD_OK)
-                    {
-                        State.Device.Capabilities.IsAccelerated = hal.dwCaps & DDCAPS_3D;
-                    }
-                }
-
-                {
-                    DDCAPS hal;
-                    ZeroMemory(&hal, sizeof(DDCAPS));
-
-                    hal.dwSize = sizeof(DDCAPS);
-
-                    DDCAPS hel;
-                    ZeroMemory(&hel, sizeof(DDCAPS));
-
-                    hel.dwSize = sizeof(hel);
+                    hel.dwSize = sizeof(DDCAPS);
 
                     if (State.DX.Instance->GetCaps(&hal, &hel) == DD_OK)
                     {
@@ -1363,8 +1346,10 @@ namespace RendererModule
 
         State.Device.Capabilities.MaximumSimultaneousTextures = caps.wMaxSimultaneousTextures;
 
-        DAT_6005ab50 = 0;
-        DAT_6005ab5c = 1;
+        DAT_6005ab50 = 0; // TODO
+        DAT_6005ab5c = 1; // TODO
+
+        ModuleDescriptor.SubType = 1; // TODO
 
         {
             DDCAPS hal;
@@ -1534,7 +1519,7 @@ namespace RendererModule
         }
 
         if (result == DD_OK) { State.DX.Active.IsActive = TRUE; }
-        else{ LOGERROR(AcquireRendererMessage(result)); }
+        else { LOGERROR(AcquireRendererMessage(result)); }
     }
 
     // 0x6000aa60

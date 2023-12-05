@@ -64,7 +64,7 @@ SOFTWARE.
 
 #define MAX_ACTIVE_SURFACE_COUNT 8
 
-#define MIN_RENDERER_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x20000 (2 MB) */
+#define MIN_RENDERER_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x200000 (2 MB) */
 
 #define MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT 128 /* ORIGINAL: 98 */
 
@@ -89,6 +89,8 @@ SOFTWARE.
 #define INVALID_TEXTURE_FORMAT_INDEX (-1)
 
 #define MAX_RENDERER_INDEX_COUNT 65536
+
+#define MAX_RENDERER_VERTEX_COUNT 32768
 
 #define MAX_TEXTURE_DEPTH_FORMAT_COUNT 16 /* ORIGINAL: 6 */
 
@@ -285,7 +287,7 @@ namespace RendererModule
             {
                 u32 Count; // 0x60058874
 
-                u32 Vertexes[32768]; // 0x60018868 // TODO
+                u32 Vertexes[MAX_RENDERER_VERTEX_COUNT]; // 0x60018868
             } Vertexes;
         } Data;
 
@@ -300,7 +302,7 @@ namespace RendererModule
                 BOOL IsAccelerated; // 0x6005aae0
                 u32 RendererDepthBits; // 0x6005aae4
                 u32 RendererBits; // 0x6005aae8
-                u32 RendererDeviceDepthBits; // 0x6005aaec // TODO name
+                u32 RendererDeviceDepthBits; // 0x6005aaec
                 BOOL IsDepthVideoMemoryCapable; // 0x6005aaf0
                 BOOL IsDepthAvailable; // 0x6005aaf4
                 BOOL IsGreenAllowSixBits; // 0x6005aaf8
@@ -318,7 +320,6 @@ namespace RendererModule
                 BOOL IsAlphaTextures; // 0x6005ab28
                 BOOL IsModulateBlending; // 0x6005ab2c
                 BOOL IsSourceAlphaBlending; // 0x6005ab30
-
                 u32 AntiAliasing; // 0x6005ab34
                 BOOL IsColorBlending; // 0x6005ab38
                 BOOL IsAnisotropyAvailable; // 0x6005ab3c
