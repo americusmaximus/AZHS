@@ -59,7 +59,8 @@ namespace RendererModule
 
             ModuleDescriptor.MaximumSimultaneousTextures = 1;
         }
-        else {
+        else
+        {
             ModuleDescriptor.MaximumTextureWidth = State.Device.Capabilities.MaxTextureWidth;
             ModuleDescriptor.MaximumTextureHeight = State.Device.Capabilities.MaxTextureHeight;
             ModuleDescriptor.MinimumTextureWidth = State.Device.Capabilities.MinTextureWidth;
