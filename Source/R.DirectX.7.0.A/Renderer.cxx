@@ -1621,7 +1621,7 @@ namespace RendererModule
         }
 
         {
-            const f32 value = 1.0f; // ORIGINAL: 1.4013e-45f;
+            const f32 value = 1.0f; // ORIGINAL: 1.4013e-45f
             State.DX.Device->SetRenderState(D3DRENDERSTATE_FOGEND, *(DWORD*)(&value));
         }
 
@@ -2143,11 +2143,11 @@ namespace RendererModule
 
     // 0x6000a130
     // a.k.a. createzbuffer
-    BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height, IDirectDrawSurface7* input, IDirectDrawSurface7* output)
+    BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height, IDirectDrawSurface7* depth, IDirectDrawSurface7* surf)
     {
-        IDirectDrawSurface7* surface = output == NULL ? State.DX.Surfaces.Unknown : input;
-
         if (State.Device.Capabilities.IsDepthBufferRemovalAvailable) { return TRUE; }
+
+        IDirectDrawSurface7* ds = surf == NULL ? State.DX.Surfaces.Depth : depth;
 
         DDPIXELFORMAT format;
         ZeroMemory(&format, sizeof(DDPIXELFORMAT));
@@ -2177,7 +2177,7 @@ namespace RendererModule
             : DDSCAPS_ZBUFFER | DDSCAPS_SYSTEMMEMORY;
 
         {
-            const HRESULT result = State.DX.Active.Instance->CreateSurface(&desc, &surface, NULL);
+            const HRESULT result = State.DX.Active.Instance->CreateSurface(&desc, &ds, NULL);
 
             if (result != DD_OK)
             {
@@ -2197,10 +2197,10 @@ namespace RendererModule
         }
 
         {
-            IDirectDrawSurface7* s = output != NULL ? output
+            IDirectDrawSurface7* s = surf != NULL ? surf
                 : (State.DX.Active.Surfaces.Back == NULL ? State.DX.Active.Surfaces.Main : State.DX.Active.Surfaces.Back);
 
-            HRESULT result = s->AddAttachedSurface(surface);
+            HRESULT result = s->AddAttachedSurface(ds);
 
             if (result == DD_OK)
             {
@@ -2209,7 +2209,7 @@ namespace RendererModule
 
                 desc.dwSize = sizeof(DDSURFACEDESC2);
 
-                result = surface->GetSurfaceDesc(&desc);
+                result = ds->GetSurfaceDesc(&desc);
 
                 if (result == DD_OK)
                 {
@@ -2217,7 +2217,7 @@ namespace RendererModule
 
                     if (!State.Device.Capabilities.IsAccelerated || State.Device.Capabilities.IsDepthVideoMemoryCapable)
                     {
-                        if (surface != NULL) { surface->Release(); }
+                        if (ds != NULL) { ds->Release(); }
 
                         return TRUE;
                     }
@@ -2232,7 +2232,7 @@ namespace RendererModule
         State.DX.Device->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
         State.DX.Device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
 
-        if (surface != NULL) { surface->Release(); }
+        if (ds != NULL) { ds->Release(); }
 
         return FALSE;
     }
@@ -3370,13 +3370,13 @@ namespace RendererModule
 
         State.Window.Index = 0;
 
-        if (State.DX.Surfaces.Unknown != NULL)
+        if (State.DX.Surfaces.Depth != NULL)
         {
             State.DX.Device->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
             State.DX.Device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
 
-            State.DX.Surfaces.Unknown->Release();
-            State.DX.Surfaces.Unknown = NULL;
+            State.DX.Surfaces.Depth->Release();
+            State.DX.Surfaces.Depth = NULL;
         }
 
         if (State.DX.Device != NULL)

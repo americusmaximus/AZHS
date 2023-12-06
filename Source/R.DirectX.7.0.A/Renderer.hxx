@@ -268,7 +268,7 @@ namespace RendererModule
 
                 IDirectDrawSurface7* Window; // 0x600186cc
 
-                IDirectDrawSurface7* Unknown; // 0x60058d94
+                IDirectDrawSurface7* Depth; // 0x60058d94
             } Surfaces;
         } DX;
 
@@ -511,7 +511,7 @@ namespace RendererModule
     BOOL BeginRendererScene(void);
     BOOL CALLBACK EnumerateDirectDrawDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context, HMONITOR monitor);
     BOOL EndRendererScene(void);
-    BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height, IDirectDrawSurface7* input, IDirectDrawSurface7* outout);
+    BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height, IDirectDrawSurface7* depth, IDirectDrawSurface7* surf);
     BOOL RenderPoints(Renderer::RVX* vertexes, const u32 count);
     BOOL RenderTriangleFans(Renderer::RVX* vertexes, const u32 vertexCount, const u32 indexCount, const u32* indexes);
     BOOL RenderTriangleStrips(Renderer::RVX* vertexes, const u32 vertexCount, const u32 indexCount, const u32* indexes);

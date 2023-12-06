@@ -1546,7 +1546,7 @@ namespace RendererModule
         }
 
         {
-            f32 value = 1.0f; // ORIGINAL: 1.4013e-45f;
+            f32 value = 1.0f; // ORIGINAL: 1.4013e-45f
             State.DX.Device->SetRenderState(D3DRENDERSTATE_FOGEND, *(DWORD*)(&value));
         }
 

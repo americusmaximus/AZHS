@@ -101,7 +101,7 @@ namespace RendererModule
     {
         return ClearRendererViewPort(State.ViewPort.X0, State.ViewPort.Y0,
             State.ViewPort.X1 + State.ViewPort.X0, State.ViewPort.Y0 + State.ViewPort.Y1,
-            State.DX.Surfaces.Window == State.DX.Surfaces.Unknown);
+            State.DX.Surfaces.Window == State.DX.Surfaces.Depth);
     }
 
     // 0x600013c0
@@ -2727,7 +2727,7 @@ namespace RendererModule
             }
         }
 
-        State.DX.Surfaces.Window = State.DX.Surfaces.Unknown;
+        State.DX.Surfaces.Window = State.DX.Surfaces.Depth;
 
         if (indx != 3 && indx != 5) // TODO
         {
