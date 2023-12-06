@@ -28,47 +28,45 @@ using namespace RendererModule;
 
 namespace RendererModuleValues
 {
-    u32 RendererVersion = RENDERER_MODULE_VERSION_107;
-    u32 RendererLineVertexSize = sizeof(RTLVX);
-
     s32 RendererState = DEFAULT_RENDERER_STATE;
-
     s32 RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
 
-    s32 RendererDeviceType;
+    u32 RendererToggleOptions = DDFLIP_WAIT;
 
-    D3DPRIMITIVETYPE RendererPrimitiveType = D3DPT_TRIANGLELIST;
-    u32 RendererVertexType = D3DFVF_TLVERTEX;
-    u32 RendererVertexSize = sizeof(RTLVX);
-    u32 MaximumRendererVertexCount = MAX_RENDERER_VERTEX_COUNT;
-
-    f32 RendererDepthBias;
-
-    u32 RendererClearColor = GRAPCHICS_COLOR_WHITE;
     f32 RendererClearDepth = DEFAULT_RENDERER_MODULE_CLEAR_DEPTH_VALUE;
-
-    f32 RendererFogStart = DEFAULT_FOG_START;
-    f32 RendererFogEnd = DEFAULT_FOG_END;
     u32 RendererFogColor = DEFAULT_FOG_COLOR;
     f32 RendererFogDensity = DEFAULT_FOG_DINSITY;
     u32 RendererShadeMode = RENDERER_MODULE_SHADE_GOURAUD;
-
-    u32 RendererToggleOptions = DDFLIP_WAIT;
     u32 RendererBlitOptions = DDBLT_DONOTWAIT;
-
+    D3DCMPFUNC RendererDepthFunction = D3DCMP_LESSEQUAL;
+    D3DCMPFUNC RendererAlphaFunction = D3DCMP_GREATER;
+    f32 RendererFogEnd = DEFAULT_FOG_END;
+    u32 RendererVertexType = D3DFVF_TLVERTEX;
     u32 RendererTextureHint = RENDERER_MODULE_TEXTURE_HINT_DYNAMIC;
+
+    u32 RendererVertexSize = sizeof(RTLVX);
+    u32 MaximumRendererVertexCount = MAX_RENDERER_VERTEX_COUNT;
+    D3DPRIMITIVETYPE RendererPrimitiveType = D3DPT_TRIANGLELIST;
+
+    u32 RendererClearColor = GRAPCHICS_COLOR_WHITE;
+
+    u32 RendererVersion = RENDERER_MODULE_VERSION_107;
+    u32 RendererLineVertexSize = sizeof(RTLVX);
 
     u32 RendererIndexSize = RENDERER_MODULE_INDEX_SIZE_4;
 
-    D3DCMPFUNC RendererDepthFunction = D3DCMP_LESSEQUAL;
-    D3DCMPFUNC RendererAlphaFunction = D3DCMP_GREATER;
+    f32 RendererFogStart = DEFAULT_FOG_START;
+
+    f32 RendererDepthBias;
+
+    s32 RendererDeviceType;
 
     u8 RendererFogAlphas[MAX_OUTPUT_FOG_ALPHA_COUNT];
 
     RendererModule::MinMax MinMax[6] =
     {
         { 0x0,   0x4a },
-        { 0x64,  0x6a },
+        { 0x64,  0x6e },
         { 0xc8,  0xd7 },
         { 0x12c, 0x13b },
         { 0x190, 0x19f },

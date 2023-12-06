@@ -2692,6 +2692,7 @@ namespace RendererModule
             (void*)AcquireSettingsValue(0x00000000, section, "CHROMACOLOUR"));
         SelectState(RENDERER_MODULE_STATE_SELECT_DITHER_STATE,
             (void*)AcquireSettingsValue(RENDERER_MODULE_DITHER_INACTIVE, section, "DITHER")); // ORIGINAL: ACTIVE
+        SelectState(RENDERER_MODULE_STATE_SELECT_FOG_ALPHAS, NULL);
         SelectState(RENDERER_MODULE_STATE_SELECT_FOG_STATE,
             (void*)AcquireSettingsValue(RENDERER_MODULE_FOG_INACTIVE, section, "FOGMODE"));
 
@@ -2716,7 +2717,8 @@ namespace RendererModule
         SelectState(RENDERER_MODULE_STATE_SELECT_FOG_COLOR,
             (void*)AcquireSettingsValue(GRAPCHICS_COLOR_WHITE, section, "FOGCOLOUR"));
 
-        SelectState(RENDERER_MODULE_STATE_INDEX_SIZE, (void*)AcquireSettingsValue(4, section, "INDEXSIZE")); // TODO
+        SelectState(RENDERER_MODULE_STATE_INDEX_SIZE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_INDEX_SIZE_4, section, "INDEXSIZE"));
 
         SelectState(RENDERER_MODULE_STATE_SELECT_BLEND_STATE,
             (void*)AcquireSettingsValue(RENDERER_MODULE_ALPHA_BLEND_SOURCE_INVERSE_SOURCE, section, "ALPHA"));

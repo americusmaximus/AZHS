@@ -637,7 +637,7 @@ namespace RendererModule
     // a.k.a. THRASH_setstate
     DLLAPI u32 STDCALLAPI SelectState(const u32 state, void* value)
     {
-        const u32 actual = state & 0xFFFF;
+        const u32 actual = state & RENDERER_MODULE_SELECT_STATE_MASK;
         const u32 stage = MAKETEXTURESTAGEVALUE(state);
 
         u32 result = RENDERER_MODULE_FAILURE;
