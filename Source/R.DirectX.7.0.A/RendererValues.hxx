@@ -35,15 +35,14 @@ namespace RendererModuleValues
     extern s32 RendererDeviceIndex; // 0x600170bc
 
     extern u32 RendererToggleOptions; // 0x600170cc
-
-    extern f32 RendererClearDepth; // 0x600170e0
-    extern u32 RendererFogColor; // 0x600170e4
-    extern f32 RendererFogDensity; // 0x600170e8
-    extern u32 RendererShadeMode; // 0x600170ec
     extern u32 RendererBlitOptions; // 0x600170d0
     extern D3DCMPFUNC RendererDepthFunction; // 0x600170d4
     extern D3DCMPFUNC RendererAlphaFunction; // 0x600170d8
     extern f32 RendererFogEnd; // 0x600170dc
+    extern f32 RendererClearDepth; // 0x600170e0
+    extern u32 RendererFogColor; // 0x600170e4
+    extern f32 RendererFogDensity; // 0x600170e8
+    extern u32 RendererShadeMode; // 0x600170ec
     extern u32 RendererVertexType; // 0x600170f0
     extern u32 RendererTextureHint; // 0x600170f4
 

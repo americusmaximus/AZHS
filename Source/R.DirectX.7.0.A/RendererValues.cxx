@@ -32,15 +32,14 @@ namespace RendererModuleValues
     s32 RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
 
     u32 RendererToggleOptions = DDFLIP_WAIT;
-
-    f32 RendererClearDepth = DEFAULT_RENDERER_MODULE_CLEAR_DEPTH_VALUE;
-    u32 RendererFogColor = DEFAULT_FOG_COLOR;
-    f32 RendererFogDensity = DEFAULT_FOG_DINSITY;
-    u32 RendererShadeMode = RENDERER_MODULE_SHADE_GOURAUD;
     u32 RendererBlitOptions = DDBLT_DONOTWAIT;
     D3DCMPFUNC RendererDepthFunction = D3DCMP_LESSEQUAL;
     D3DCMPFUNC RendererAlphaFunction = D3DCMP_GREATER;
     f32 RendererFogEnd = DEFAULT_FOG_END;
+    f32 RendererClearDepth = DEFAULT_RENDERER_MODULE_CLEAR_DEPTH_VALUE;
+    u32 RendererFogColor = DEFAULT_FOG_COLOR;
+    f32 RendererFogDensity = DEFAULT_FOG_DINSITY;
+    u32 RendererShadeMode = RENDERER_MODULE_SHADE_GOURAUD;
     u32 RendererVertexType = D3DFVF_TLVERTEX;
     u32 RendererTextureHint = RENDERER_MODULE_TEXTURE_HINT_DYNAMIC;
 
