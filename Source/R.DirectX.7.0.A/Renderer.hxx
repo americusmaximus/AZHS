@@ -106,7 +106,6 @@ SOFTWARE.
 
 #define RENDERER_WINDOW_OFFSET 8
 #define MAX_RENDERER_WINDOW_COUNT 65536
-#define MAX_RENDERER_WINDOW_INDEX 65535
 
 #define DEFAULT_FOG_DINSITY (1.0f)
 #define DEFAULT_FOG_COLOR 0x00FF0000
@@ -447,7 +446,7 @@ namespace RendererModule
 
             Renderer::RendererTexture* Current; // 0x60058e2c
 
-            Renderer::RendererTexture* Unknown; // 0x60018858
+            Renderer::RendererTexture* Recent; // 0x60018858
 
             TextureStage Stages[MAX_RENDERER_MODULE_TEXTURE_STAGE_COUNT]; // 0x6005a940
 

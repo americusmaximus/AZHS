@@ -2349,20 +2349,13 @@ namespace RendererModule
 
                 if (!State.Settings.IsToggleAllowed) { return RENDERER_MODULE_FAILURE; }
 
-                // DAT_600fc890(0); // TODO
-
                 while (TRUE)
                 {
                     while (result = State.DX.Active.Instance->TestCooperativeLevel(), result == DD_OK)
                     {
                         ResetTextures();
 
-                        if (result = State.DX.Active.Instance->RestoreAllSurfaces(), result == DD_OK)
-                        {
-                            // DAT_600fc890(1); // TODO
-
-                            return RENDERER_MODULE_SUCCESS;
-                        }
+                        if (result = State.DX.Active.Instance->RestoreAllSurfaces(), result == DD_OK) { return RENDERER_MODULE_SUCCESS; }
 
                         Sleep(1);
                     }
@@ -2375,8 +2368,6 @@ namespace RendererModule
                 }
 
                 SelectVideoMode(state, 2, 1); // TODO
-
-                // DAT_600fc890(1); // TODO
 
                 return RENDERER_MODULE_SUCCESS;
             }
@@ -2860,7 +2851,7 @@ namespace RendererModule
         tex->Width = width;
         tex->Height = height;
         tex->FormatIndex = State.Textures.Formats.Indexes[format];
-        tex->UnknownFormatIndexValue = UnknownFormatValues[format];;
+        tex->UnknownFormatIndexValue = UnknownFormatValues[format];
         tex->Stage = MAKETEXTURESTAGEVALUE(options);
         tex->FormatIndexValue = format & 0xff;
 
@@ -2887,6 +2878,11 @@ namespace RendererModule
 
             return NULL;
         }
+
+        tex->Previous = State.Textures.Current;
+        State.Textures.Current = tex;
+
+        State.Textures.Count = State.Textures.Count + 1;
 
         return tex;
     }
@@ -3275,15 +3271,17 @@ namespace RendererModule
 
             if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_16)
             {
-                State.Lock.State.Format = ((desc.ddpfPixelFormat.dwGBitMask == 0x7e0) - 1 & 7) + 4; // TODO
+                State.Lock.State.Format = (desc.ddpfPixelFormat.dwGBitMask == 0x7e0)
+                    ? RENDERER_PIXEL_FORMAT_16_BIT_565
+                    : RENDERER_PIXEL_FORMAT_UNKNOWN_11;
             }
             else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_32)
             {
-                State.Lock.State.Format = 6; // TODO
+                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_32_BIT;
             }
             else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_24)
             {
-                State.Lock.State.Format = 5; // TODO
+                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_24_BIT;
             }
 
             if (State.Settings.IsWindowMode)

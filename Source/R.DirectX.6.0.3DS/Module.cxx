@@ -336,11 +336,13 @@ namespace RendererModule
             }
             else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_16)
             {
-                State.Lock.State.Format = desc.ddpfPixelFormat.dwGBitMask == 0x7e0 ? 4 : 11; // TODO
+                State.Lock.State.Format = (desc.ddpfPixelFormat.dwGBitMask == 0x7e0)
+                    ? RENDERER_PIXEL_FORMAT_16_BIT_565
+                    : RENDERER_PIXEL_FORMAT_UNKNOWN_11;
             }
             else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_32)
             {
-                State.Lock.State.Format = 5; // TODO
+                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_24_BIT;
             }
 
             State.Lock.IsActive = TRUE;

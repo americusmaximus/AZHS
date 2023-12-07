@@ -160,7 +160,7 @@ namespace RendererModule
     // NOTE: Never being called by the application.
     DLLAPI u32 STDCALLAPI DestroyGameWindow(const u32 indx)
     {
-        if (indx < MAX_RENDERER_WINDOW_INDEX && State.Windows[indx].Texture != NULL && RENDERER_WINDOW_OFFSET < indx)
+        if (indx < MAX_RENDERER_WINDOW_COUNT && State.Windows[indx].Texture != NULL && RENDERER_WINDOW_OFFSET < indx)
         {
             if (State.Windows[indx].Surface != NULL)
             {
@@ -373,7 +373,7 @@ namespace RendererModule
     // NOTE: Never being called by the application.
     DLLAPI RendererTexture* STDCALLAPI AcquireGameWindowTexture(const u32 indx)
     {
-        if (indx < MAX_RENDERER_WINDOW_INDEX) { return State.Windows[indx].Texture; }
+        if (indx < MAX_RENDERER_WINDOW_COUNT) { return State.Windows[indx].Texture; }
 
         return NULL;
     }
@@ -475,15 +475,17 @@ namespace RendererModule
         {
             if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_16)
             {
-                State.Lock.State.Format = ((desc.ddpfPixelFormat.dwGBitMask == 0x7e0) - 1 & 7) + 4; // TODO
+                State.Lock.State.Format = (desc.ddpfPixelFormat.dwGBitMask == 0x7e0)
+                    ? RENDERER_PIXEL_FORMAT_16_BIT_565
+                    : RENDERER_PIXEL_FORMAT_UNKNOWN_11;
             }
             else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_32)
             {
-                State.Lock.State.Format = 6; // TODO
+                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_32_BIT;
             }
             else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_24)
             {
-                State.Lock.State.Format = 5; // TODO
+                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_24_BIT;
             }
 
             if (State.Settings.IsWindowMode)
@@ -785,6 +787,8 @@ namespace RendererModule
                     SelectRendererState(D3DRENDERSTATE_SPECULARENABLE, TRUE);
 
                     RendererShadeMode = RENDERER_MODULE_SHADE_GOURAUD;
+
+                    break;
                 }
                 case RENDERER_MODULE_SHADE_3:
                 default: { return RENDERER_MODULE_FAILURE; }
@@ -2583,12 +2587,12 @@ namespace RendererModule
     // NOTE: Never being called by the application.
     DLLAPI u32 STDCALLAPI ReleaseTexture(RendererTexture* tex)
     {
-        if (State.Textures.Unknown == NULL) { return RENDERER_MODULE_FAILURE; }
+        if (State.Textures.Recent == NULL) { return RENDERER_MODULE_FAILURE; }
 
         // Attempt to remove the input texture from the linked list.
         {
-            RendererTexture* current = State.Textures.Unknown;
-            RendererTexture* previous = State.Textures.Unknown;
+            RendererTexture* current = State.Textures.Recent;
+            RendererTexture* previous = State.Textures.Recent;
 
             while (current != tex)
             {
@@ -2614,7 +2618,7 @@ namespace RendererModule
     {
         State.Textures.Count = 0;
 
-        State.Textures.Unknown = NULL;
+        State.Textures.Recent = NULL;
 
         if (State.DX.DirectX == NULL) { return RENDERER_MODULE_FAILURE; }
 
