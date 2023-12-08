@@ -3702,7 +3702,7 @@ namespace RendererModule
             {
                 void* v = (void*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 0)));
 
-                const u16 indx = *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 2+ 0)));
+                const u16 indx = *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 2 + 0)));
 
                 void* a = (void*)((addr)vertexes + (addr)(RendererVertexSize * indx));
 

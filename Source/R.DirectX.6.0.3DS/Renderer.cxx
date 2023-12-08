@@ -1691,7 +1691,7 @@ namespace RendererModule
             SelectState(RENDERER_MODULE_STATE_SELECT_MIP_MAP_LOD_BIAS_STATE, (void*)(u32)(*(u32*)&value));
         }
 
-        SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_STATE, (void*)((depth < 1) - 1 & 2)); // TODO
+        SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_STATE, (void*)(((depth < 1) - 1) & 2)); // TODO
         SelectState(RENDERER_MODULE_STATE_MAX_PENDING_STATE, (void*)(pending - 2U & ((s32)(pending - 2U) < 0) - 1)); // TODO
     }
 
