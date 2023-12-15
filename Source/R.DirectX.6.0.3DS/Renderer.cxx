@@ -350,7 +350,7 @@ namespace RendererModule
     // 0x600026e0
     void ReleaseRendererDeviceSurfaces(void)
     {
-        for (u32 x = (MAX_ACTIVE_SURFACE_COUNT - 1); x != 0; x--)
+        for (s32 x = (MAX_ACTIVE_SURFACE_COUNT - 1); x >= 0; x--)
         {
             if (State.DX.Surfaces.Active[x] != NULL)
             {
