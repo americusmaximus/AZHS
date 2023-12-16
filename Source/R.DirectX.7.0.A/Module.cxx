@@ -757,41 +757,41 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_SHADE_STATE:
         {
-                switch((u32)value)
+            switch ((u32)value)
+            {
+            case RENDERER_MODULE_SHADE_FLAT:
+            case RENDERER_MODULE_SHADE_GOURAUD:
+            {
+                if ((u32)value == RENDERER_MODULE_SHADE_FLAT && SettingsState.FlatShading)
                 {
-                case RENDERER_MODULE_SHADE_FLAT:
-                case RENDERER_MODULE_SHADE_GOURAUD:
-                {
-                    if ((u32)value == RENDERER_MODULE_SHADE_FLAT && SettingsState.FlatShading)
-                    {
-                        SelectRendererState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_FLAT);
-                        SelectRendererState(D3DRENDERSTATE_SPECULARENABLE, FALSE);
+                    SelectRendererState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_FLAT);
+                    SelectRendererState(D3DRENDERSTATE_SPECULARENABLE, FALSE);
 
-                        RendererShadeMode = RENDERER_MODULE_SHADE_FLAT;
-                    }
-                    else
-                    {
-                        SelectRendererState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_GOURAUD);
-                        SelectRendererState(D3DRENDERSTATE_SPECULARENABLE, FALSE);
-
-                        RendererShadeMode = RENDERER_MODULE_SHADE_GOURAUD;
-                    }
-
-                    break;
+                    RendererShadeMode = RENDERER_MODULE_SHADE_FLAT;
                 }
-                case RENDERER_MODULE_SHADE_GOURAUD_SPECULAR:
+                else
                 {
-                    if (!State.Device.Capabilities.IsSpecularGouraudBlending) { return RENDERER_MODULE_FAILURE; }
-
                     SelectRendererState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_GOURAUD);
-                    SelectRendererState(D3DRENDERSTATE_SPECULARENABLE, TRUE);
+                    SelectRendererState(D3DRENDERSTATE_SPECULARENABLE, FALSE);
 
                     RendererShadeMode = RENDERER_MODULE_SHADE_GOURAUD;
-
-                    break;
                 }
-                case RENDERER_MODULE_SHADE_3:
-                default: { return RENDERER_MODULE_FAILURE; }
+
+                break;
+            }
+            case RENDERER_MODULE_SHADE_GOURAUD_SPECULAR:
+            {
+                if (!State.Device.Capabilities.IsSpecularGouraudBlending) { return RENDERER_MODULE_FAILURE; }
+
+                SelectRendererState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_GOURAUD);
+                SelectRendererState(D3DRENDERSTATE_SPECULARENABLE, TRUE);
+
+                RendererShadeMode = RENDERER_MODULE_SHADE_GOURAUD;
+
+                break;
+            }
+            case RENDERER_MODULE_SHADE_3:
+            default: { return RENDERER_MODULE_FAILURE; }
             }
 
             result = RENDERER_MODULE_SUCCESS; break;
@@ -1290,9 +1290,7 @@ namespace RendererModule
                 SelectRendererTextureStage(stage, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
                 SelectRendererTextureStage(stage, D3DTSS_ALPHAARG2, (stage != RENDERER_TEXTURE_STAGE_0) ? D3DTA_CURRENT : D3DTA_DIFFUSE);
 
-                result = State.Textures.Stages[stage].Unk01;
-
-                break;
+                result = State.Textures.Stages[stage].Unk01; break;
             }
             case RENDERER_MODULE_TEXTURE_STAGE_BLEND_DISABLE:
             {
@@ -1314,9 +1312,7 @@ namespace RendererModule
                 SelectRendererTextureStage(stage, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
                 SelectRendererTextureStage(stage, D3DTSS_ALPHAARG2, (stage != RENDERER_TEXTURE_STAGE_0) ? D3DTA_CURRENT : D3DTA_DIFFUSE);
 
-                result = State.Textures.Stages[stage].Unk03;
-
-                break;
+                result = State.Textures.Stages[stage].Unk03; break;
             }
             case RENDERER_MODULE_TEXTURE_STAGE_BLEND_SUBTRACT:
             {
@@ -1325,9 +1321,7 @@ namespace RendererModule
                 SelectRendererTextureStage(stage, D3DTSS_COLORARG2, D3DTA_CURRENT);
                 SelectRendererTextureStage(stage, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
 
-                result = State.Textures.Stages[stage].Unk02;
-
-                break;
+                result = State.Textures.Stages[stage].Unk02; break;
             }
             case RENDERER_MODULE_TEXTURE_STAGE_BLEND_ARG2:
             {
@@ -1338,9 +1332,7 @@ namespace RendererModule
                 SelectRendererTextureStage(stage, D3DTSS_ALPHAARG1, D3DTA_COMPLEMENT | D3DTA_TEXTURE);
                 SelectRendererTextureStage(stage, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
 
-                result = State.Textures.Stages[stage].Unk07;
-
-                break;
+                result = State.Textures.Stages[stage].Unk07; break;
             }
             case RENDERER_MODULE_TEXTURE_STAGE_BLEND_MODULATE_2X:
             {
@@ -1351,9 +1343,7 @@ namespace RendererModule
                 SelectRendererTextureStage(stage, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
                 SelectRendererTextureStage(stage, D3DTSS_ALPHAARG2, (stage != RENDERER_TEXTURE_STAGE_0) ? D3DTA_CURRENT : D3DTA_DIFFUSE);
 
-                result = State.Textures.Stages[stage].Unk04;
-
-                break;
+                result = State.Textures.Stages[stage].Unk04; break;
             }
             case RENDERER_MODULE_TEXTURE_STAGE_BLEND_MODULATE_4X:
             {
@@ -1364,9 +1354,7 @@ namespace RendererModule
                 SelectRendererTextureStage(stage, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
                 SelectRendererTextureStage(stage, D3DTSS_ALPHAARG2, (stage != RENDERER_TEXTURE_STAGE_0) ? D3DTA_CURRENT : D3DTA_DIFFUSE);
 
-                result = State.Textures.Stages[stage].Unk05;
-
-                break;
+                result = State.Textures.Stages[stage].Unk05; break;
             }
             case RENDERER_MODULE_TEXTURE_STAGE_BLEND_TEXTURE_ALPHA:
             {
@@ -1379,8 +1367,6 @@ namespace RendererModule
                         SelectRendererTextureStage(RENDERER_TEXTURE_STAGE_0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
                         SelectRendererTextureStage(RENDERER_TEXTURE_STAGE_0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
                         SelectRendererTextureStage(RENDERER_TEXTURE_STAGE_0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-
-                        result = State.Textures.Stages[0].Unk09;
                     }
                     else
                     {
@@ -1390,9 +1376,9 @@ namespace RendererModule
                         SelectRendererTextureStage(RENDERER_TEXTURE_STAGE_0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
                         SelectRendererTextureStage(RENDERER_TEXTURE_STAGE_0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
                         SelectRendererTextureStage(RENDERER_TEXTURE_STAGE_0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-
-                        result = State.Textures.Stages[0].Unk09;
                     }
+
+                    result = State.Textures.Stages[RENDERER_TEXTURE_STAGE_0].Unk09;
                 }
                 else
                 {
@@ -1418,9 +1404,7 @@ namespace RendererModule
                 SelectRendererTextureStage(stage, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
                 SelectRendererTextureStage(stage, D3DTSS_ALPHAARG2, (stage != RENDERER_TEXTURE_STAGE_0) ? D3DTA_CURRENT : D3DTA_DIFFUSE);
 
-                result = State.Textures.Stages[stage].Unk08;
-
-                break;
+                result = State.Textures.Stages[stage].Unk08; break;
             }
             case RENDERER_MODULE_TEXTURE_STAGE_BLEND_DOT_PRODUCT_3:
             {
@@ -1441,9 +1425,7 @@ namespace RendererModule
                     SelectRendererTextureStage(stage, D3DTSS_ALPHAARG1, D3DTA_CURRENT);
                 }
 
-                result = State.Textures.Stages[stage].Unk10;
-
-                break;
+                result = State.Textures.Stages[stage].Unk10; break;
             }
             case RENDERER_MODULE_TEXTURE_STAGE_BLEND_BUMP_ENV_MAP:
             {
@@ -1452,9 +1434,7 @@ namespace RendererModule
                 SelectRendererTextureStage(stage, D3DTSS_COLORARG2, (stage != RENDERER_TEXTURE_STAGE_0) ? D3DTA_CURRENT : D3DTA_DIFFUSE);
                 SelectRendererTextureStage(stage, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
 
-                result = State.Textures.Stages[stage].Unk11;
-
-                break;
+                result = State.Textures.Stages[stage].Unk11; break;
             }
             case RENDERER_MODULE_TEXTURE_STAGE_BLEND_BUMP_ENV_MAP_LUMINANCE:
             {
@@ -1463,9 +1443,7 @@ namespace RendererModule
                 SelectRendererTextureStage(stage, D3DTSS_COLORARG2, (stage != RENDERER_TEXTURE_STAGE_0) ? D3DTA_CURRENT : D3DTA_DIFFUSE);
                 SelectRendererTextureStage(stage, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
 
-                result = State.Textures.Stages[stage].Unk12;
-
-                break;
+                result = State.Textures.Stages[stage].Unk12; break;
             }
             case RENDERER_MODULE_TEXTURE_STAGE_BLEND_ADD_BLEND_FACTOR_ALPHA:
             {
@@ -2481,7 +2459,7 @@ namespace RendererModule
 
         if (ModuleDescriptor.Capabilities.Capabilities[mode].Bits < State.Window.Bits) { State.Window.Bits = GRAPHICS_BITS_PER_PIXEL_16; }
 
-        s32 result = RENDERER_MODULE_FAILURE;
+        u32 result = RENDERER_MODULE_FAILURE;
 
         if (State.DX.Instance != NULL)
         {
