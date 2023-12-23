@@ -26,6 +26,7 @@ SOFTWARE.
 
 #define RENDERER_MODULE_SETTINGS_SECTION_DX6_NAME "DX6"
 #define RENDERER_MODULE_SETTINGS_SECTION_DX7_NAME "DX7"
+#define RENDERER_MODULE_SETTINGS_SECTION_DX8_NAME "DX8"
 
 // Indicates whether flat shading is active/enabled.
 // In practice means whether to overwrite the vertex color with white color or not.

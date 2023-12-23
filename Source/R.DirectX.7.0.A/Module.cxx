@@ -91,7 +91,7 @@ namespace RendererModule
 
         SelectRendererDevice();
 
-        AcquireRendererModuleDescriptor(&ModuleDescriptor, RENDERER_MODULE_ENVIRONMENT_SECTION_NAME);
+        AcquireRendererModuleDescriptor(&ModuleDescriptor, ENVIRONMENT_SECTION_NAME);
 
         return &ModuleDescriptor;
     }
@@ -136,20 +136,20 @@ namespace RendererModule
     // 0x60001880
     // a.k.a. THRASH_createwindow
     // NOTE: Never being called by the application.
-    DLLAPI u32 STDCALLAPI CreateGameWindow(const u32 width, const u32 height, const u32 format, void*)
+    DLLAPI u32 STDCALLAPI CreateGameWindow(const u32 width, const u32 height, const u32 format, const u32)
     {
         if (DAT_6005ab5c != 0
-            && (format == RENDERER_PIXEL_FORMAT_16_BIT_555 || format == RENDERER_PIXEL_FORMAT_16_BIT_565 || format == RENDERER_PIXEL_FORMAT_32_BIT))
+            && (format == RENDERER_PIXEL_FORMAT_R5G5B5 || format == RENDERER_PIXEL_FORMAT_R5G6B5 || format == RENDERER_PIXEL_FORMAT_A8R8G8B8))
         {
             State.Window.Count = State.Window.Count + 1;
 
-            State.Windows[State.Window.Count + RENDERER_WINDOW_OFFSET].Texture = AllocateRendererTexture(width, height, format, 0, 0, TRUE);
+            State.Windows[State.Window.Count + WINDOW_OFFSET].Texture = AllocateRendererTexture(width, height, format, 0, 0, TRUE);
 
             InitializeRendererDeviceDepthSurfaces(width, height,
-                State.Windows[State.Window.Count + RENDERER_WINDOW_OFFSET].Surface,
-                State.Windows[State.Window.Count + RENDERER_WINDOW_OFFSET].Texture->Texture);
+                State.Windows[State.Window.Count + WINDOW_OFFSET].Surface,
+                State.Windows[State.Window.Count + WINDOW_OFFSET].Texture->Texture);
 
-            if (State.Windows[State.Window.Count + RENDERER_WINDOW_OFFSET].Texture != NULL) { return State.Window.Count + RENDERER_WINDOW_OFFSET; }
+            if (State.Windows[State.Window.Count + WINDOW_OFFSET].Texture != NULL) { return State.Window.Count + WINDOW_OFFSET; }
         }
 
         return RENDERER_MODULE_FAILURE;
@@ -160,7 +160,7 @@ namespace RendererModule
     // NOTE: Never being called by the application.
     DLLAPI u32 STDCALLAPI DestroyGameWindow(const u32 indx)
     {
-        if (indx < MAX_RENDERER_WINDOW_COUNT && State.Windows[indx].Texture != NULL && RENDERER_WINDOW_OFFSET < indx)
+        if (indx < MAX_WINDOW_COUNT && State.Windows[indx].Texture != NULL && WINDOW_OFFSET < indx)
         {
             if (State.Windows[indx].Surface != NULL)
             {
@@ -373,7 +373,7 @@ namespace RendererModule
     // NOTE: Never being called by the application.
     DLLAPI RendererTexture* STDCALLAPI AcquireGameWindowTexture(const u32 indx)
     {
-        if (indx < MAX_RENDERER_WINDOW_COUNT) { return State.Windows[indx].Texture; }
+        if (indx < MAX_WINDOW_COUNT) { return State.Windows[indx].Texture; }
 
         return NULL;
     }
@@ -386,7 +386,7 @@ namespace RendererModule
     // a.k.a. THRASH_init
     DLLAPI u32 STDCALLAPI Init(void)
     {
-        RendererState = RENDERER_STATE_INACTIVE;
+        RendererState = STATE_INACTIVE;
 
         InitializeSettings();
 
@@ -476,16 +476,16 @@ namespace RendererModule
             if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_16)
             {
                 State.Lock.State.Format = (desc.ddpfPixelFormat.dwGBitMask == 0x7e0)
-                    ? RENDERER_PIXEL_FORMAT_16_BIT_565
-                    : RENDERER_PIXEL_FORMAT_UNKNOWN_11;
+                    ? RENDERER_PIXEL_FORMAT_R5G6B5
+                    : RENDERER_PIXEL_FORMAT_A1R5G5B5;
             }
             else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_32)
             {
-                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_32_BIT;
+                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_A8R8G8B8;
             }
             else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_24)
             {
-                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_24_BIT;
+                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_R8G8B8;
             }
 
             if (State.Settings.IsWindowMode)
@@ -538,11 +538,11 @@ namespace RendererModule
     // a.k.a. THRASH_readrect
     DLLAPI u32 STDCALLAPI ReadRectangle(const u32 x, const u32 y, const u32 width, const u32 height, u32* data)
     {
-        RendererModuleWindowLock* state = RendererLock(RENDERER_LOCK_READ);
+        RendererModuleWindowLock* state = RendererLock(LOCK_READ);
 
         if (state == NULL) { return RENDERER_MODULE_FAILURE; }
 
-        const u32 multiplier = state->Format == RENDERER_PIXEL_FORMAT_24_BIT ? 4 : 2;
+        const u32 multiplier = state->Format == RENDERER_PIXEL_FORMAT_R8G8B8 ? 4 : 2;
         const u32 length = multiplier * width;
 
         for (u32 xx = 0; xx < height; xx++)
@@ -559,15 +559,15 @@ namespace RendererModule
     // a.k.a. THRASH_restore
     DLLAPI u32 STDCALLAPI RestoreGameWindow(void)
     {
-        if (RendererState == RENDERER_STATE_INACTIVE)
+        if (RendererState == STATE_INACTIVE)
         {
-            RendererState = RENDERER_STATE_ACTIVE;
+            RendererState = STATE_ACTIVE;
 
             if (State.Lock.IsActive) { UnlockGameWindow(NULL); }
 
             ReleaseRendererDevice();
 
-            RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
+            RendererDeviceIndex = INVALID_DEVICE_INDEX;
 
             if (State.Lambdas.Lambdas.Execute != NULL)
             {
@@ -599,11 +599,11 @@ namespace RendererModule
 
         const char* name = NULL;
 
-        if (indx < DEFAULT_RENDERER_DEVICE_INDEX || State.Devices.Count <= indx)
+        if (indx < DEFAULT_DEVICE_INDEX || State.Devices.Count <= indx)
         {
-            RendererDeviceIndex = DEFAULT_RENDERER_DEVICE_INDEX;
-            State.Device.Identifier = State.Devices.Indexes[DEFAULT_RENDERER_DEVICE_INDEX];
-            name = State.Devices.Enumeration.Names[DEFAULT_RENDERER_DEVICE_INDEX];
+            RendererDeviceIndex = DEFAULT_DEVICE_INDEX;
+            State.Device.Identifier = State.Devices.Indexes[DEFAULT_DEVICE_INDEX];
+            name = State.Devices.Enumeration.Names[DEFAULT_DEVICE_INDEX];
         }
         else
         {
@@ -612,7 +612,7 @@ namespace RendererModule
             name = State.Devices.Enumeration.Names[indx];
         }
 
-        strncpy(State.Device.Name, name, MAX_ENUMERATE_RENDERER_DEVICE_NAME_LENGTH);
+        strncpy(State.Device.Name, name, MAX_ENUMERATE_DEVICE_NAME_LENGTH);
 
         if (State.Lambdas.Lambdas.Execute != NULL)
         {
@@ -706,7 +706,7 @@ namespace RendererModule
 
             switch ((u32)value)
             {
-            case RENDERER_MODULE_DEPTH_DISABLE:
+            case RENDERER_MODULE_DEPTH_INACTIVE:
             {
                 SelectRendererState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
                 SelectRendererState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
@@ -714,7 +714,7 @@ namespace RendererModule
 
                 break;
             }
-            case RENDERER_MODULE_DEPTH_ENABLE:
+            case RENDERER_MODULE_DEPTH_ACTIVE:
             {
                 SelectRendererState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
                 SelectRendererState(D3DRENDERSTATE_ZENABLE, D3DZB_TRUE);
@@ -722,7 +722,7 @@ namespace RendererModule
 
                 break;
             }
-            case RENDERER_MODULE_DEPTH_W:
+            case RENDERER_MODULE_DEPTH_ACTIVE_W:
             {
                 if (State.Device.Capabilities.IsWBufferAvailable)
                 {
@@ -1095,8 +1095,8 @@ namespace RendererModule
         case RENDERER_MODULE_STATE_INDEX_SIZE:
         case RENDERER_MODULE_STATE_SELECT_LOG_STATE:
         case RENDERER_MODULE_STATE_72:
-        case RENDERER_MODULE_STATE_73:
-        case RENDERER_MODULE_STATE_74:
+        case RENDERER_MODULE_STATE_SELECT_TEXTURE_MIN_FILTER_STATE:
+        case RENDERER_MODULE_STATE_SELECT_TEXTURE_MAG_FILTER_STATE:
         case RENDERER_MODULE_STATE_75:
         case RENDERER_MODULE_STATE_76:
         case RENDERER_MODULE_STATE_77:
@@ -1445,7 +1445,7 @@ namespace RendererModule
 
                 result = State.Textures.Stages[stage].Unk12; break;
             }
-            case RENDERER_MODULE_TEXTURE_STAGE_BLEND_ADD_BLEND_FACTOR_ALPHA:
+            case RENDERER_MODULE_TEXTURE_STAGE_BLEND_ADD_BLEND_FACTOR_ALPHA_ALTERNATIVE:
             {
                 SelectRendererTextureStage(stage, D3DTSS_COLOROP, D3DTOP_ADD);
                 SelectRendererTextureStage(stage, D3DTSS_COLORARG1, D3DTA_TEXTURE);
@@ -1456,7 +1456,7 @@ namespace RendererModule
 
                 result = RENDERER_MODULE_SUCCESS; break;
             }
-            case RENDERER_MODULE_TEXTURE_STAGE_BLEND_BLEND_FACTOR_ALPHA_ARG1:
+            case RENDERER_MODULE_TEXTURE_STAGE_BLEND_BLEND_FACTOR_ALPHA_ARG1_ALTERNATIVE:
             {
                 SelectRendererTextureStage(stage, D3DTSS_COLOROP, D3DTOP_BLENDFACTORALPHA);
                 SelectRendererTextureStage(stage, D3DTSS_COLORARG1, D3DTA_TEXTURE);
@@ -1511,7 +1511,7 @@ namespace RendererModule
         case RENDERER_MODULE_STATE_SELECT_GAMMA_CONTROL_STATE:
         case RENDERER_MODULE_STATE_SELECT_GAMMA_CONTROL_STATE_ALTERNATIVE:
         {
-            if (!State.Device.Capabilities.IsPrimaryGammaAvailable) { return RENDERER_MODULE_FAILURE; }
+            if (!State.Device.Capabilities.IsGammaAvailable) { return RENDERER_MODULE_FAILURE; }
             if (State.DX.GammaControl == NULL) { return RENDERER_MODULE_FAILURE; }
 
             const f32 modifier = Clamp(*(f32*)&value, 0.0f, 4.0f);
@@ -1681,7 +1681,7 @@ namespace RendererModule
 
                 if (left != 0 && right != 0 && top != 0 && bottom != 0)
                 {
-                    RendererGuardBands* output = (RendererGuardBands*)value;
+                    RendererModuleGuardBands* output = (RendererModuleGuardBands*)value;
 
                     output->Left = left;
                     output->Right = right;
@@ -1827,8 +1827,8 @@ namespace RendererModule
             RendererModuleDeviceCapabilities7* result = (RendererModuleDeviceCapabilities7*)value;
 
             result->IsAccelerated = State.Device.Capabilities.IsAccelerated;
-            result->DepthBits = State.Device.Capabilities.RendererDepthBits;
-            result->RenderBits = State.Device.Capabilities.RendererBits;
+            result->RendererDepthBits = State.Device.Capabilities.RendererDepthBits;
+            result->RenderScreenBits = State.Device.Capabilities.RendererBits;
             result->RendererDeviceDepthBits = State.Device.Capabilities.RendererDeviceDepthBits;
             result->IsDepthVideoMemoryAvailable = State.Device.Capabilities.IsDepthVideoMemoryCapable;
             result->IsDepthAvailable = State.Device.Capabilities.IsDepthAvailable;
@@ -1839,20 +1839,20 @@ namespace RendererModule
             result->IsWBufferAvailable = State.Device.Capabilities.IsWBufferAvailable;
             result->IsWFogAvailable = State.Device.Capabilities.IsWFogAvailable;
             result->IsWindowModeAvailable = State.Device.Capabilities.IsWindowMode;
-            result->IsTrilinearInterpolationAvailable = State.Device.Capabilities.IsTrilinearInterpolationAvailable;
-            result->IsDepthBufferRemovalAvailable = State.Device.Capabilities.IsDepthBufferRemovalAvailable;
+            result->IsInterpolationAvailable = State.Device.Capabilities.IsTrilinearInterpolationAvailable;
+            result->IsDepthRemovalAvailable = State.Device.Capabilities.IsDepthBufferRemovalAvailable;
             result->IsPerspectiveTextures = State.Device.Capabilities.IsPerspectiveTextures;
-            result->IsAlphaFlatBlending = State.Device.Capabilities.IsAlphaFlatBlending;
+            result->IsAlphaBlending = State.Device.Capabilities.IsAlphaFlatBlending;
             result->IsAlphaProperBlending = State.Device.Capabilities.IsAlphaProperBlending;
             result->IsAlphaTextures = State.Device.Capabilities.IsAlphaTextures;
             result->IsModulateBlending = State.Device.Capabilities.IsModulateBlending;
             result->IsSourceAlphaBlending = State.Device.Capabilities.IsSourceAlphaBlending;
-            result->AntiAliasing = State.Device.Capabilities.AntiAliasing;
+            result->IsAntiAliasingAvailable = State.Device.Capabilities.AntiAliasing;
             result->IsColorBlending = State.Device.Capabilities.IsColorBlending;
             result->IsAnisotropyAvailable = State.Device.Capabilities.IsAnisotropyAvailable;
-            result->IsPrimaryGammaAvailable = State.Device.Capabilities.IsPrimaryGammaAvailable;
+            result->IsGammaAvailable = State.Device.Capabilities.IsGammaAvailable;
             result->IsSpecularGouraudBlending = State.Device.Capabilities.IsSpecularGouraudBlending;
-            result->IsStencilBuffer = State.Device.Capabilities.IsStencilBuffer;
+            result->IsStencilBufferAvailable = State.Device.Capabilities.IsStencilBuffer;
             result->IsSpecularBlending = State.Device.Capabilities.IsSpecularBlending;
             result->Unk29 = DAT_6005ab50;
             result->IsTextureIndependentUVs = State.Device.Capabilities.IsTextureIndependentUVs;
@@ -1872,7 +1872,7 @@ namespace RendererModule
             result->GuardBandRight = State.Device.Capabilities.GuardBandRight;
             result->GuardBandTop = State.Device.Capabilities.GuardBandTop;
             result->GuardBandBottom = State.Device.Capabilities.GuardBandBottom;
-            result->MaxTextureRepeat = (u32)State.Device.Capabilities.MaxTextureRepeat;
+            result->MaxTextureRepeat = State.Device.Capabilities.MaxTextureRepeat;
 
             return (addr)result;
         }
@@ -1960,7 +1960,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_BUMP_MAPPING_MATRIX:
         {
-            const RendererTextureStageBumpMappingMatrix* matrix = (RendererTextureStageBumpMappingMatrix*)value;
+            const RendererModuleTextureStageBumpMappingMatrix* matrix = (RendererModuleTextureStageBumpMappingMatrix*)value;
 
             SelectRendererTextureStage(stage, D3DTSS_BUMPENVMAT00, *(DWORD*)&matrix->M00);
             SelectRendererTextureStage(stage, D3DTSS_BUMPENVMAT01, *(DWORD*)&matrix->M01);
@@ -2076,7 +2076,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_LIGHT:
         {
-            const RendererLight* input = (RendererLight*)value;
+            const RendererModuleLight* input = (RendererModuleLight*)value;
 
             D3DLIGHT7 light;
 
@@ -2125,9 +2125,9 @@ namespace RendererModule
 
             State.DX.Device->GetLight(stage, &light);
 
-            RendererLight* output = (RendererLight*)value;
+            RendererModuleLight* output = (RendererModuleLight*)value;
 
-            output->Type = (RendererLightType)light.dltType;
+            output->Type = (RendererModuleLightType)light.dltType;
 
             output->Diffuse = RGBA_MAKE((u32)(light.dcvDiffuse.r * 255.0), (u32)(light.dcvDiffuse.g * 255.0),
                 (u32)(light.dcvDiffuse.b * 255.0), (u32)(light.dcvDiffuse.a * 255.0));
@@ -2164,7 +2164,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_CURRENT_MATERIAL:
         {
-            const RendererMaterial* input = (RendererMaterial*)value;
+            const RendererModuleMaterial* input = (RendererModuleMaterial*)value;
 
             D3DMATERIAL7 material;
 
@@ -2200,7 +2200,7 @@ namespace RendererModule
 
             State.DX.Device->GetMaterial(&material);
 
-            RendererMaterial* output = (RendererMaterial*)value;
+            RendererModuleMaterial* output = (RendererModuleMaterial*)value;
 
             output->Diffuse = RGBA_MAKE((u32)(material.diffuse.r * 255.0f), (u32)(material.diffuse.g * 255.0f),
                 (u32)(material.diffuse.b * 255.0f), (u32)(material.diffuse.a * 255.0f));
@@ -2226,7 +2226,7 @@ namespace RendererModule
 
             AttemptRenderScene();
 
-            const RendererPacket* packet = (RendererPacket*)value;
+            const RendererModulePacket* packet = (RendererModulePacket*)value;
 
             if (packet->Indexes == NULL || packet->IndexCount == 0)
             {
@@ -2249,7 +2249,7 @@ namespace RendererModule
         {
             if (value != NULL)
             {
-                RendererTransformAndLightCapabilites* output = (RendererTransformAndLightCapabilites*)value;
+                RendererModuleTransformAndLightCapabilites* output = (RendererModuleTransformAndLightCapabilites*)value;
 
                 output->IsActive = State.DX.Active.IsActive;
                 output->MaxActiveLights = State.Device.Capabilities.MaxActiveLights;
@@ -2284,7 +2284,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_INITIALIZE_VERTEX_BUFFER:
         {
-            RendererVertexBuffer* input = (RendererVertexBuffer*)value;
+            RendererModuleVertexBuffer* input = (RendererModuleVertexBuffer*)value;
 
             D3DDEVICEDESC7 caps;
             ZeroMemory(&caps, sizeof(D3DDEVICEDESC7));
@@ -2332,7 +2332,7 @@ namespace RendererModule
                 State.Scene.IsActive = TRUE;
             }
 
-            const RendererBufferPacket* input = (RendererBufferPacket*)value;
+            const RendererModuleBufferPacket* input = (RendererModuleBufferPacket*)value;
 
             if (input->Indexes == NULL || input->IndexCount == 0)
             {
@@ -2350,7 +2350,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_OPTIMIZE_VERTEX_BUFFER:
         {
-            const RendererVertexBuffer* input = (RendererVertexBuffer*)value;
+            const RendererModuleVertexBuffer* input = (RendererModuleVertexBuffer*)value;
 
             ((IDirect3DVertexBuffer7*)input->Buffer)->Optimize(State.DX.Device, 0);
 
@@ -2497,7 +2497,7 @@ namespace RendererModule
             result = State.DX.Code == DD_OK;
         }
 
-        InitializeRendererModuleState(mode, pending, depth, RENDERER_MODULE_ENVIRONMENT_SECTION_NAME);
+        InitializeRendererModuleState(mode, pending, depth, ENVIRONMENT_SECTION_NAME);
         SelectBasicRendererState(RENDERER_MODULE_STATE_62, (void*)(DAT_60058df8 + 1));
 
         SelectGameWindow(1); // TODO
@@ -2524,7 +2524,7 @@ namespace RendererModule
 
         ResetTextures();
 
-        RendererState = RENDERER_STATE_INACTIVE;
+        RendererState = STATE_INACTIVE;
 
         return result;
     }
@@ -2535,7 +2535,7 @@ namespace RendererModule
     {
         if (type == 0) // TODO
         {
-            UnlockGameWindow(RendererLock(RENDERER_LOCK_WRITE));
+            UnlockGameWindow(RendererLock(LOCK_WRITE));
         }
         else if (type == 2) // TODO
         {
@@ -2547,13 +2547,13 @@ namespace RendererModule
 
     // 0x60008e70
     // a.k.a. THRASH_talloc
-    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, void* p4, const u32 options)
+    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32 state)
     {
         if (State.DX.Active.Instance != NULL)
         {
             if (State.DX.Active.Instance->TestCooperativeLevel() == DD_OK)
             {
-                return AllocateRendererTexture(width, height, format, p4, options, FALSE);
+                return AllocateRendererTexture(width, height, format, options, state, FALSE);
             }
         }
 
@@ -2651,11 +2651,11 @@ namespace RendererModule
     // 0x60008f60
     // a.k.a. THRASH_tupdaterect
     // NOTE: Never being called by the application.
-    DLLAPI u32 STDCALLAPI UpdateTextureRectangle(RendererTexture* tex, const u32* pixels, const u32* palette, const u32 x, const u32 y, const s32 width, const s32 height, const u32 size, void*)
+    DLLAPI RendererTexture* STDCALLAPI UpdateTextureRectangle(RendererTexture* tex, const u32* pixels, const u32* palette, const s32 x, const s32 y, const s32 width, const s32 height, const s32 size, const s32)
     {
         if (tex != NULL && pixels != NULL && 0 < width && 0 < height)
         {
-            return UpdateRendererTexture(tex, pixels, palette, x, y, width, height, size) ? (u32)tex : NULL;
+            return UpdateRendererTexture(tex, pixels, palette, x, y, width, height, size) ? tex : NULL;
         }
 
         return NULL;
@@ -2742,12 +2742,12 @@ namespace RendererModule
     // a.k.a. THRASH_writerect
     DLLAPI u32 STDCALLAPI WriteRectangle(const u32 x, const u32 y, const u32 width, const u32 height, const u32* data)
     {
-        RendererModuleWindowLock* state = RendererLock(RENDERER_LOCK_WRITE);
+        RendererModuleWindowLock* state = RendererLock(LOCK_WRITE);
 
         if (state == NULL) { return RENDERER_MODULE_FAILURE; }
 
-        const u32 multiplier = (state->Format == RENDERER_PIXEL_FORMAT_32_BIT)
-            ? 4 : (state->Format == RENDERER_PIXEL_FORMAT_24_BIT) ? 3 : 2; // TODO
+        const u32 multiplier = (state->Format == RENDERER_PIXEL_FORMAT_A8R8G8B8)
+            ? 4 : (state->Format == RENDERER_PIXEL_FORMAT_R8G8B8) ? 3 : 2; // TODO
         const u32 length = multiplier * width;
 
         for (u32 xx = 0; xx < height; xx++)

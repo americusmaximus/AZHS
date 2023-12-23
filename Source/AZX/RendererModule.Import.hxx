@@ -127,7 +127,7 @@ namespace RendererModule
     typedef const u32(STDCALLAPI* RENDERERIS)(void);
     typedef const RendererModuleWindowLock* (STDCALLAPI* RENDERERLOCKGAMEWINDOW)(void);
     typedef const u32(STDCALLAPI* RENDERERTOGGLEGAMEWINDOW)(void);
-    typedef const u32(STDCALLAPI* RENDERERREADRECTANGLE)(const u32 x, const u32 y, const u32 width, const u32 height, u32* data);
+    typedef const u32(STDCALLAPI* RENDERERREADRECTANGLE)(const u32 x, const u32 y, const u32 width, const u32 height, u32* pixels);
     typedef const u32(STDCALLAPI* RENDERERRESTOREGAMEWINDOW)(void);
     typedef const u32(STDCALLAPI* RENDERERSELECTDEVICE)(const s32 indx);
     typedef const u32(STDCALLAPI* RENDERERSELECTSTATE)(const u32 state, void* value);
@@ -141,5 +141,5 @@ namespace RendererModule
     typedef const u32(STDCALLAPI* RENDERERUPDATETEXTURERECTANGLE)(Renderer::RendererTexture* tex, const u32* pixels, const u32* palette, const u32 x, const u32 y, const s32 width, const s32 height, const u32 size, void*);
     typedef const u32(STDCALLAPI* RENDERERUNLOCKGAMEWINDOW)(const RendererModuleWindowLock* state);
     typedef const u32(STDCALLAPI* RENDERERSELECTGAMEWINDOW)(const u32 indx);
-    typedef const u32(STDCALLAPI* RENDERERWRITERECTANGLE)(const u32 x, const u32 y, const u32 width, const u32 height, const u32* data);
+    typedef const u32(STDCALLAPI* RENDERERWRITERECTANGLE)(const u32 x, const u32 y, const u32 width, const u32 height, const u32* pixels);
 }

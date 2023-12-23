@@ -26,7 +26,7 @@ using namespace RendererModule;
 
 namespace RendererModuleValues
 {
-    s32 RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
+    s32 RendererDeviceIndex = INVALID_DEVICE_INDEX;
 
     u32 RendererFogColor = DEFAULT_FOG_COLOR;
     f32 RendererFogDensity = DEFAULT_FOG_DINSITY;
@@ -43,10 +43,10 @@ namespace RendererModuleValues
 
     u8 RendererFogAlphas[MAX_OUTPUT_FOG_ALPHA_COUNT];
 
-    u32 MaximumRendererVertexCount = MAX_RENDERER_VERTEX_COUNT;
+    u32 MaximumRendererVertexCount = MAX_VERTEX_COUNT;
 
     RendererModuleDescriptor ModuleDescriptor;
-    RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT];
+    RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_DEVICE_CAPABILITIES_COUNT];
 
     s32 UnknownArray06[6] =
     {

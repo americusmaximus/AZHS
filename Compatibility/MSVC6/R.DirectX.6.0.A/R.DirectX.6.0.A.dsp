@@ -8,12 +8,12 @@ CFG=DX6A - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "DX6A.mak".
+!MESSAGE NMAKE /f "R.DirectX.6.0.A.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "DX6A.mak" CFG="DX6A - Win32 Debug"
+!MESSAGE NMAKE /f "R.DirectX.6.0.A.mak" CFG="DX6A - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -127,6 +127,10 @@ SOURCE=..\..\..\Source\R.DirectX.6.0.A\Settings.cxx
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\..\..\Source\R.DirectX.6.0.A\DirectDraw.hxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\Source\R.DirectX.6.0.A\Module.hxx

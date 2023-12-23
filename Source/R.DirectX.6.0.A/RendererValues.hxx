@@ -24,8 +24,8 @@ SOFTWARE.
 
 #include "Renderer.hxx"
 
-#define DEFAULT_RENDERER_DEVICE_INDEX 0
-#define INVALID_RENDERER_DEVICE_INDEX (-1)
+#define DEFAULT_DEVICE_INDEX 0
+#define INVALID_DEVICE_INDEX (-1)
 
 namespace RendererModuleValues
 {
@@ -63,5 +63,5 @@ namespace RendererModuleValues
     extern u32 UnknownFormatValues[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x600190dc
 
     extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x6004ece0
-    extern RendererModule::RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT]; // 0x6001c4c8
+    extern RendererModule::RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_DEVICE_CAPABILITIES_COUNT]; // 0x6001c4c8
 }

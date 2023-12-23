@@ -28,69 +28,34 @@ SOFTWARE.
 #include "RendererModule.Export.hxx"
 #endif
 
-#define DIRECTDRAW_VERSION 0x600
-#include <ddraw.h>
-
-#ifdef __WATCOMC__
-#undef PURE
-#define PURE
-#endif
-
-#define DIRECT3D_VERSION 0x600
-#include <d3d.h>
-
-#ifdef __WATCOMC__
-#include <mmsystem.h>
-#endif
-
-#define DDGDI_NONE 0
-#define DDEDM_NONE 0
-#define D3DDP_NONE 0
-#define D3DVBCAPS_NONE 0
-#define D3DVBOPTIMIZE_NONE 0
-#define DDSDM_NONE 0
-#define D3DCOLOR_NONE 0
-
-#define D3DRENDERSTATE_FOGSTART (D3DRENDERSTATETYPE)36
-#define D3DRENDERSTATE_FOGEND (D3DRENDERSTATETYPE)37
-#define D3DRENDERSTATE_FOGDENSITY (D3DRENDERSTATETYPE)38
-
-#define MAX_RENDERER_VERTEX_COUNT 253
-#define MAX_RENDERER_SMALL_INDEX_COUNT 256
-#define MAX_RENDERER_MEDIUM_INDEX_COUNT 8096
-#define MAX_RENDERER_LARGE_INDEX_COUNT 65536
-
-#define MAX_RENDERER_DEVICE_COUNT 16 /* ORIGINAL: 10 */
-
-#define MAX_DEVICE_NAME_LENGTH 32
-
-#define MAX_ACTIVE_SURFACE_COUNT 8
-
-#define MIN_RENDERER_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x200000 (2 MB) */
-
-#define MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT 128 /* ORIGINAL: 30, MODIFIED: 100 */
+#include "DirectDraw.hxx"
 
 #define DEPTH_BIT_MASK_32_BIT 0x100
 #define DEPTH_BIT_MASK_24_BIT 0x200
 #define DEPTH_BIT_MASK_16_BIT 0x400
 #define DEPTH_BIT_MASK_8_BIT 0x800
 
+#define DEFAULT_FOG_COLOR 0x00FFFFFF
+#define DEFAULT_FOG_DINSITY (0.5f)
+#define DEFAULT_FOG_END (1.0f)
+#define DEFAULT_FOG_START (0.0f)
 #define INVALID_TEXTURE_FORMAT_COUNT (-1)
 #define INVALID_TEXTURE_FORMAT_INDEX (-1)
-
-#define MAX_TEXTURE_FORMAT_COUNT 128 /* ORIGINAL: 14 */
-#define MAX_USABLE_TEXTURE_FORMAT_COUNT 14
-
-#define MAX_TEXTURE_PALETTE_COLOR_COUNT 256
-
+#define MAX_ACTIVE_SURFACE_COUNT 8
+#define MAX_DEVICE_CAPABILITIES_COUNT 128 /* ORIGINAL: 30, MODIFIED: 100 */
+#define MAX_DEVICE_COUNT 16 /* ORIGINAL: 10 */
+#define MAX_DEVICE_NAME_LENGTH 32
 #define MAX_INPUT_FOG_ALPHA_COUNT 64
+#define MAX_LARGE_INDEX_COUNT 65536
+#define MAX_MEDIUM_INDEX_COUNT 8096
 #define MAX_OUTPUT_FOG_ALPHA_COUNT 256
 #define MAX_OUTPUT_FOG_ALPHA_VALUE 255
-
-#define DEFAULT_FOG_DINSITY (0.5f)
-#define DEFAULT_FOG_COLOR 0x00FFFFFF
-#define DEFAULT_FOG_START (0.0f)
-#define DEFAULT_FOG_END (1.0f)
+#define MAX_SMALL_INDEX_COUNT 256
+#define MAX_TEXTURE_FORMAT_COUNT 128 /* ORIGINAL: 14 */
+#define MAX_TEXTURE_PALETTE_COLOR_COUNT 256
+#define MAX_USABLE_TEXTURE_FORMAT_COUNT 14
+#define MAX_VERTEX_COUNT 253
+#define MIN_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x200000 (2 MB) */
 
 #if !defined(__WATCOMC__) && _MSC_VER <= 1200
 inline void LOGERROR(...) { }
@@ -108,27 +73,20 @@ namespace Renderer
     {
         u32 Width;
         u32 Height;
-
         u32 UnknownFormatIndexValue; // TODO
         s32 FormatIndex; // TODO
         s32 FormatIndexValue; // TODO
-
-        void* Unk06; // TODO
-
+        u32 Options;
         u32 MipMapCount;
         RendererTexture* Previous;
         u32 MemoryType;
-
-        BOOL Unk10; // TODO
-
+        BOOL Is16Bit;
         IDirectDrawSurface4* Surface1;
         IDirect3DTexture2* Texture1;
         IDirectDrawSurface4* Surface2;
         IDirect3DTexture2* Texture2;
         IDirectDrawPalette* Palette;
-
         DDSURFACEDESC2 Descriptor;
-
         u32 Colors;
     };
 }
@@ -203,15 +161,15 @@ namespace RendererModule
             {
                 u32 Count; // 0x6001afc4
 
-                u32 Small[MAX_RENDERER_SMALL_INDEX_COUNT]; // 0x60014368
-                u16 Medium[MAX_RENDERER_MEDIUM_INDEX_COUNT]; // 0x60017080
-                u16 Large[MAX_RENDERER_LARGE_INDEX_COUNT]; // 0x6001bc40
+                u32 Small[MAX_SMALL_INDEX_COUNT]; // 0x60014368
+                u16 Medium[MAX_MEDIUM_INDEX_COUNT]; // 0x60017080
+                u16 Large[MAX_LARGE_INDEX_COUNT]; // 0x6001bc40
             } Indexes;
 
             struct
             {
                 u32 Count; // 0x6001afc0
-                Renderer::RTLVX Vertexes[MAX_RENDERER_VERTEX_COUNT]; // 0x600150e0
+                Renderer::RTLVX Vertexes[MAX_VERTEX_COUNT]; // 0x600150e0
             } Vertexes;
         } Data;
 
@@ -248,9 +206,9 @@ namespace RendererModule
         {
             u32 Count; // 0x600149c0
 
-            GUID* Indexes[MAX_RENDERER_DEVICE_COUNT]; // 0x60014768
-            GUID Identifiers[MAX_RENDERER_DEVICE_COUNT]; // 0x60014790
-            char Names[MAX_RENDERER_DEVICE_COUNT][MAX_DEVICE_NAME_LENGTH]; // 0x60014830
+            GUID* Indexes[MAX_DEVICE_COUNT]; // 0x60014768
+            GUID Identifiers[MAX_DEVICE_COUNT]; // 0x60014790
+            char Names[MAX_DEVICE_COUNT][MAX_DEVICE_NAME_LENGTH]; // 0x60014830
         } Devices;
 
         struct
@@ -303,8 +261,9 @@ namespace RendererModule
             {
                 u32 Count; // 0x6001b880
 
-                TextureFormat Formats[MAX_TEXTURE_FORMAT_COUNT]; // 0x6001aff8
                 s32 Indexes[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x6001bc00
+
+                TextureFormat Formats[MAX_TEXTURE_FORMAT_COUNT]; // 0x6003d188
             } Formats;
         } Textures;
 

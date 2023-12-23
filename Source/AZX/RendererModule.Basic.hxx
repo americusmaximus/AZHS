@@ -31,6 +31,7 @@ SOFTWARE.
 
 #define RENDERER_MODULE_DX6_ACCELERATION_AVAILABLE 80
 #define RENDERER_MODULE_DX7_ACCELERATION_AVAILABLE 85
+#define RENDERER_MODULE_DX8_ACCELERATION_AVAILABLE 100
 
 #define RENDERER_MODULE_INITIALIZE_DEVICE_SUCCESS 1400
 
@@ -38,15 +39,18 @@ SOFTWARE.
 #define RENDERER_MODULE_VERSION_DX5 5
 #define RENDERER_MODULE_VERSION_DX6 6
 #define RENDERER_MODULE_VERSION_DX7 7
+#define RENDERER_MODULE_VERSION_DX8 8
 
 #define RENDERER_MODULE_VERSION_104 104
 #define RENDERER_MODULE_VERSION_105 105
 #define RENDERER_MODULE_VERSION_106 106
 #define RENDERER_MODULE_VERSION_107 107
+#define RENDERER_MODULE_VERSION_115 115
 
 #define RENDERER_MODULE_SIGNATURE_D3D5 0x44334435 /* D3D5 */
 #define RENDERER_MODULE_SIGNATURE_D3D6 0x44334436 /* D3D6 */
 #define RENDERER_MODULE_SIGNATURE_D3D7 0x44334437 /* D3D7 */
+#define RENDERER_MODULE_SIGNATURE_D3D8 0x44334438 /* D3D8 */
 #define RENDERER_MODULE_SIGNATURE_3DFX 0x33444658 /* 3DFX */
 #define RENDERER_MODULE_SIGNATURE_3DF2 0x33444632 /* 3DF2 */
 #define RENDERER_MODULE_SIGNATURE_IRTS 0x49525453 /* IRTS */
@@ -65,7 +69,7 @@ SOFTWARE.
 #define RENDERER_MODULE_SELECT_STATE_STAGE_MASK 0xFFFF0000
 
 #define MAKETEXTURESTAGEMASK(x) (x << 16)
-#define MAKETEXTURESTAGEVALUE(x) ((x >> 16) & 0xFFFF)
+#define MAKETEXTURESTAGEVALUE(x) ((x >> 16) & RENDERER_MODULE_SELECT_STATE_MASK)
 
 #define RENDERER_TEXTURE_STAGE_0 0
 #define RENDERER_TEXTURE_STAGE_1 1
@@ -75,6 +79,9 @@ SOFTWARE.
 #define RENDERER_TEXTURE_STAGE_5 5
 #define RENDERER_TEXTURE_STAGE_6 6
 #define RENDERER_TEXTURE_STAGE_7 7
+
+#define RENDERER_MODULE_SELECT_MIPMAP_MASK 0x0000FFFF
+#define MAKETEXTUREMIPMAPVALUE(x) (x & 0x0000FFFF)
 
 #define RENDERER_MODULE_DEVICE_TYPE_0_INVALID (-1)
 #define RENDERER_MODULE_DEVICE_TYPE_0_RAMP 0
@@ -128,14 +135,15 @@ SOFTWARE.
 #define RENDERER_MODULE_DITHER_INACTIVE 0
 #define RENDERER_MODULE_DITHER_ACTIVE 1
 
-#define RENDERER_MODULE_DEPTH_DISABLE 0
-#define RENDERER_MODULE_DEPTH_ENABLE 1
-#define RENDERER_MODULE_DEPTH_W 2
+#define RENDERER_MODULE_DEPTH_INACTIVE 0
+#define RENDERER_MODULE_DEPTH_ACTIVE 1
+#define RENDERER_MODULE_DEPTH_ACTIVE_W 2
 
 #define RENDERER_MODULE_SHADE_FLAT 0
 #define RENDERER_MODULE_SHADE_GOURAUD 1
 #define RENDERER_MODULE_SHADE_GOURAUD_SPECULAR 2
-#define RENDERER_MODULE_SHADE_3 3
+#define RENDERER_MODULE_SHADE_3 3 /* TODO */
+#define RENDERER_MODULE_SHADE_4 4 /* TODO */
 
 #define RENDERER_MODULE_TEXTURE_FILTER_POINT 0
 #define RENDERER_MODULE_TEXTURE_FILTER_LENEAR 1
@@ -202,18 +210,27 @@ SOFTWARE.
 #define RENDERER_MODULE_TEXTURE_STAGE_BLEND_DOT_PRODUCT_3 10
 #define RENDERER_MODULE_TEXTURE_STAGE_BLEND_BUMP_ENV_MAP 11
 #define RENDERER_MODULE_TEXTURE_STAGE_BLEND_BUMP_ENV_MAP_LUMINANCE 12
+#define RENDERER_MODULE_TEXTURE_STAGE_BLEND_ADD_BLEND_FACTOR_ALPHA 20
+#define RENDERER_MODULE_TEXTURE_STAGE_BLEND_BLEND_FACTOR_ALPHA_ARG1 21
 #define RENDERER_MODULE_TEXTURE_STAGE_BLEND_ADD_SIGNED_ALTERNATIVE 96
-#define RENDERER_MODULE_TEXTURE_STAGE_BLEND_ADD_BLEND_FACTOR_ALPHA 98
-#define RENDERER_MODULE_TEXTURE_STAGE_BLEND_BLEND_FACTOR_ALPHA_ARG1 99
+#define RENDERER_MODULE_TEXTURE_STAGE_BLEND_ADD_BLEND_FACTOR_ALPHA_ALTERNATIVE 98
+#define RENDERER_MODULE_TEXTURE_STAGE_BLEND_BLEND_FACTOR_ALPHA_ARG1_ALTERNATIVE 99
 
 #define RENDERER_MODULE_VERTEX_TYPE_RTLVX 0
 #define RENDERER_MODULE_VERTEX_TYPE_RTLVX2 1
 
 #define RENDERER_MODULE_STENCIL_INACTIVE 0
 #define RENDERER_MODULE_STENCIL_ACTIVE 1
+#define RENDERER_MODULE_STENCIL_UNKNOWN 2
 
 #define RENDERER_MODULE_LOG_INACTIVE 0
 #define RENDERER_MODULE_LOG_ACTIVE 1
+
+#define RENDERER_MODULE_HINT_INACTIVE 0
+#define RENDERER_MODULE_HINT_ACTIVE 1
+
+#define RENDERER_MODULE_LINE_DOUBLE_INACTIVE 0
+#define RENDERER_MODULE_LINE_DOUBLE_ACTIVE 1
 
 #define RENDERER_MODULE_STENCIL_FUNCTION_NEVER 0
 #define RENDERER_MODULE_STENCIL_FUNCTION_LESS 1
@@ -357,8 +374,8 @@ SOFTWARE.
 #define RENDERER_MODULE_STATE_INDEX_SIZE 70
 #define RENDERER_MODULE_STATE_SELECT_LOG_STATE 71
 #define RENDERER_MODULE_STATE_72 72
-#define RENDERER_MODULE_STATE_73 73
-#define RENDERER_MODULE_STATE_74 74
+#define RENDERER_MODULE_STATE_SELECT_TEXTURE_MIN_FILTER_STATE 73
+#define RENDERER_MODULE_STATE_SELECT_TEXTURE_MAG_FILTER_STATE 74
 #define RENDERER_MODULE_STATE_75 75
 #define RENDERER_MODULE_STATE_76 76
 #define RENDERER_MODULE_STATE_77 77
@@ -399,17 +416,29 @@ SOFTWARE.
 #define RENDERER_MODULE_STATE_SELECT_LINE_DOUBLE_STATE 305
 #define RENDERER_MODULE_STATE_SELECT_DEVICE_TYPE 400
 #define RENDERER_MODULE_STATE_401 401
+#define RENDERER_MODULE_STATE_ACQUIRE_DEVICE_CAPABILITIES_DX8 401
 #define RENDERER_MODULE_STATE_402 402
+#define RENDERER_MODULE_STATE_SELECT_SOURCE_BLEND_STATE_DX8 402
 #define RENDERER_MODULE_STATE_ACQUIRE_DEVICE_CAPABILITIES 403
+#define RENDERER_MODULE_STATE_SELECT_DESTINATION_BLEND_STATE_DX8 403
 #define RENDERER_MODULE_STATE_SELECT_SOURCE_BLEND_STATE 404
+#define RENDERER_MODULE_STATE_SELECT_TEXTURE_FACTOR_DX8 404
 #define RENDERER_MODULE_STATE_SELECT_DESTINATION_BLEND_STATE 405
+#define RENDERER_MODULE_STATE_SELECT_BUMP_MAPPING_MATRIX_DX8 405
 #define RENDERER_MODULE_STATE_SELECT_TEXTURE_STAGE_STATE 406
+#define RENDERER_MODULE_STATE_SELECT_BUMP_MAPPING_LUMINANCE_SCALE_DX8 406
 #define RENDERER_MODULE_STATE_SELECT_TEXTURE_HINT_STATE 407
+#define RENDERER_MODULE_STATE_SELECT_BUMP_MAPPING_LUMINANCE_OFFSET_DX8 407
 #define RENDERER_MODULE_STATE_SELECT_WINDOW_MODE_ACTIVE_STATE_ALTERNATIVE 408
+#define RENDERER_MODULE_STATE_RENDER_PACKET_DX8 408
 #define RENDERER_MODULE_STATE_SELECT_FILL_MODE_STATE 409
+#define RENDERER_MODULE_STATE_SELECT_TEXTURE_COORDINATE_INDEX_STATE_DX8 409
 #define RENDERER_MODULE_STATE_SELECT_TEXTURE_FACTOR 410
+#define RENDERER_MODULE_STATE_ACQUIRE_MAX_ANISOTROPY_DX8 410
 #define RENDERER_MODULE_STATE_ACQUIRE_RENDERER_OBJECTS 411
+#define RENDERER_MODULE_STATE_SELECT_MAX_ANISOTROPY_DX8 411
 #define RENDERER_MODULE_STATE_ACQUIRE_MAIN_RENDERER_SURFACE 412
+#define RENDERER_MODULE_STATE_SELECT_VERTEX_STREAM_STRIDE_DX8 412
 #define RENDERER_MODULE_STATE_ACQUIRE_BACK_RENDERER_SURFACE 413
 #define RENDERER_MODULE_STATE_SELECT_BUMP_MAPPING_MATRIX 415
 #define RENDERER_MODULE_STATE_SELECT_BUMP_MAPPING_LUMINANCE_SCALE 416
@@ -437,7 +466,9 @@ SOFTWARE.
 #define RENDERER_MODULE_STATE_SELECT_CLIPPING_STATE 438
 #define RENDERER_MODULE_STATE_SELECT_LIGHTING_STATE 439
 #define RENDERER_MODULE_STATE_INITIALIZE_VERTEX_BUFFER 440
+#define RENDERER_MODULE_STATE_ACQUIRE_RENDERER_DEVICE_DX8 440
 #define RENDERER_MODULE_STATE_441 441
+#define RENDERER_MODULE_STATE_SELECT_WINDOW_STENCIL_STATE_DX8 441
 #define RENDERER_MODULE_STATE_442 442
 #define RENDERER_MODULE_STATE_RENDER_BUFFERED_PACKET 443
 #define RENDERER_MODULE_STATE_OPTIMIZE_VERTEX_BUFFER 444
@@ -448,6 +479,7 @@ SOFTWARE.
 #define RENDERER_MODULE_STATE_SELECT_TEXTURE_COORDINATE_INDEX_STATE_ALTERNATIVE 449
 #define RENDERER_MODULE_STATE_450 450
 #define RENDERER_MODULE_STATE_ACQUIRE_MODULATE_BLENDING_STATE 451
+#define RENDERER_MODULE_STATE_SELECT_CLIPPING_STATE_DX8 499
 
 #define RENDERER_MODULE_CAPS_NONE 0
 #define RENDERER_MODULE_CAPS_LINE_WIDTH 0x1
@@ -458,12 +490,15 @@ SOFTWARE.
 #define RENDERER_MODULE_CAPS_WINDOWED 0x20
 #define RENDERER_MODULE_CAPS_GLOBAL_CUT 0x40
 #define RENDERER_MODULE_CAPS_TRILINEAR_PASS 0x80
+#define RENDERER_MODULE_CAPS_UNKNOWN 0x100
 
 #define RENDERER_MODULE_DEVICE_TYPE_ENVIRONMENT_PROPERTY_NAME "THRASH_D3DDEVICETYPE"
 #define RENDERER_MODULE_DISPLAY_ENVIRONMENT_PROPERTY_NAME "THRASH_DISPLAY"
 #define RENDERER_MODULE_AUTO_MIP_MAP_ENVIRONMENT_PROPERTY_NAME "THRASH_AUTOMIPMAP"
+
 #define RENDERER_MODULE_WIRE_FRAME_DX6_ENVIRONMENT_PROPERTY_NAME "DX6_WIREFRAME"
 #define RENDERER_MODULE_WIRE_FRAME_DX7_ENVIRONMENT_PROPERTY_NAME "DX7_WIREFRAME"
+#define RENDERER_MODULE_WIRE_FRAME_DX8_ENVIRONMENT_PROPERTY_NAME "DX8_WIREFRAME"
 
 #define RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_DEVICE 0x464
 #define RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_SURFACES 0x465
@@ -566,8 +601,8 @@ namespace RendererModule
     struct RendererModuleDeviceCapabilities7
     {
         BOOL IsAccelerated;
-        u32 DepthBits;
-        u32 RenderBits;
+        u32 RendererDepthBits;
+        u32 RenderScreenBits;
         u32 RendererDeviceDepthBits;
         BOOL IsDepthVideoMemoryAvailable;
         BOOL IsDepthAvailable;
@@ -578,20 +613,20 @@ namespace RendererModule
         BOOL IsWBufferAvailable;
         BOOL IsWFogAvailable;
         BOOL IsWindowModeAvailable;
-        BOOL IsTrilinearInterpolationAvailable;
-        BOOL IsDepthBufferRemovalAvailable;
+        BOOL IsInterpolationAvailable;
+        BOOL IsDepthRemovalAvailable;
         BOOL IsPerspectiveTextures;
-        BOOL IsAlphaFlatBlending;
+        BOOL IsAlphaBlending;
         BOOL IsAlphaProperBlending;
         BOOL IsAlphaTextures;
         BOOL IsModulateBlending;
         BOOL IsSourceAlphaBlending;
-        BOOL AntiAliasing;
+        BOOL IsAntiAliasingAvailable;
         BOOL IsColorBlending;
         BOOL IsAnisotropyAvailable;
-        BOOL IsPrimaryGammaAvailable;
+        BOOL IsGammaAvailable;
         BOOL IsSpecularGouraudBlending;
-        BOOL IsStencilBuffer;
+        BOOL IsStencilBufferAvailable;
         BOOL IsSpecularBlending;
         s32 Unk29; // TODO
         BOOL IsTextureIndependentUVs;
@@ -605,14 +640,68 @@ namespace RendererModule
         BOOL IsPowerOfTwoTexturesWidth;
         u32 MultipleTextureHeight;
         BOOL IsPowerOfTwoTexturesHeight;
-        BOOL MaximumSimultaneousTextures;
+        u32 MaximumSimultaneousTextures;
         BOOL IsSquareOnlyTextures;
         BOOL IsAntiAliasEdges;
         f32 GuardBandLeft;
         f32 GuardBandRight;
         f32 GuardBandTop;
         f32 GuardBandBottom;
-        u32 MaxTextureRepeat;
+        f32 MaxTextureRepeat;
+    };
+
+    // NOTE: Used in DirectX 8 renderers.
+    struct RendererModuleDeviceCapabilities8
+    {
+        BOOL IsAccelerated;
+        u32 RendererDepthBits;
+        u32 RenderScreenBits;
+        u32 RendererDeviceDepthBits;
+        BOOL IsDepthVideoMemoryAvailable;
+        BOOL IsDepthAvailable;
+        BOOL IsGreenAllowSixBits;
+        BOOL IsVideoMemoryAvailable;
+        BOOL IsDitherAvailable;
+        BOOL IsNoVerticalSync;
+        BOOL IsWBufferAvailable;
+        BOOL IsWFogAvailable;
+        BOOL IsWindowModeAvailable;
+        BOOL IsInterpolationAvailable;
+        BOOL IsDepthRemovalAvailable;
+        BOOL IsPerspectiveTextures;
+        BOOL IsAlphaBlending;
+        BOOL IsAlphaProperBlending;
+        BOOL IsAlphaTextures;
+        BOOL IsModulateBlending;
+        BOOL IsSourceAlphaBlending;
+        BOOL IsAntiAliasingAvailable;
+        BOOL IsColorBlending;
+        BOOL IsAnisotropyAvailable;
+        u32 MaxAnisotropy;
+        BOOL IsGammaAvailable;
+        BOOL IsSpecularGouraudBlending;
+        BOOL IsStencilBufferAvailable;
+        BOOL IsSpecularBlending;
+        s32 Unk29; // TODO
+        BOOL IsTextureIndependentUVs;
+        BOOL IsMipMapBiasAvailable;
+        s32 Unk32; // TODO
+        u32 MinTextureWidth;
+        u32 MaxTextureWidth;
+        u32 MinTextureHeight;
+        u32 MaxTextureHeight;
+        u32 MultipleTextureWidth;
+        BOOL IsPowerOfTwoTexturesWidth;
+        u32 MultipleTextureHeight;
+        BOOL IsPowerOfTwoTexturesHeight;
+        u32 MaximumSimultaneousTextures;
+        BOOL IsSquareOnlyTextures;
+        BOOL IsAntiAliasEdges;
+        f32 GuardBandLeft;
+        f32 GuardBandRight;
+        f32 GuardBandTop;
+        f32 GuardBandBottom;
+        f32 MaxTextureRepeat;
     };
 
     struct RendererModuleLambdaContainer
@@ -686,19 +775,19 @@ namespace RendererModule
     };
 
     // NOTE: D3DLIGHTTYPE
-    typedef enum RendererLightType
+    typedef enum RendererModuleLightType
     {
-        RendererLightTypeNone = 0,
-        RendererLightTypePoint = 1,
-        RendererLightTypeSpot = 2,
-        RendererLightTypeDirectional = 3,
-        RendererLightTypeMax = U32_MAX
-    } RendererLightType;
+        RendererModuleLightTypeNone = 0,
+        RendererModuleLightTypePoint = 1,
+        RendererModuleLightTypeSpot = 2,
+        RendererModuleLightTypeDirectional = 3,
+        RendererModuleLightTypeMax = U32_MAX
+    } RendererModuleLightType;
 
     // NOTE: D3DLIGHT7
-    struct RendererLight
+    struct RendererModuleLight
     {
-        RendererLightType Type;
+        RendererModuleLightType Type;
         u32 Diffuse;
         u32 Specular;
         u32 Ambient;
@@ -713,7 +802,7 @@ namespace RendererModule
         f32 Phi;
     };
 
-    struct RendererMaterial
+    struct RendererModuleMaterial
     {
         u32 Diffuse;
         u32 Ambient;
@@ -722,21 +811,21 @@ namespace RendererModule
         f32 Power;
     };
 
-    typedef enum RendererPrimitiveType
+    typedef enum RendererModulePrimitiveType
     {
-        RendererPrimitiveTypeNone = 0,
-        RendererPrimitiveTypePointList = 1,
-        RendererPrimitiveTypeLineList = 2,
-        RendererPrimitiveTypeLineStrip = 3,
-        RendererPrimitiveTypeTriangleList = 4,
-        RendererPrimitiveTypeTriangleStrip = 5,
-        RendererPrimitiveTypeTriangleFan = 6,
-        RendererPrimitiveTypeMax = U32_MAX
-    } RendererPrimitiveType;
+        RendererModulePrimitiveTypeNone = 0,
+        RendererModulePrimitiveTypePointList = 1,
+        RendererModulePrimitiveTypeLineList = 2,
+        RendererModulePrimitiveTypeLineStrip = 3,
+        RendererModulePrimitiveTypeTriangleList = 4,
+        RendererModulePrimitiveTypeTriangleStrip = 5,
+        RendererModulePrimitiveTypeTriangleFan = 6,
+        RendererModulePrimitiveTypeMax = U32_MAX
+    } RendererModulePrimitiveType;
 
-    struct RendererPacket
+    struct RendererModulePacket
     {
-        RendererPrimitiveType Type;
+        RendererModulePrimitiveType Type;
         u32 FVF;
         void* Vertexes;
         u32 VertexCount;
@@ -744,10 +833,10 @@ namespace RendererModule
         u32 IndexCount;
     };
 
-    struct RendererBufferPacket
+    struct RendererModuleBufferPacket
     {
         void* Vertexes;
-        RendererPrimitiveType Type;
+        RendererModulePrimitiveType Type;
         s32 Unk02; // TODO
         s32 Unk03; // TODO
         s32 Unk04; // TODO
@@ -756,7 +845,7 @@ namespace RendererModule
         u32 IndexCount;
     };
 
-    struct RendererGuardBands
+    struct RendererModuleGuardBands
     {
         s32 Left;
         s32 Right;
@@ -764,7 +853,7 @@ namespace RendererModule
         s32 Bottom;
     };
 
-    struct RendererTransformAndLightCapabilites
+    struct RendererModuleTransformAndLightCapabilites
     {
         BOOL IsActive;
         u32 MaxActiveLights;
@@ -775,12 +864,12 @@ namespace RendererModule
         BOOL IsTransformLightBufferVideoMemoryAvailable;
     };
 
-    struct RendererTextureStageBumpMappingMatrix
+    struct RendererModuleTextureStageBumpMappingMatrix
     {
         f32 M00, M01, M10, M11;
     };
 
-    struct RendererVertexBuffer
+    struct RendererModuleVertexBuffer
     {
         void* Buffer;
         s32 Unk01; // TODO

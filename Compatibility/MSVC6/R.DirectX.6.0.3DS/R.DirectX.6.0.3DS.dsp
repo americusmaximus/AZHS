@@ -8,12 +8,12 @@ CFG=DX63DS - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "DX63DS.mak".
+!MESSAGE NMAKE /f "R.DirectX.6.0.3DS.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "DX63DS.mak" CFG="DX63DS - Win32 Debug"
+!MESSAGE NMAKE /f "R.DirectX.6.0.3DS.mak" CFG="DX63DS - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -127,6 +127,10 @@ SOURCE=..\..\..\Source\R.DirectX.6.0.3DS\Settings.cxx
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\..\..\Source\R.DirectX.6.0.3DS\DirectDraw.hxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\Source\R.DirectX.6.0.3DS\Module.hxx

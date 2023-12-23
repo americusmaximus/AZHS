@@ -22,24 +22,29 @@ SOFTWARE.
 
 #pragma once
 
-#include "Native.Basic.hxx"
-#include "Settings.hxx"
+#define DIRECTDRAW_VERSION 0x600
+#include <ddraw.h>
 
 #ifdef __WATCOMC__
-#include <RendererModule.Settings.hxx>
-#else
-#include "RendererModule.Settings.hxx"
+#undef PURE
+#define PURE
 #endif
 
-namespace Settings
-{
-    SettingsContainer SettingsState;
+#define DIRECT3D_VERSION 0x600
+#include <d3d.h>
 
-    void InitializeSettings(void)
-    {
-        SettingsState.Accelerate = GetPrivateProfileIntA(RENDERER_MODULE_SETTINGS_SECTION_DX7_NAME,
-            RENDERER_MODULE_SETTINGS_ACCELERATE_GRAPHICS_PROPERTY_NAME, FALSE, RENDERER_MODULE_SETTINGS_FILE_NAME);
-        SettingsState.FlatShading = GetPrivateProfileIntA(RENDERER_MODULE_SETTINGS_SECTION_DX7_NAME,
-            RENDERER_MODULE_SETTINGS_FLAT_SHADING_PROPERTY_NAME, TRUE, RENDERER_MODULE_SETTINGS_FILE_NAME);
-    }
-}
+#ifdef __WATCOMC__
+#include <mmsystem.h>
+#endif
+
+#define DDGDI_NONE 0
+#define DDEDM_NONE 0
+#define D3DDP_NONE 0
+#define D3DVBCAPS_NONE 0
+#define D3DVBOPTIMIZE_NONE 0
+#define DDSDM_NONE 0
+#define D3DCOLOR_NONE 0
+
+#define D3DRENDERSTATE_FOGSTART (D3DRENDERSTATETYPE)36
+#define D3DRENDERSTATE_FOGEND (D3DRENDERSTATETYPE)37
+#define D3DRENDERSTATE_FOGDENSITY (D3DRENDERSTATETYPE)38

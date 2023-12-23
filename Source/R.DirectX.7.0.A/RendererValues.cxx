@@ -28,15 +28,15 @@ using namespace RendererModule;
 
 namespace RendererModuleValues
 {
-    s32 RendererState = DEFAULT_RENDERER_STATE;
-    s32 RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
+    s32 RendererState = STATE_INITIAL;
+    s32 RendererDeviceIndex = INVALID_DEVICE_INDEX;
 
     u32 RendererToggleOptions = DDFLIP_WAIT;
     u32 RendererBlitOptions = DDBLT_DONOTWAIT;
     D3DCMPFUNC RendererDepthFunction = D3DCMP_LESSEQUAL;
     D3DCMPFUNC RendererAlphaFunction = D3DCMP_GREATER;
     f32 RendererFogEnd = DEFAULT_FOG_END;
-    f32 RendererClearDepth = DEFAULT_RENDERER_MODULE_CLEAR_DEPTH_VALUE;
+    f32 RendererClearDepth = CLEAR_DEPTH_VALUE;
     u32 RendererFogColor = DEFAULT_FOG_COLOR;
     f32 RendererFogDensity = DEFAULT_FOG_DINSITY;
     u32 RendererShadeMode = RENDERER_MODULE_SHADE_GOURAUD;
@@ -44,7 +44,8 @@ namespace RendererModuleValues
     u32 RendererTextureHint = RENDERER_MODULE_TEXTURE_HINT_DYNAMIC;
 
     u32 RendererVertexSize = sizeof(RTLVX);
-    u32 MaximumRendererVertexCount = MAX_RENDERER_VERTEX_COUNT;
+    u32 MaximumRendererVertexCount = MAX_VERTEX_COUNT;
+
     D3DPRIMITIVETYPE RendererPrimitiveType = D3DPT_TRIANGLELIST;
 
     u32 RendererClearColor = GRAPCHICS_COLOR_WHITE;
@@ -73,7 +74,7 @@ namespace RendererModuleValues
     }; // TODO
 
     RendererModuleDescriptor ModuleDescriptor;
-    RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT];
+    RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_DEVICE_CAPABILITIES_COUNT];
 
     s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT] =
     {

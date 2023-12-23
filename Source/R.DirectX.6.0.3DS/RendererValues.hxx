@@ -24,8 +24,8 @@ SOFTWARE.
 
 #include "Renderer.hxx"
 
-#define DEFAULT_RENDERER_DEVICE_INDEX 0
-#define INVALID_RENDERER_DEVICE_INDEX (-1)
+#define DEFAULT_DEVICE_INDEX 0
+#define INVALID_DEVICE_INDEX (-1)
 
 namespace RendererModuleValues
 {
@@ -55,5 +55,5 @@ namespace RendererModuleValues
     extern u8 RendererFogAlphas[MAX_OUTPUT_FOG_ALPHA_COUNT]; // 0x60014a54
 
     extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x6003bd00
-    extern RendererModule::RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT]; // 0x60013e38
+    extern RendererModule::RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_DEVICE_CAPABILITIES_COUNT]; // 0x60013e38
 }

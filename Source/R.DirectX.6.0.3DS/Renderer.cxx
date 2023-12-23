@@ -73,12 +73,12 @@ namespace RendererModule
     // 0x60001830
     void SelectRendererDevice(void)
     {
-        if (RendererDeviceIndex < DEFAULT_RENDERER_DEVICE_INDEX
+        if (RendererDeviceIndex < DEFAULT_DEVICE_INDEX
             && (State.Lambdas.Lambdas.AcquireWindow != NULL || State.Window.HWND != NULL))
         {
             const char* value = getenv(RENDERER_MODULE_DISPLAY_ENVIRONMENT_PROPERTY_NAME);
 
-            SelectDevice(value == NULL ? DEFAULT_RENDERER_DEVICE_INDEX : atoi(value));
+            SelectDevice(value == NULL ? DEFAULT_DEVICE_INDEX : atoi(value));
         }
     }
 
@@ -166,7 +166,7 @@ namespace RendererModule
         State.Devices.Count = 0;
         State.Device.Identifier = NULL;
 
-        u32 indx = DEFAULT_RENDERER_DEVICE_INDEX;
+        u32 indx = DEFAULT_DEVICE_INDEX;
         DirectDrawEnumerateA(EnumerateRendererDevices, &indx);
 
         return State.Devices.Count;
@@ -193,7 +193,7 @@ namespace RendererModule
         strncpy(State.Devices.Names[State.Devices.Count], name, MAX_DEVICE_NAME_LENGTH);
 
         // NOTE: Additional extra check to prevent writes outside of the array bounds.
-        if (MAX_RENDERER_DEVICE_COUNT <= (State.Devices.Count + 1)) { return FALSE; }
+        if (MAX_DEVICE_COUNT <= (State.Devices.Count + 1)) { return FALSE; }
 
         State.Devices.Count = State.Devices.Count + 1;
 
@@ -445,12 +445,12 @@ namespace RendererModule
                         }
 
                         ZeroMemory(ModuleDescriptor.Capabilities.Capabilities,
-                            MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT * sizeof(RendererModuleDescriptorDeviceCapabilities));
+                            MAX_DEVICE_CAPABILITIES_COUNT * sizeof(RendererModuleDescriptorDeviceCapabilities));
 
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Width = GRAPHICS_RESOLUTION_640;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Height = GRAPHICS_RESOLUTION_480;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Bits = GRAPHICS_BITS_PER_PIXEL_16;
-                        ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Format = RENDERER_PIXEL_FORMAT_16_BIT_565;
+                        ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Format = RENDERER_PIXEL_FORMAT_R5G6B5;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Unk03 = 1;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Unk04 = 1;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].IsActive = TRUE;
@@ -458,7 +458,7 @@ namespace RendererModule
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Width = GRAPHICS_RESOLUTION_800;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Height = GRAPHICS_RESOLUTION_600;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Bits = GRAPHICS_BITS_PER_PIXEL_16;
-                        ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Format = RENDERER_PIXEL_FORMAT_16_BIT_565;
+                        ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Format = RENDERER_PIXEL_FORMAT_R5G6B5;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Unk03 = 1;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Unk04 = 1;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].IsActive = TRUE;
@@ -525,7 +525,7 @@ namespace RendererModule
             else
             {
                 const u32 index = *(u32*)context;
-                if ((MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT - 1) < index) { return DDENUMRET_CANCEL; }
+                if ((MAX_DEVICE_CAPABILITIES_COUNT - 1) < index) { return DDENUMRET_CANCEL; }
 
                 indx = index;
 
@@ -535,7 +535,7 @@ namespace RendererModule
             ModuleDescriptor.Capabilities.Capabilities[indx].Width = width;
             ModuleDescriptor.Capabilities.Capabilities[indx].Height = height;
             ModuleDescriptor.Capabilities.Capabilities[indx].Bits =
-                format == RENDERER_PIXEL_FORMAT_16_BIT_555 ? (GRAPHICS_BITS_PER_PIXEL_16 - 1) : bits;
+                format == RENDERER_PIXEL_FORMAT_R5G5B5 ? (GRAPHICS_BITS_PER_PIXEL_16 - 1) : bits;
 
             ModuleDescriptor.Capabilities.Capabilities[indx].Format = format;
 
@@ -567,14 +567,14 @@ namespace RendererModule
 
         if (bits == GRAPHICS_BITS_PER_PIXEL_16)
         {
-            if (red == 0x7c00 && green == 0x3e0 && blue == 0x1f) { return RENDERER_PIXEL_FORMAT_16_BIT_555; }
-            else if (red == 0xf800 && green == 0x7e0 && blue == 0x1f) { return RENDERER_PIXEL_FORMAT_16_BIT_565; }
-            else if (red == 0xf00 && green == 0xf0 && blue == 0xf && format->dwRGBAlphaBitMask == 0xf000) { return RENDERER_PIXEL_FORMAT_16_BIT_444; }
+            if (red == 0x7c00 && green == 0x3e0 && blue == 0x1f) { return RENDERER_PIXEL_FORMAT_R5G5B5; }
+            else if (red == 0xf800 && green == 0x7e0 && blue == 0x1f) { return RENDERER_PIXEL_FORMAT_R5G6B5; }
+            else if (red == 0xf00 && green == 0xf0 && blue == 0xf && format->dwRGBAlphaBitMask == 0xf000) { return RENDERER_PIXEL_FORMAT_R4G4B4; }
         }
         else if (red == 0xff0000 && green == 0xff00 && blue == 0xff)
         {
-            if (bits == GRAPHICS_BITS_PER_PIXEL_24) { return RENDERER_PIXEL_FORMAT_24_BIT; }
-            else if (bits == GRAPHICS_BITS_PER_PIXEL_32) { return RENDERER_PIXEL_FORMAT_32_BIT; }
+            if (bits == GRAPHICS_BITS_PER_PIXEL_24) { return RENDERER_PIXEL_FORMAT_R8G8B8; }
+            else if (bits == GRAPHICS_BITS_PER_PIXEL_32) { return RENDERER_PIXEL_FORMAT_A8R8G8B8; }
         }
 
         return RENDERER_PIXEL_FORMAT_NONE;
@@ -687,7 +687,7 @@ namespace RendererModule
 
                         State.Settings.MaxAvailableMemory = result == DD_OK
                             ? height * pitch + total
-                            : MIN_RENDERER_DEVICE_AVAIABLE_VIDEO_MEMORY;
+                            : MIN_DEVICE_AVAIABLE_VIDEO_MEMORY;
                     }
 
                     {
@@ -739,12 +739,12 @@ namespace RendererModule
                 }
 
                 ZeroMemory(ModuleDescriptor.Capabilities.Capabilities,
-                    MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT * sizeof(RendererModuleDescriptorDeviceCapabilities));
+                    MAX_DEVICE_CAPABILITIES_COUNT * sizeof(RendererModuleDescriptorDeviceCapabilities));
 
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Width = GRAPHICS_RESOLUTION_640;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Height = GRAPHICS_RESOLUTION_480;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Bits = GRAPHICS_BITS_PER_PIXEL_16;
-                ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Format = RENDERER_PIXEL_FORMAT_16_BIT_565;
+                ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Format = RENDERER_PIXEL_FORMAT_R5G6B5;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Unk03 = 3;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Unk04 = 2;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].IsActive = TRUE;
@@ -752,7 +752,7 @@ namespace RendererModule
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Width = GRAPHICS_RESOLUTION_800;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Height = GRAPHICS_RESOLUTION_600;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Bits = GRAPHICS_BITS_PER_PIXEL_16;
-                ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Format = RENDERER_PIXEL_FORMAT_16_BIT_565;
+                ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Format = RENDERER_PIXEL_FORMAT_R5G6B5;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Unk03 = 2;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Unk04 = 1;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].IsActive = TRUE;
@@ -2073,15 +2073,15 @@ namespace RendererModule
             tex->Surface2->Blt(NULL, tex->Surface1, NULL, DDBLT_WAIT, NULL);
         }
 
-        if (palette != NULL && tex->Unk06 != NULL) // TODO
+        if (palette != NULL && tex->Options != 0)
         {
             PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
 
             for (u32 x = 0; x < MAX_TEXTURE_PALETTE_COLOR_COUNT; x++)
             {
-                entries[x].peRed = (u8)((palette[x] >> 16) & 0xff);
-                entries[x].peGreen = (u8)((palette[x] >> 8) & 0xff);
-                entries[x].peBlue = (u8)((palette[x] >> 0) & 0xff);
+                entries[x].peRed = (u8)RGBA_GETRED(palette[x]);
+                entries[x].peGreen = (u8)RGBA_GETGREEN(palette[x]);
+                entries[x].peBlue = (u8)RGBA_GETBLUE(palette[x]);
                 entries[x].peFlags = 0;
             }
 
@@ -2266,7 +2266,7 @@ namespace RendererModule
 
             if (State.Settings.IsFogActive)
             {
-                vertexes[x].Specular = ((u32)RendererFogAlphas[(u32)(vertexes[x].XYZ.Z * 255.0f + 0.5f)]) << 24;
+                vertexes[x].Specular = ((u32)RendererFogAlphas[(u32)roundf(vertexes[x].XYZ.Z * 255.0f + 0.5f)]) << 24;
             }
 
             vertexes[x].XYZ.Z = RendererDepthBias + vertexes[x].XYZ.Z;
@@ -2292,7 +2292,7 @@ namespace RendererModule
 
             if (State.Settings.IsFogActive)
             {
-                vertexes[x].Specular = ((u32)RendererFogAlphas[AcquireFogAlphaIndex(vertexes[x].RHW)]) << 24;
+                vertexes[x].Specular = ((u32)RendererFogAlphas[(u32)roundf(vertexes[x].XYZ.Z * 255.0f + 0.5f)]) << 24;
             }
 
             vertexes[x].XYZ.Z = RendererDepthBias + vertexes[x].XYZ.Z;
@@ -2320,7 +2320,7 @@ namespace RendererModule
             vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : a->Color;
 
             vertex->Specular = State.Settings.IsFogActive
-                ? ((u32)RendererFogAlphas[AcquireFogAlphaIndex(a->RHW)]) << 24
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - a->RHW * 0.000015259022f) * 255.0f + 0.5f)]) << 24
                 : a->Specular;
 
             vertex->UV.X = a->UV.X;
@@ -2340,7 +2340,7 @@ namespace RendererModule
             vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : b->Color;
 
             vertex->Specular = State.Settings.IsFogActive
-                ? ((u32)RendererFogAlphas[AcquireFogAlphaIndex(b->RHW)]) << 24
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - b->RHW * 0.000015259022f) * 255.0f + 0.5f)]) << 24
                 : b->Specular;
 
             vertex->UV.X = b->UV.X;
@@ -2360,7 +2360,7 @@ namespace RendererModule
             vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : c->Color;
 
             vertex->Specular = State.Settings.IsFogActive
-                ? ((u32)RendererFogAlphas[AcquireFogAlphaIndex(c->RHW)]) << 24
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - c->RHW * 0.000015259022f) * 255.0f + 0.5f)]) << 24
                 : c->Specular;
 
             vertex->UV.X = c->UV.X;
@@ -2380,7 +2380,7 @@ namespace RendererModule
             vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : d->Color;
 
             vertex->Specular = State.Settings.IsFogActive
-                ? ((u32)RendererFogAlphas[AcquireFogAlphaIndex(d->RHW)]) << 24
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - d->RHW * 0.000015259022f) * 255.0f + 0.5f)]) << 24
                 : d->Specular;
 
             vertex->UV.X = d->UV.X;
@@ -2432,7 +2432,7 @@ namespace RendererModule
             vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : a->Color;
 
             vertex->Specular = State.Settings.IsFogActive
-                ? ((u32)RendererFogAlphas[AcquireFogAlphaIndex(a->RHW)]) << 24
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - a->RHW * 0.000015259022f) * 255.0f + 0.5f)]) << 24
                 : a->Specular;
 
             vertex->UV.X = a->UV.X;
@@ -2454,7 +2454,7 @@ namespace RendererModule
             vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : b->Color;
 
             vertex->Specular = State.Settings.IsFogActive
-                ? ((u32)RendererFogAlphas[AcquireFogAlphaIndex(b->RHW)]) << 24
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - b->RHW * 0.000015259022f) * 255.0f + 0.5f)]) << 24
                 : b->Specular;
 
             vertex->UV.X = b->UV.X;
@@ -2476,7 +2476,7 @@ namespace RendererModule
             vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : c->Color;
 
             vertex->Specular = State.Settings.IsFogActive
-                ? ((u32)RendererFogAlphas[AcquireFogAlphaIndex(c->RHW)]) << 24
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - c->RHW * 0.000015259022f) * 255.0f + 0.5f)]) << 24
                 : c->Specular;
 
             vertex->UV.X = c->UV.X;
@@ -2502,7 +2502,7 @@ namespace RendererModule
 
                 if (State.Settings.IsFogActive)
                 {
-                    vertexes[x].Specular = ((u32)RendererFogAlphas[AcquireFogAlphaIndex(vertexes[x].RHW)]) << 24;
+                    vertexes[x].Specular = ((u32)RendererFogAlphas[(u32)roundf(vertexes[x].XYZ.Z * 255.0f + 0.5f)]) << 24;
                 }
 
                 vertexes[x].XYZ.Z = RendererDepthBias + vertexes[x].XYZ.Z;
@@ -2555,7 +2555,7 @@ namespace RendererModule
 
                 if (State.Settings.IsFogActive)
                 {
-                    vertexes[x].Specular = ((u32)RendererFogAlphas[AcquireFogAlphaIndex(vertexes[x].RHW)]) << 24;
+                    vertexes[x].Specular = ((u32)RendererFogAlphas[(u32)roundf(vertexes[x].XYZ.Z * 255.0f + 0.5f)]) << 24;
                 }
 
                 vertexes[x].XYZ.Z = RendererDepthBias + vertexes[x].XYZ.Z;

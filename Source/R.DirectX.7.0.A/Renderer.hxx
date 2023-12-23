@@ -28,89 +28,50 @@ SOFTWARE.
 #include "RendererModule.Export.hxx"
 #endif
 
-#define DIRECTDRAW_VERSION 0x700
-#include <ddraw.h>
-
-#ifdef __WATCOMC__
-#undef PURE
-#define PURE
-#endif
-
-#define DIRECT3D_VERSION 0x700
-#include <d3d.h>
-
-#ifdef __WATCOMC__
-#include <mmsystem.h>
-#endif
-
-#define DDGDI_NONE 0
-#define DDEDM_NONE 0
-#define D3DDP_NONE 0
-#define D3DVBCAPS_NONE 0
-#define D3DVBOPTIMIZE_NONE 0
-#define DDSDM_NONE 0
-#define D3DCOLOR_NONE 0
-
-#define RENDERER_STATE_INACTIVE 0
-#define RENDERER_STATE_ACTIVE 1
-
-#define MAX_RENDERER_VERTEX_COUNT 32768
-
-#define RENDERER_MODULE_ENVIRONMENT_SECTION_NAME "DX7"
-
-#define MAX_ENUMERATE_RENDERER_DEVICE_COUNT 60 /* ORIGINAL: 16 */
-#define MAX_ENUMERATE_RENDERER_DEVICE_NAME_COUNT 60 /* ORIGINAL: 10 */
-#define MAX_ENUMERATE_RENDERER_DEVICE_NAME_LENGTH 80
-
-#define MAX_ACTIVE_SURFACE_COUNT 8
-
-#define MIN_RENDERER_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x200000 (2 MB) */
-
-#define MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT 128 /* ORIGINAL: 98 */
-
-#define MAX_TEXTURE_FORMAT_COUNT 128 /* ORIGINAL: 32 */
-#define MAX_USABLE_TEXTURE_FORMAT_COUNT 22
+#include "DirectDraw.hxx"
 
 #define DEPTH_BIT_MASK_32_BIT 0x100
 #define DEPTH_BIT_MASK_24_BIT 0x200
 #define DEPTH_BIT_MASK_16_BIT 0x400
 #define DEPTH_BIT_MASK_8_BIT 0x800
 
-#define DXT_FORMAT_NONE 0
+#define STATE_INITIAL (-1)
+#define STATE_INACTIVE 0
+#define STATE_ACTIVE 1
+
+#define CLEAR_DEPTH_VALUE (1.0f)
+#define DEFAULT_FOG_COLOR 0x00FF0000
+#define DEFAULT_FOG_DINSITY (1.0f)
+#define DEFAULT_FOG_END (1.0f)
+#define DEFAULT_FOG_START (0.0f)
 #define DXT_FORMAT_DXT1 1
 #define DXT_FORMAT_DXT2 2
 #define DXT_FORMAT_DXT3 3
-
-#define RENDERER_LOCK_NONE 0
-#define RENDERER_LOCK_READ 1
-#define RENDERER_LOCK_WRITE 2
-
+#define DXT_FORMAT_NONE 0
+#define ENVIRONMENT_SECTION_NAME "DX7"
 #define INVALID_TEXTURE_FORMAT_COUNT (-1)
 #define INVALID_TEXTURE_FORMAT_INDEX (-1)
-
-#define MAX_RENDERER_INDEX_COUNT 65536
-
-#define MAX_RENDERER_VERTEX_COUNT 32768
-
-#define MAX_TEXTURE_DEPTH_FORMAT_COUNT 16 /* ORIGINAL: 6 */
-
-#define MAX_RENDERER_MODULE_TEXTURE_STAGE_COUNT 8
-#define MAX_RENDERER_MODULE_TEXTURE_STATE_STATE_COUNT 120
-
-#define DEFAULT_RENDERER_MODULE_CLEAR_DEPTH_VALUE (1.0f)
-
-#define MAX_TEXTURE_PALETTE_COLOR_COUNT 256
-
-#define MAX_OUTPUT_FOG_ALPHA_VALUE 255
+#define LOCK_NONE 0
+#define LOCK_READ 1
+#define LOCK_WRITE 2
+#define MAX_ACTIVE_SURFACE_COUNT 8
+#define MAX_DEVICE_CAPABILITIES_COUNT 128 /* ORIGINAL: 98 */
+#define MAX_ENUMERATE_DEVICE_COUNT 60 /* ORIGINAL: 16 */
+#define MAX_ENUMERATE_DEVICE_NAME_COUNT 60 /* ORIGINAL: 10 */
+#define MAX_ENUMERATE_DEVICE_NAME_LENGTH 80
+#define MAX_LARGE_INDEX_COUNT 65536
 #define MAX_OUTPUT_FOG_ALPHA_COUNT 256
-
-#define RENDERER_WINDOW_OFFSET 8
-#define MAX_RENDERER_WINDOW_COUNT 65536
-
-#define DEFAULT_FOG_DINSITY (1.0f)
-#define DEFAULT_FOG_COLOR 0x00FF0000
-#define DEFAULT_FOG_START (0.0f)
-#define DEFAULT_FOG_END (1.0f)
+#define MAX_OUTPUT_FOG_ALPHA_VALUE 255
+#define MAX_TEXTURE_DEPTH_FORMAT_COUNT 16 /* ORIGINAL: 6 */
+#define MAX_TEXTURE_FORMAT_COUNT 128 /* ORIGINAL: 32 */
+#define MAX_TEXTURE_PALETTE_COLOR_COUNT 256
+#define MAX_TEXTURE_STAGE_COUNT 8
+#define MAX_TEXTURE_STATE_STATE_COUNT 120
+#define MAX_USABLE_TEXTURE_FORMAT_COUNT 22
+#define MAX_VERTEX_COUNT 32768
+#define MAX_WINDOW_COUNT 65536
+#define MIN_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x200000 (2 MB) */
+#define WINDOW_OFFSET 8
 
 #if !defined(__WATCOMC__) && _MSC_VER <= 1200
 inline void LOGERROR(...) { }
@@ -122,6 +83,10 @@ inline void LOGMESSAGE(...) { }
 #define LOGMESSAGE(...) Message(RENDERER_MODULE_MESSAGE_SEVERITY_MESSAGE, __VA_ARGS__)
 #endif
 
+#if _MSC_VER <= 1200
+#define isnan _isnan
+#endif
+
 namespace Renderer
 {
     struct RendererTexture
@@ -130,14 +95,14 @@ namespace Renderer
         u32 Width;
         u32 Height;
         s32 FormatIndexValue; // TODO
-        void* Unk04; // TODO
+        u32 Options;
         s32 MipMapCount;
         u32 Stage;
         RendererTexture* Previous;
         u32 UnknownFormatIndexValue; // TODO
         s32 FormatIndex; // TODO
         u32 MemoryType;
-        s32 Unk11; // TODO
+        BOOL Is16Bit;
         IDirectDrawSurface7* Surface;
         IDirectDrawSurface7* Texture;
         IDirectDrawPalette* Palette;
@@ -162,7 +127,7 @@ namespace RendererModule
 
     struct TextureStageState
     {
-        s32 Values[MAX_RENDERER_MODULE_TEXTURE_STAGE_COUNT];
+        s32 Values[MAX_TEXTURE_STAGE_COUNT];
     };
 
     struct TextureFormat
@@ -277,16 +242,16 @@ namespace RendererModule
             {
                 u32 Count; // 0x60058878
 
-                u16 Indexes[MAX_RENDERER_INDEX_COUNT]; // 0x60038868
+                u16 Indexes[MAX_LARGE_INDEX_COUNT]; // 0x60038868
 
-                u16 Large[MAX_RENDERER_INDEX_COUNT]; // 0x6005ac40
+                u16 Large[MAX_LARGE_INDEX_COUNT]; // 0x6005ac40
             } Indexes;
 
             struct
             {
                 u32 Count; // 0x60058874
 
-                u32 Vertexes[MAX_RENDERER_VERTEX_COUNT]; // 0x60018868
+                u32 Vertexes[MAX_VERTEX_COUNT]; // 0x60018868
             } Vertexes;
         } Data;
 
@@ -294,7 +259,7 @@ namespace RendererModule
         {
             GUID* Identifier; // 0x600186d8
 
-            char Name[MAX_ENUMERATE_RENDERER_DEVICE_NAME_LENGTH]; // 0x600fc840
+            char Name[MAX_ENUMERATE_DEVICE_NAME_LENGTH]; // 0x600fc840
 
             struct
             {
@@ -322,7 +287,7 @@ namespace RendererModule
                 u32 AntiAliasing; // 0x6005ab34
                 BOOL IsColorBlending; // 0x6005ab38
                 BOOL IsAnisotropyAvailable; // 0x6005ab3c
-                BOOL IsPrimaryGammaAvailable; // 0x6005ab40
+                BOOL IsGammaAvailable; // 0x6005ab40
                 BOOL IsSpecularGouraudBlending; // 0x6005ab44
                 BOOL IsStencilBuffer; // 0x6005ab48
                 BOOL IsSpecularBlending; // 0x6005ab4c
@@ -365,25 +330,25 @@ namespace RendererModule
         {
             u32 Count; // 0x600186e0
 
-            GUID* Indexes[MAX_ENUMERATE_RENDERER_DEVICE_COUNT]; // 0x60018250
+            GUID* Indexes[MAX_ENUMERATE_DEVICE_COUNT]; // 0x60018250
 
             struct
             {
                 u32 Count; // 0x60059000
                 BOOL IsAvailable; // 0x60059004
 
-                char Names[MAX_ENUMERATE_RENDERER_DEVICE_NAME_COUNT][MAX_ENUMERATE_RENDERER_DEVICE_NAME_LENGTH]; // 0x60018340
+                char Names[MAX_ENUMERATE_DEVICE_NAME_COUNT][MAX_ENUMERATE_DEVICE_NAME_LENGTH]; // 0x60018340
 
                 struct
                 {
-                    GUID* Indexes[MAX_ENUMERATE_RENDERER_DEVICE_COUNT]; // 0x60058e40
-                    GUID Identifiers[MAX_ENUMERATE_RENDERER_DEVICE_COUNT]; // 0x60058e80
+                    GUID* Indexes[MAX_ENUMERATE_DEVICE_COUNT]; // 0x60058e40
+                    GUID Identifiers[MAX_ENUMERATE_DEVICE_COUNT]; // 0x60058e80
                 } Identifiers;
 
                 struct
                 {
-                    HMONITOR* Indexes[MAX_ENUMERATE_RENDERER_DEVICE_COUNT]; // 0x60058f80
-                    HMONITOR Monitors[MAX_ENUMERATE_RENDERER_DEVICE_COUNT]; // 0x60058fc0
+                    HMONITOR* Indexes[MAX_ENUMERATE_DEVICE_COUNT]; // 0x60058f80
+                    HMONITOR Monitors[MAX_ENUMERATE_DEVICE_COUNT]; // 0x60058fc0
                 } Monitors;
 
                 DDDEVICEIDENTIFIER Identifier; // 0x60059010
@@ -448,9 +413,9 @@ namespace RendererModule
 
             Renderer::RendererTexture* Recent; // 0x60018858
 
-            TextureStage Stages[MAX_RENDERER_MODULE_TEXTURE_STAGE_COUNT]; // 0x6005a940
+            TextureStage Stages[MAX_TEXTURE_STAGE_COUNT]; // 0x6005a940
 
-            TextureStageState StageStates[MAX_RENDERER_MODULE_TEXTURE_STATE_STATE_COUNT]; // 0x6007b8a0
+            TextureStageState StageStates[MAX_TEXTURE_STATE_STATE_COUNT]; // 0x6007b8a0
 
             struct
             {
@@ -496,7 +461,7 @@ namespace RendererModule
             u32 Bits; // 0x60058d7c
         } Window;
 
-        RendererModuleWindow Windows[MAX_RENDERER_WINDOW_COUNT]; // 0x6007c7c0
+        RendererModuleWindow Windows[MAX_WINDOW_COUNT]; // 0x6007c7c0
     };
 
     extern RendererModuleState State;
@@ -530,7 +495,7 @@ namespace RendererModule
     HRESULT CALLBACK EnumerateRendererDeviceTextureFormats(LPDDPIXELFORMAT format, LPVOID context);
     inline f32 AcquireNormal(const f32x3* a, const f32x3* b, const f32x3* c) { return (b->X - a->X) * (c->Y - a->Y) - (c->X - a->X) * (b->Y - a->Y); };
     Renderer::RendererTexture* AllocateRendererTexture(const u32 size);
-    Renderer::RendererTexture* AllocateRendererTexture(const u32 width, const u32 height, const u32 format, void* p4, const u32 options, const BOOL destination);
+    Renderer::RendererTexture* AllocateRendererTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32 state, const BOOL destination);
     Renderer::RendererTexture* InitializeRendererTexture(void);
     RendererModuleWindowLock* RendererLock(const u32 mode);
     s32 AcquireMinimumRendererDeviceResolutionModeIndex(const u32 width, const u32 height, const u32 bpp);

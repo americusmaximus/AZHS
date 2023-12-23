@@ -28,74 +28,36 @@ SOFTWARE.
 #include "RendererModule.Export.hxx"
 #endif
 
-#define DIRECTDRAW_VERSION 0x600
-#include <ddraw.h>
-
-#ifdef __WATCOMC__
-#undef PURE
-#define PURE
-#endif
-
-#define DIRECT3D_VERSION 0x600
-#include <d3d.h>
-
-#ifdef __WATCOMC__
-#include <mmsystem.h>
-
-#define D3DTA_COMPLEMENT 0x00000010L
-#endif
-
-#define DDGDI_NONE 0
-#define DDEDM_NONE 0
-#define D3DDP_NONE 0
-#define D3DVBCAPS_NONE 0
-#define D3DVBOPTIMIZE_NONE 0
-#define DDSDM_NONE 0
-#define D3DCOLOR_NONE 0
-
-#define D3DRENDERSTATE_FOGSTART (D3DRENDERSTATETYPE)36
-#define D3DRENDERSTATE_FOGEND (D3DRENDERSTATETYPE)37
-#define D3DRENDERSTATE_FOGDENSITY (D3DRENDERSTATETYPE)38
-
-#define DEFAULT_RENDERER_VERTEX_COUNT 253
-#define MAX_RENDERER_VERTEX_COUNT 8096
-#define MAX_RENDERER_INDEX_COUNT 16192
-#define MAX_RENDERER_LARGE_INDEX_COUNT 65536
-
-#define RENDERER_MODULE_ENVIRONMENT_SECTION_NAME "DX6"
-
-#define MAX_ENUMERATE_RENDERER_DEVICE_COUNT 16
-#define MAX_ENUMERATE_RENDERER_DEVICE_NAME_LENGTH 80
-
-#define MAX_ACTIVE_SURFACE_COUNT 8
-
-#define MIN_RENDERER_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x200000 (2 MB) */
-
-#define MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT 128 /* ORIGINAL: 30, MODIFIED: 100 */
+#include "DirectDraw.hxx"
 
 #define DEPTH_BIT_MASK_32_BIT 0x100
 #define DEPTH_BIT_MASK_24_BIT 0x200
 #define DEPTH_BIT_MASK_16_BIT 0x400
 #define DEPTH_BIT_MASK_8_BIT 0x800
 
+#define DEFAULT_FOG_COLOR 0x00FF0000
+#define DEFAULT_FOG_DINSITY (1.0f)
+#define DEFAULT_FOG_END (1.0f)
+#define DEFAULT_FOG_START (0.0f)
+#define DEFAULT_VERTEX_COUNT 253
+#define ENVIRONMENT_SECTION_NAME "DX6"
 #define INVALID_TEXTURE_FORMAT_COUNT (-1)
 #define INVALID_TEXTURE_FORMAT_INDEX (-1)
-
-#define MAX_TEXTURE_DEPTH_FORMAT_COUNT 16 /* ORIGINAL: 6 */
-
-#define MAX_TEXTURE_FORMAT_COUNT 128 /* ORIGINAL: 14 */
-#define MAX_USABLE_TEXTURE_FORMAT_COUNT 14
-
-#define MAX_TEXTURE_PALETTE_COLOR_COUNT 256
-
+#define MAX_ACTIVE_SURFACE_COUNT 8
+#define MAX_DEVICE_CAPABILITIES_COUNT 128 /* ORIGINAL: 30, MODIFIED: 100 */
+#define MAX_ENUMERATE_DEVICE_COUNT 16
+#define MAX_ENUMERATE_DEVICE_NAME_LENGTH 80
+#define MAX_INDEX_COUNT 16192
 #define MAX_INPUT_FOG_ALPHA_COUNT 64
-#define MAX_OUTPUT_FOG_ALPHA_VALUE 255
+#define MAX_LARGE_INDEX_COUNT 65536
 #define MAX_OUTPUT_FOG_ALPHA_COUNT 256
-
-#define DEFAULT_FOG_DINSITY (1.0f)
-#define DEFAULT_FOG_COLOR 0x00FF0000
-#define DEFAULT_FOG_START (0.0f)
-#define DEFAULT_FOG_END (1.0f)
+#define MAX_OUTPUT_FOG_ALPHA_VALUE 255
+#define MAX_TEXTURE_DEPTH_FORMAT_COUNT 16 /* ORIGINAL: 6 */
+#define MAX_TEXTURE_FORMAT_COUNT 128 /* ORIGINAL: 14 */
+#define MAX_TEXTURE_PALETTE_COLOR_COUNT 256
+#define MAX_USABLE_TEXTURE_FORMAT_COUNT 14
+#define MAX_VERTEX_COUNT 8096
+#define MIN_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x200000 (2 MB) */
 
 #if !defined(__WATCOMC__) && _MSC_VER <= 1200
 inline void LOGERROR(...) { }
@@ -116,13 +78,12 @@ namespace Renderer
         u32 UnknownFormatIndexValue; // TODO
         s32 FormatIndex; // TODO
         s32 FormatIndexValue; // TODO
-
-        void* Unk06; // TODO
+        u32 Options;
         u32 MipMapCount;
         u32 Stage;
         RendererTexture* Previous;
         u32 MemoryType; // TODO definitions for 0, 1, 2
-        s32 Unk11; // TODO
+        BOOL Is16Bit;
         IDirectDrawSurface4* Surface1; // TODO
         IDirect3DTexture2* Texture1; // TODO
         IDirectDrawSurface4* Surface2; // TODO
@@ -206,16 +167,16 @@ namespace RendererModule
             struct
             {
                 u32 Count; // 0x6002d2e0
-                u16 Indexes[MAX_RENDERER_INDEX_COUNT]; // 0x60025458
+                u16 Indexes[MAX_INDEX_COUNT]; // 0x60025458
 
-                u16 Large[MAX_RENDERER_LARGE_INDEX_COUNT]; // 0x6002e5c0
+                u16 Large[MAX_LARGE_INDEX_COUNT]; // 0x6002e5c0
             } Indexes;
 
             struct
             {
                 u32 Count; // 0x6002d2dc
                 IDirect3DVertexBuffer* Buffer; // 0x6002d2d8
-                u32 Vertexes[MAX_RENDERER_VERTEX_COUNT]; // 0x6001d5d8
+                u32 Vertexes[MAX_VERTEX_COUNT]; // 0x6001d5d8
             } Vertexes;
         } Data;
 
@@ -223,7 +184,7 @@ namespace RendererModule
         {
             GUID* Identifier; // 0x6001ce84
 
-            char Name[MAX_ENUMERATE_RENDERER_DEVICE_NAME_LENGTH]; // 0x6004ed60
+            char Name[MAX_ENUMERATE_DEVICE_NAME_LENGTH]; // 0x6004ed60
 
             struct
             {
@@ -270,25 +231,25 @@ namespace RendererModule
         {
             u32 Count; // 0x6001ce8c
 
-            GUID* Indexes[MAX_ENUMERATE_RENDERER_DEVICE_COUNT]; // 0x6001ca00
+            GUID* Indexes[MAX_ENUMERATE_DEVICE_COUNT]; // 0x6001ca00
 
             struct
             {
                 u32 Count; // 0x6002d4b8
                 BOOL IsAvailable; // 0x6002d4bc
 
-                char Names[MAX_ENUMERATE_RENDERER_DEVICE_COUNT][MAX_ENUMERATE_RENDERER_DEVICE_NAME_LENGTH]; // 0x6001caf0
+                char Names[MAX_ENUMERATE_DEVICE_COUNT][MAX_ENUMERATE_DEVICE_NAME_LENGTH]; // 0x6001caf0
 
                 struct
                 {
-                    GUID* Indexes[MAX_ENUMERATE_RENDERER_DEVICE_COUNT]; // 0x6002d2f8
-                    GUID Identifiers[MAX_ENUMERATE_RENDERER_DEVICE_COUNT]; // 0x6002d338
+                    GUID* Indexes[MAX_ENUMERATE_DEVICE_COUNT]; // 0x6002d2f8
+                    GUID Identifiers[MAX_ENUMERATE_DEVICE_COUNT]; // 0x6002d338
                 } Identifiers;
 
                 struct
                 {
-                    HMONITOR* Indexes[MAX_ENUMERATE_RENDERER_DEVICE_COUNT]; // 0x6002d438
-                    HMONITOR Monitors[MAX_ENUMERATE_RENDERER_DEVICE_COUNT]; // 0x6002d478
+                    HMONITOR* Indexes[MAX_ENUMERATE_DEVICE_COUNT]; // 0x6002d438
+                    HMONITOR Monitors[MAX_ENUMERATE_DEVICE_COUNT]; // 0x6002d478
                 } Monitors;
 
                 DDDEVICEIDENTIFIER Identifier; // 0x6002d4c8

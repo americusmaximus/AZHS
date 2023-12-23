@@ -27,7 +27,7 @@ using namespace RendererModule;
 
 namespace RendererModuleValues
 {
-    s32 RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
+    s32 RendererDeviceIndex = INVALID_DEVICE_INDEX;
 
     u32 RendererDepthFunction = D3DCMP_LESSEQUAL;
 
@@ -49,12 +49,12 @@ namespace RendererModuleValues
     u32 RendererVersion = RENDERER_MODULE_VERSION_106;
     u32 RendererLineVertexSize = sizeof(RTLVX);
 
-    u32 MaximumRendererVertexCount = DEFAULT_RENDERER_VERTEX_COUNT;
+    u32 MaximumRendererVertexCount = DEFAULT_VERTEX_COUNT;
 
     u8 RendererFogAlphas[MAX_OUTPUT_FOG_ALPHA_COUNT];
 
     RendererModuleDescriptor ModuleDescriptor;
-    RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT];
+    RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_DEVICE_CAPABILITIES_COUNT];
 
     s32 UnknownArray06[6] =
     {

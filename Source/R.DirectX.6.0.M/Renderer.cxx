@@ -265,7 +265,7 @@ namespace RendererModule
     // 0x60001f50
     void SelectRendererDevice(void)
     {
-        if (RendererDeviceIndex < DEFAULT_RENDERER_DEVICE_INDEX)
+        if (RendererDeviceIndex < DEFAULT_DEVICE_INDEX)
         {
             State.Device.Capabilities.MinimumTextureWidth = 1;
 
@@ -273,7 +273,7 @@ namespace RendererModule
             {
                 const char* value = getenv(RENDERER_MODULE_DISPLAY_ENVIRONMENT_PROPERTY_NAME);
 
-                SelectDevice(value == NULL ? DEFAULT_RENDERER_DEVICE_INDEX : atoi(value));
+                SelectDevice(value == NULL ? DEFAULT_DEVICE_INDEX : atoi(value));
             }
         }
     }
@@ -383,9 +383,9 @@ namespace RendererModule
         State.Devices.Count = 0;
         State.Device.Identifier = NULL;
 
-        GUID* uids[MAX_ENUMERATE_RENDERER_DEVICE_COUNT];
+        GUID* uids[MAX_ENUMERATE_DEVICE_COUNT];
 
-        State.Devices.Count = AcquireDirectDrawDeviceCount(uids, NULL, RENDERER_MODULE_ENVIRONMENT_SECTION_NAME);
+        State.Devices.Count = AcquireDirectDrawDeviceCount(uids, NULL, ENVIRONMENT_SECTION_NAME);
 
         for (u32 x = 0; x < State.Devices.Count; x++)
         {
@@ -402,7 +402,7 @@ namespace RendererModule
 
                 dd->GetDeviceIdentifier(&identifier, DDGDI_GETHOSTIDENTIFIER);
 
-                strncpy(State.Devices.Enumeration.Names[x], identifier.szDescription, MAX_ENUMERATE_RENDERER_DEVICE_NAME_LENGTH);
+                strncpy(State.Devices.Enumeration.Names[x], identifier.szDescription, MAX_ENUMERATE_DEVICE_NAME_LENGTH);
 
                 if (dd != NULL) { dd->Release(); dd = NULL; }
                 if (instance != NULL) { instance->Release(); instance = NULL; }
@@ -485,7 +485,7 @@ namespace RendererModule
 
         if (dd != NULL) { dd->Release(); }
 
-        if (!skip && State.Devices.Enumeration.Count < MAX_ENUMERATE_RENDERER_DEVICE_COUNT)
+        if (!skip && State.Devices.Enumeration.Count < MAX_ENUMERATE_DEVICE_COUNT)
         {
             if (uid != NULL)
             {
@@ -790,12 +790,12 @@ namespace RendererModule
                         }
 
                         ZeroMemory(ModuleDescriptor.Capabilities.Capabilities,
-                            MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT * sizeof(RendererModuleDescriptorDeviceCapabilities));
+                            MAX_DEVICE_CAPABILITIES_COUNT * sizeof(RendererModuleDescriptorDeviceCapabilities));
 
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Width = GRAPHICS_RESOLUTION_640;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Height = GRAPHICS_RESOLUTION_480;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Bits = GRAPHICS_BITS_PER_PIXEL_16;
-                        ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Format = RENDERER_PIXEL_FORMAT_16_BIT_565;
+                        ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Format = RENDERER_PIXEL_FORMAT_R5G6B5;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Unk03 = 1;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Unk04 = 1;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].IsActive = TRUE;
@@ -910,7 +910,7 @@ namespace RendererModule
             {
                 indx = *(u32*)context;
 
-                if ((MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT - 1) < indx) { return DDENUMRET_CANCEL; }
+                if ((MAX_DEVICE_CAPABILITIES_COUNT - 1) < indx) { return DDENUMRET_CANCEL; }
 
                 *(u32*)context = indx + 1;
             }
@@ -918,7 +918,7 @@ namespace RendererModule
             ModuleDescriptor.Capabilities.Capabilities[indx].Width = width;
             ModuleDescriptor.Capabilities.Capabilities[indx].Height = height;
             ModuleDescriptor.Capabilities.Capabilities[indx].Bits =
-                format == RENDERER_PIXEL_FORMAT_16_BIT_555 ? (GRAPHICS_BITS_PER_PIXEL_16 - 1) : bits;
+                format == RENDERER_PIXEL_FORMAT_R5G5B5 ? (GRAPHICS_BITS_PER_PIXEL_16 - 1) : bits;
 
             ModuleDescriptor.Capabilities.Capabilities[indx].Format = format;
 
@@ -950,14 +950,14 @@ namespace RendererModule
 
         if (bits == GRAPHICS_BITS_PER_PIXEL_16)
         {
-            if (red == 0x7c00 && green == 0x3e0 && blue == 0x1f) { return RENDERER_PIXEL_FORMAT_16_BIT_555; }
-            else if (red == 0xf800 && green == 0x7e0 && blue == 0x1f) { return RENDERER_PIXEL_FORMAT_16_BIT_565; }
-            else if (red == 0xf00 && green == 0xf0 && blue == 0xf && format->dwRGBAlphaBitMask == 0xf000) { return RENDERER_PIXEL_FORMAT_16_BIT_444; }
+            if (red == 0x7c00 && green == 0x3e0 && blue == 0x1f) { return RENDERER_PIXEL_FORMAT_R5G5B5; }
+            else if (red == 0xf800 && green == 0x7e0 && blue == 0x1f) { return RENDERER_PIXEL_FORMAT_R5G6B5; }
+            else if (red == 0xf00 && green == 0xf0 && blue == 0xf && format->dwRGBAlphaBitMask == 0xf000) { return RENDERER_PIXEL_FORMAT_R4G4B4; }
         }
         else if (red == 0xff0000 && green == 0xff00 && blue == 0xff)
         {
-            if (bits == GRAPHICS_BITS_PER_PIXEL_24) { return RENDERER_PIXEL_FORMAT_24_BIT; }
-            else if (bits == GRAPHICS_BITS_PER_PIXEL_32) { return RENDERER_PIXEL_FORMAT_32_BIT; }
+            if (bits == GRAPHICS_BITS_PER_PIXEL_24) { return RENDERER_PIXEL_FORMAT_R8G8B8; }
+            else if (bits == GRAPHICS_BITS_PER_PIXEL_32) { return RENDERER_PIXEL_FORMAT_A8R8G8B8; }
         }
 
         return RENDERER_PIXEL_FORMAT_NONE;
@@ -1071,7 +1071,7 @@ namespace RendererModule
 
                         State.Settings.MaxAvailableMemory = result == DD_OK
                             ? height * pitch + total
-                            : MIN_RENDERER_DEVICE_AVAIABLE_VIDEO_MEMORY;
+                            : MIN_DEVICE_AVAIABLE_VIDEO_MEMORY;
                     }
 
                     {
@@ -1123,12 +1123,12 @@ namespace RendererModule
                 }
 
                 ZeroMemory(ModuleDescriptor.Capabilities.Capabilities,
-                    MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT * sizeof(RendererModuleDescriptorDeviceCapabilities));
+                    MAX_DEVICE_CAPABILITIES_COUNT * sizeof(RendererModuleDescriptorDeviceCapabilities));
 
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Width = GRAPHICS_RESOLUTION_640;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Height = GRAPHICS_RESOLUTION_480;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Bits = GRAPHICS_BITS_PER_PIXEL_16;
-                ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Format = RENDERER_PIXEL_FORMAT_16_BIT_565;
+                ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Format = RENDERER_PIXEL_FORMAT_R5G6B5;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Unk03 = 3;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Unk04 = 2;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].IsActive = TRUE;
@@ -2602,15 +2602,15 @@ namespace RendererModule
             tex->Surface2->Blt(NULL, tex->Surface1, NULL, DDBLT_WAIT, NULL);
         }
 
-        if (palette != NULL && tex->Unk06 != NULL) // TODO
+        if (palette != NULL && tex->Options != 0)
         {
             PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
 
             for (u32 x = 0; x < MAX_TEXTURE_PALETTE_COLOR_COUNT; x++)
             {
-                entries[x].peRed = (u8)((palette[x] >> 16) & 0xff);
-                entries[x].peGreen = (u8)((palette[x] >> 8) & 0xff);
-                entries[x].peBlue = (u8)((palette[x] >> 0) & 0xff);
+                entries[x].peRed = (u8)RGBA_GETRED(palette[x]);
+                entries[x].peGreen = (u8)RGBA_GETGREEN(palette[x]);
+                entries[x].peBlue = (u8)RGBA_GETBLUE(palette[x]);
                 entries[x].peFlags = 0;
             }
 
@@ -2881,7 +2881,7 @@ namespace RendererModule
     {
         AttemptRenderScene();
 
-        MaximumRendererVertexCount = MAX_RENDERER_VERTEX_COUNT / RendererVertexSize;
+        MaximumRendererVertexCount = MAX_VERTEX_COUNT / RendererVertexSize;
     }
 
     // 0x60009730
