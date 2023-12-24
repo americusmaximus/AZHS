@@ -97,6 +97,13 @@ namespace RendererModule
             {
                 BOOL IsSoft; // 0x60058d6c
             } Active;
+
+            struct
+            {
+                IDirectDrawSurface7* Window; // 0x600186cc
+
+                IDirectDrawSurface7* Depth; // 0x60058d94
+            } Surfaces;
         } DX;
 
         struct
@@ -188,6 +195,14 @@ namespace RendererModule
         {
             TextureStageState StageStates[MAX_TEXTURE_STATE_STATE_COUNT]; // 0x6007b8a0
         } Textures;
+
+        struct
+        {
+            u32 X0; // 0x60018238
+            u32 Y0; // 0x6001823c
+            u32 X1; // 0x60018240
+            u32 Y1; // 0x60018244
+        } ViewPort;
 
         struct
         {
