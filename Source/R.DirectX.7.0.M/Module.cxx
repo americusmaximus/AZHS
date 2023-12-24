@@ -160,7 +160,16 @@ namespace RendererModule
     // NOTE: Never being called by the application.
     DLLAPI u32 STDCALLAPI DestroyGameWindow(const u32 indx)
     {
-        // TODO NOT IMPLEMENTED
+        if (indx < MAX_WINDOW_COUNT && State.Windows[indx].Texture != NULL && WINDOW_OFFSET < indx)
+        {
+            if (State.Windows[indx].Surface != NULL)
+            {
+                State.Windows[indx].Surface->Release();
+                State.Windows[indx].Surface = NULL;
+            }
+
+            return ReleaseTexture(State.Windows[indx].Texture);
+        }
 
         return RENDERER_MODULE_FAILURE;
     }
@@ -294,17 +303,20 @@ namespace RendererModule
     // a.k.a. THRASH_flushwindow
     DLLAPI u32 STDCALLAPI FlushGameWindow(void)
     {
-        // TODO NOT IMPLEMENTED
-
-        return RENDERER_MODULE_FAILURE;
+        return EndRendererScene();
     }
 
     // 0x60001d80
     // a.k.a. THRASH_getstate
     // NOTE: Never being called by the application.
-    DLLAPI u32 STDCALLAPI AcquireState(const u32 stage)
+    DLLAPI u32 STDCALLAPI AcquireState(const u32 state)
     {
-        // TODO NOT IMPLEMENTED
+        const u32 actual = state & RENDERER_MODULE_SELECT_STATE_MASK;
+        const u32 stage = MAKETEXTURESTAGEVALUE(state);
+
+        const s32 indx = AcquireTextureStateStageIndex(actual);
+
+        if (indx >= 0) { return State.Textures.StageStates[indx].Values[stage]; }
 
         return RENDERER_MODULE_FAILURE;
     }
@@ -314,7 +326,7 @@ namespace RendererModule
     // NOTE: Never being called by the application.
     DLLAPI RendererTexture* STDCALLAPI AcquireGameWindowTexture(const u32 indx)
     {
-        // TODO NOT IMPLEMENTED
+        if (indx < MAX_WINDOW_COUNT) { return State.Windows[indx].Texture; }
 
         return NULL;
     }
@@ -393,36 +405,141 @@ namespace RendererModule
     // a.k.a. THRASH_lockwindow
     DLLAPI RendererModuleWindowLock* STDCALLAPI LockGameWindow(void)
     {
-        // TODO NOT IMPLEMENTED
+        if (State.DX.Surfaces.Window == NULL) { return NULL; }
 
-        return RENDERER_MODULE_FAILURE;
+        if (State.Lock.IsActive) { LOGERROR("D3D lock called while locked\n"); }
+
+        if (State.DX.Surfaces.Window->IsLost() != DD_OK) { return NULL; }
+
+        if (State.Scene.IsActive) { EndRendererScene(); }
+
+        if (State.Lambdas.Lambdas.LockWindow != NULL) { State.Lambdas.Lambdas.LockWindow(TRUE); }
+
+        State.Lock.Surface = State.DX.Surfaces.Window;
+
+        DDSURFACEDESC2 desc;
+        ZeroMemory(&desc, sizeof(DDSURFACEDESC2));
+
+        desc.dwSize = sizeof(DDSURFACEDESC2);
+
+        State.DX.Code = State.DX.Surfaces.Window->Lock(NULL, &desc, DDLOCK_NOSYSLOCK | DDLOCK_WAIT, NULL);
+
+        if (State.DX.Code == DD_OK)
+        {
+            if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_16)
+            {
+                State.Lock.State.Format = (desc.ddpfPixelFormat.dwGBitMask == 0x7e0)
+                    ? RENDERER_PIXEL_FORMAT_R5G6B5
+                    : RENDERER_PIXEL_FORMAT_A1R5G5B5;
+            }
+            else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_32)
+            {
+                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_A8R8G8B8;
+            }
+            else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_24)
+            {
+                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_R8G8B8;
+            }
+
+            if (State.Settings.IsWindowMode)
+            {
+                RECT rect;
+                GetClientRect(State.Window.HWND, &rect);
+
+                POINT point;
+                ZeroMemory(&point, sizeof(POINT));
+
+                ClientToScreen(State.Window.HWND, &point);
+
+                OffsetRect(&rect, point.x, point.y);
+
+                if (State.DX.Surfaces.Window == State.DX.Surfaces.Active[1]) // TODO
+                {
+                    desc.lpSurface = (void*)((addr)desc.lpSurface
+                        + (addr)((desc.ddpfPixelFormat.dwRGBBitCount >> 3) * State.Lock.State.Rect.left)
+                        + (addr)(desc.lPitch * State.Lock.State.Rect.top));
+                }
+            }
+
+            State.Lock.State.Data = desc.lpSurface;
+            State.Lock.State.Stride = desc.lPitch;
+            State.Lock.State.Width = State.Window.Width;
+            State.Lock.State.Height = State.Window.Height;
+
+            State.Lock.IsActive = TRUE;
+
+            return &State.Lock.State;
+        }
+
+        if (State.Lambdas.Lambdas.LockWindow != NULL) { State.Lambdas.Lambdas.LockWindow(FALSE); }
+
+        return NULL;
     }
 
     // 0x60001330
     // a.k.a. THRASH_pageflip
     DLLAPI u32 STDCALLAPI ToggleGameWindow(void)
     {
-        // TODO NOT IMPLEMENTED
+        EndRendererScene();
 
-        return RENDERER_MODULE_FAILURE;
+        if (State.Lock.IsActive) { LOGERROR("D3D pageflip called in while locked\n"); }
+
+        return ToggleRenderer();
     }
 
     // 0x60003b60
     // a.k.a. THRASH_readrect
-    DLLAPI u32 STDCALLAPI ReadRectangle(const u32 x, const u32 y, const u32 width, const u32 height, u32* data)
+    DLLAPI u32 STDCALLAPI ReadRectangle(const u32 x, const u32 y, const u32 width, const u32 height, u32* pixels)
     {
-        // TODO NOT IMPLEMENTED
+        RendererModuleWindowLock* state = RendererLock(LOCK_READ);
 
-        return RENDERER_MODULE_FAILURE;
+        if (state == NULL) { return RENDERER_MODULE_FAILURE; }
+
+        const u32 multiplier = state->Format == RENDERER_PIXEL_FORMAT_R8G8B8 ? 4 : 2;
+        const u32 length = multiplier * width;
+
+        for (u32 xx = 0; xx < height; xx++)
+        {
+            const addr address = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
+
+            CopyMemory((void*)((addr)state->Data + address), &pixels[xx * length], length);
+        }
+
+        return UnlockGameWindow(state);
     }
 
     // 0x600036c0
     // a.k.a. THRASH_restore
     DLLAPI u32 STDCALLAPI RestoreGameWindow(void)
     {
-        // TODO NOT IMPLEMENTED
+        if (RendererState == STATE_INACTIVE)
+        {
+            RendererState = STATE_ACTIVE;
 
-        return RENDERER_MODULE_FAILURE;
+            if (State.Lock.IsActive) { UnlockGameWindow(NULL); }
+
+            ReleaseRendererDevice();
+
+            RendererDeviceIndex = INVALID_DEVICE_INDEX;
+
+            if (State.Lambdas.Lambdas.Execute != NULL)
+            {
+                if (GetWindowThreadProcessId(State.Window.Parent.HWND, NULL) != GetCurrentThreadId())
+                {
+                    ReleaseRendererWindow();
+
+                    State.Lambdas.Log = NULL;
+
+                    return RENDERER_MODULE_SUCCESS;
+                }
+            }
+
+            ReleaseRendererDeviceInstance();
+
+            State.Lambdas.Log = NULL;
+        }
+
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x600020c0

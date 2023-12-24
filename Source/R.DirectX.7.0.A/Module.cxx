@@ -536,7 +536,7 @@ namespace RendererModule
 
     // 0x60003b60
     // a.k.a. THRASH_readrect
-    DLLAPI u32 STDCALLAPI ReadRectangle(const u32 x, const u32 y, const u32 width, const u32 height, u32* data)
+    DLLAPI u32 STDCALLAPI ReadRectangle(const u32 x, const u32 y, const u32 width, const u32 height, u32* pixels)
     {
         RendererModuleWindowLock* state = RendererLock(LOCK_READ);
 
@@ -549,7 +549,7 @@ namespace RendererModule
         {
             const addr address = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
 
-            CopyMemory((void*)((addr)state->Data + address), &data[xx * length], length);
+            CopyMemory((void*)((addr)state->Data + address), &pixels[xx * length], length);
         }
 
         return UnlockGameWindow(state);

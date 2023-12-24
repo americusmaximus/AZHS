@@ -41,6 +41,10 @@ SOFTWARE.
 
 #define CLEAR_DEPTH_VALUE (1.0f)
 #define ENVIRONMENT_SECTION_NAME "DX7"
+#define LOCK_NONE 0
+#define LOCK_READ 1
+#define LOCK_WRITE 2
+#define MAX_ACTIVE_SURFACE_COUNT 8
 #define MAX_DEVICE_CAPABILITIES_COUNT 128 /* ORIGINAL: 98 */
 #define MAX_ENUMERATE_DEVICE_COUNT 60 /* ORIGINAL: 16 */
 #define MAX_ENUMERATE_DEVICE_NAME_COUNT 60 /* ORIGINAL: 10 */
@@ -134,6 +138,13 @@ namespace RendererModule
     {
         struct
         {
+            HRESULT Code; // 0x60018680
+
+            IDirectDrawClipper* Clipper; // 0x60018698
+            IDirectDrawGammaControl* GammaControl; // 0x6001869c
+
+            IDirectDraw7* Instance; // 0x600186a0
+
             IDirect3D7* DirectX; // 0x60058d98
             IDirect3DDevice7* Device; // 0x60058d9c
 
@@ -141,13 +152,16 @@ namespace RendererModule
             {
                 BOOL IsSoft; // 0x60058d6c
 
+                BOOL IsInit; // 0x60058d74
+
                 IDirectDraw7* Instance; // 0x60058d80
 
                 struct
                 {
                     struct
                     {
-
+                        IDirectDrawSurface7* Main; // 0x60058d8c
+                        IDirectDrawSurface7* Back; // 0x60058d90
                     } Active;
 
                     IDirectDrawSurface7* Main; // 0x60058d84
@@ -157,6 +171,11 @@ namespace RendererModule
 
             struct
             {
+                IDirectDrawSurface7* Main; // 0x600186a4
+                IDirectDrawSurface7* Back; // 0x600186a8
+
+                IDirectDrawSurface7* Active[MAX_ACTIVE_SURFACE_COUNT]; // 0x600186ac
+
                 IDirectDrawSurface7* Window; // 0x600186cc
 
                 IDirectDrawSurface7* Depth; // 0x60058d94
@@ -251,12 +270,25 @@ namespace RendererModule
         struct
         {
             BOOL IsActive; // 0x60018230
+
+            IDirectDrawSurface7* Surface; // 0x60018234
+
+            RendererModuleWindowLock State; // 0x60018218
         } Lock;
+
+        HANDLE Mutex; // 0x600186d4
 
         struct
         {
             BOOL IsActive; // 0x6001822c
         } Scene;
+
+        struct
+        {
+            BOOL IsToggleAllowed; // 0x60018864
+
+            BOOL IsWindowMode; // 0x60018688
+        } Settings;
 
         struct
         {
@@ -291,6 +323,13 @@ namespace RendererModule
         {
             u32 Count; // 0x6001824c
 
+            u32 Index; // 0x600186d0
+
+            struct
+            {
+                HWND HWND; // 0x60058df0
+            } Parent;
+
             HWND HWND; // 0x6007b880
 
             u32 Height; // 0x6005a934
@@ -308,6 +347,7 @@ namespace RendererModule
     void Message(const u32 severity, const char* format, ...);
 
     BOOL AcquireRendererDeviceAccelerationState(const u32 indx);
+    BOOL AcquireRendererDeviceState(void);
     BOOL BeginRendererScene(void);
     BOOL CALLBACK EnumerateDirectDrawDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context, HMONITOR monitor);
     BOOL EndRendererScene(void);
@@ -318,16 +358,24 @@ namespace RendererModule
     Renderer::RendererTexture* AllocateRendererTexture(const u32 size);
     Renderer::RendererTexture* AllocateRendererTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32 state, const BOOL destination);
     Renderer::RendererTexture* InitializeRendererTexture(void);
+    RendererModuleWindowLock* RendererLock(const u32 mode);
     s32 AcquireSettingsValue(const s32 value, const char* section, const char* name);
+    s32 AcquireTextureStateStageIndex(const u32 state);
     s32 InitializeRendererTextureDetails(Renderer::RendererTexture* tex, const BOOL destination);
     u32 AcquireDirectDrawDeviceCount(GUID** uids, HMONITOR** monitors, const char* section);
     u32 AcquireRendererDeviceCount(void);
     u32 ClearRendererViewPort(const u32 x0, const u32 y0, const u32 x1, const u32 y1, const BOOL window);
     u32 DisposeRendererTexture(Renderer::RendererTexture* tex);
+    u32 ReleaseRendererDeviceInstance(void);
+    u32 ReleaseRendererWindow(void);
+    u32 ToggleRenderer(void);
     void AcquireRendererModuleDescriptor(RendererModuleDescriptor* desc, const char* section);
     void AttemptRenderScene(void);
     void InitializeTextureStateStates(void);
+    void ReleaseRendererDevice(void);
+    void ReleaseRendererDeviceSurfaces(void);
     void ReleaseRendererTexture(Renderer::RendererTexture* tex);
+    void ReleaseRendererWindows(void);
     void RendererRenderScene(void);
     void SelectRendererDevice(void);
 }

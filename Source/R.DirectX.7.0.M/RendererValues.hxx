@@ -32,6 +32,9 @@ namespace RendererModuleValues
     extern s32 RendererState; // 0x600170b8
     extern s32 RendererDeviceIndex; // 0x600170bc
 
+    extern u32 RendererToggleOptions; // 0x600170cc
+    extern u32 RendererBlitOptions; // 0x600170d0
+
     extern f32 RendererClearDepth; // 0x600170e0
 
     extern u32 RendererVertexType; // 0x600170f0
@@ -44,6 +47,8 @@ namespace RendererModuleValues
     extern u32 RendererVersion; // 0x60017128
 
     extern f32 RendererDepthBias; // 0x6001885c
+
+    extern RendererModule::MinMax MinMax[6]; // 0x60017088 // TODO
 
     extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x600fc7c0
     extern RendererModule::RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_DEVICE_CAPABILITIES_COUNT]; // 0x60017250

@@ -31,6 +31,9 @@ namespace RendererModuleValues
     s32 RendererState = STATE_INITIAL;
     s32 RendererDeviceIndex = INVALID_DEVICE_INDEX;
 
+    u32 RendererToggleOptions = DDFLIP_WAIT;
+    u32 RendererBlitOptions = DDBLT_DONOTWAIT;
+
     f32 RendererClearDepth = CLEAR_DEPTH_VALUE;
 
     u32 RendererVertexType = D3DFVF_TLVERTEX;
@@ -43,6 +46,16 @@ namespace RendererModuleValues
     u32 RendererVersion = RENDERER_MODULE_VERSION_107;
 
     f32 RendererDepthBias;
+
+    RendererModule::MinMax MinMax[6] =
+    {
+        { 0x0,   0x4a },
+        { 0x64,  0x6e },
+        { 0xc8,  0xd7 },
+        { 0x12c, 0x13b },
+        { 0x190, 0x19f },
+        { 0x2bc, 0x2cb }
+    }; // TODO
 
     RendererModuleDescriptor ModuleDescriptor;
     RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_DEVICE_CAPABILITIES_COUNT];

@@ -289,10 +289,41 @@ namespace RendererModule
         return hal.dwCaps & DDCAPS_3D;
     }
 
+    // 0x60001e20
+    s32 AcquireTextureStateStageIndex(const u32 state)
+    {
+        s32 sum = 0;
+        u32 indx = 0;
+
+        while (state < RendererModuleValues::MinMax[indx].Min || RendererModuleValues::MinMax[indx].Max < state)
+        {
+            sum = sum + (RendererModuleValues::MinMax[indx].Max - RendererModuleValues::MinMax[indx].Min);
+
+            indx = indx + 1;
+
+            if (5 < indx) { return -1; } // TODO
+        }
+
+        return (sum - RendererModuleValues::MinMax[indx].Min) + state;
+    }
+
     // 0x60001f20
     void InitializeTextureStateStates(void)
     {
         ZeroMemory(State.Textures.StageStates, MAX_TEXTURE_STATE_STATE_COUNT * sizeof(TextureStageState));
+    }
+
+    // 0x6000a450
+    HRESULT CALLBACK EnumerateRendererDevicePixelFormats(LPDDPIXELFORMAT format, LPVOID context)
+    {
+        if ((format->dwFlags & DDPF_ZBUFFER) && format->dwRGBBitCount == State.Window.Bits)
+        {
+            CopyMemory(context, format, sizeof(DDPIXELFORMAT));
+
+            return D3DENUMRET_CANCEL;
+        }
+
+        return D3DENUMRET_OK;
     }
     
     // 0x60002060
@@ -308,6 +339,31 @@ namespace RendererModule
 
                 SelectDevice(value == NULL ? DEFAULT_DEVICE_INDEX : atoi(value));
             }
+        }
+    }
+
+    // 0x60003610
+    void ReleaseRendererDeviceSurfaces(void)
+    {
+        for (s32 x = (MAX_ACTIVE_SURFACE_COUNT - 1); x >= 0; x--)
+        {
+            if (State.DX.Surfaces.Active[x] != NULL)
+            {
+                State.DX.Surfaces.Active[x]->Release();
+                State.DX.Surfaces.Active[x] = NULL;
+            }
+        }
+
+        if (State.DX.Surfaces.Back != NULL)
+        {
+            State.DX.Surfaces.Back->Release();
+            State.DX.Surfaces.Back = NULL;
+        }
+
+        if (State.DX.Surfaces.Main != NULL)
+        {
+            State.DX.Surfaces.Main->Release();
+            State.DX.Surfaces.Main = NULL;
         }
     }
 
@@ -378,7 +434,121 @@ namespace RendererModule
         return State.DX.Device->Clear(1, &rect, options, RendererClearColor, RendererClearDepth, 0) == DD_OK;
     }
 
+    // 0x60008a50
+    // a.k.a. showbackbuffer
+    u32 ToggleRenderer(void)
+    {
+        if (State.Lock.IsActive) { UnlockGameWindow(NULL); }
 
+        if (!State.Settings.IsWindowMode)
+        {
+            if (State.DX.Active.Surfaces.Back != NULL)
+            {
+                HRESULT result = State.DX.Active.Surfaces.Main->Flip(NULL, RendererToggleOptions);
+
+                if (result == DDERR_SURFACELOST) { return RENDERER_MODULE_FAILURE; }
+
+                const u32 state = AcquireState(RENDERER_MODULE_STATE_SELECT_DISPLAY_STATE);
+
+                if (!State.Settings.IsToggleAllowed) { return RENDERER_MODULE_FAILURE; }
+
+                while (TRUE)
+                {
+                    while (result = State.DX.Active.Instance->TestCooperativeLevel(), result == DD_OK)
+                    {
+                        ResetTextures();
+
+                        if (result = State.DX.Active.Instance->RestoreAllSurfaces(), result == DD_OK) { return RENDERER_MODULE_SUCCESS; }
+
+                        Sleep(1);
+                    }
+
+                    if (result == DDERR_WRONGMODE) { break; }
+
+                    if (result == DDERR_EXCLUSIVEMODEALREADYSET || result == DDERR_NOEXCLUSIVEMODE) { Sleep(1); }
+
+                    Sleep(1);
+                }
+
+                SelectVideoMode(state, 2, 1); // TODO
+
+                return RENDERER_MODULE_SUCCESS;
+            }
+        }
+        else
+        {
+            for (u32 x = 0; x < 1000000; x++)
+            {
+                const HRESULT result = State.DX.Active.Surfaces.Main->GetBltStatus(DDGBS_ISBLTDONE);
+
+                if (result != DDERR_WASSTILLDRAWING && result != DDERR_SURFACEBUSY) { break; }
+            }
+
+            RECT dst;
+            RECT src;
+
+            if (!State.Settings.IsWindowMode)
+            {
+                GetClientRect(State.Window.HWND, &dst);
+
+                POINT point;
+                ZeroMemory(&point, sizeof(POINT));
+
+                ClientToScreen(State.Window.HWND, &point);
+                OffsetRect(&dst, point.x, point.y);
+                SetRect(&src, 0, 0, State.Window.Width, State.Window.Height);
+            }
+            else
+            {
+                POINT point;
+                ZeroMemory(&point, sizeof(POINT));
+
+                ClientToScreen(State.Window.HWND, &point);
+                SetRect(&dst, point.x, point.y, State.Window.Width + point.x, State.Window.Height + point.y);
+                SetRect(&src, 0, 0, State.Window.Width, State.Window.Height);
+            }
+
+            const HRESULT result = State.DX.Active.Surfaces.Active.Main->Blt(&dst,
+                State.DX.Active.Surfaces.Active.Back, &src, RendererBlitOptions, NULL);
+
+            if (result != DD_OK) { return RENDERER_MODULE_FAILURE; }
+        }
+
+        return RENDERER_MODULE_SUCCESS;
+    }
+
+    // 0x60003570
+    u32 ReleaseRendererWindow(void)
+    {
+        if (State.DX.Instance != NULL)
+        {
+            SetForegroundWindow(State.Window.HWND);
+            PostMessageA(State.Window.HWND, RENDERER_MODULE_WINDOW_MESSAGE_RELEASE_DEVICE, 0, 0);
+            WaitForSingleObject(State.Mutex, 10000);
+            CloseHandle(State.Mutex);
+
+            State.Mutex = NULL;
+            State.Window.HWND = NULL;
+
+            return State.DX.Code;
+        }
+
+        return RENDERER_MODULE_FAILURE;
+    }
+
+    // 0x600035e0
+    u32 ReleaseRendererDeviceInstance(void)
+    {
+        ReleaseRendererDeviceSurfaces();
+
+        if (State.DX.Instance != NULL)
+        {
+            State.DX.Instance->Release();
+            State.DX.Instance = NULL;
+        }
+
+        return RENDERER_MODULE_SUCCESS;
+    }
 
     // 0x60009080
     RendererTexture* AllocateRendererTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32 state, const BOOL destination)
@@ -773,6 +943,179 @@ namespace RendererModule
         return RENDERER_MODULE_SUCCESS;
     }
 
+    // 0x60001650
+    RendererModuleWindowLock* RendererLock(const u32 mode)
+    {
+        if (State.DX.Surfaces.Window != NULL)
+        {
+            if (State.Lock.IsActive) { LOGERROR("D3D lock called while locked\n"); }
+
+            if (State.Scene.IsActive) { EndRendererScene(); }
+
+            if (State.Lambdas.Lambdas.LockWindow != NULL) { State.Lambdas.Lambdas.LockWindow(TRUE); }
+
+            DDSURFACEDESC2 desc;
+            ZeroMemory(&desc, sizeof(DDSURFACEDESC2));
+
+            desc.dwSize = sizeof(DDSURFACEDESC2);
+
+            u32 options = DDLOCK_SURFACEMEMORYPTR;
+
+            switch (mode)
+            {
+            case LOCK_NONE: { options = DDLOCK_SURFACEMEMORYPTR; break; }
+            case LOCK_READ: { options = DDLOCK_READONLY; break; }
+            case LOCK_WRITE: { options = DDLOCK_WRITEONLY; break; }
+            }
+
+            State.Lock.Surface = State.DX.Surfaces.Window;
+
+            State.DX.Code = State.DX.Surfaces.Window->Lock(NULL, &desc, options | DDLOCK_NOSYSLOCK | DDLOCK_WAIT, NULL);
+
+            if (State.DX.Code != DD_OK)
+            {
+                if (State.Lambdas.Lambdas.LockWindow != NULL) { State.Lambdas.Lambdas.LockWindow(FALSE); }
+
+                return NULL;
+            }
+
+            if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_16)
+            {
+                State.Lock.State.Format = (desc.ddpfPixelFormat.dwGBitMask == 0x7e0)
+                    ? RENDERER_PIXEL_FORMAT_R5G6B5
+                    : RENDERER_PIXEL_FORMAT_A1R5G5B5;
+            }
+            else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_32)
+            {
+                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_A8R8G8B8;
+            }
+            else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_24)
+            {
+                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_R8G8B8;
+            }
+
+            if (State.Settings.IsWindowMode)
+            {
+                RECT rect;
+                GetClientRect(State.Window.HWND, &rect);
+
+                POINT point;
+                ZeroMemory(&point, sizeof(POINT));
+
+                ClientToScreen(State.Window.HWND, &point);
+                OffsetRect(&rect, point.x, point.y);
+
+                if (State.DX.Surfaces.Window == State.DX.Surfaces.Active[1]) // TODO
+                {
+                    desc.lpSurface = (void*)((addr)desc.lpSurface
+                        + (addr)((desc.ddpfPixelFormat.dwRGBBitCount >> 3) * State.Lock.State.Rect.left)
+                        + (addr)(desc.lPitch * State.Lock.State.Rect.top));
+                }
+            }
+
+            State.Lock.State.Data = desc.lpSurface;
+            State.Lock.State.Stride = desc.lPitch;
+            State.Lock.State.Width = State.Window.Width;
+            State.Lock.State.Height = State.Window.Height;
+
+            State.Lock.IsActive = TRUE;
+        }
+
+        return &State.Lock.State;
+    }
+
+    // 0x60009670
+    BOOL AcquireRendererDeviceState(void)
+    {
+        return State.DX.Active.IsInit;
+    }
+
+    // 0x60009500
+    void ReleaseRendererDevice(void)
+    {
+        if (AcquireRendererDeviceState() && State.Scene.IsActive)
+        {
+            FlushGameWindow();
+            SyncGameWindow(0);
+            Idle();
+
+            State.Scene.IsActive = FALSE;
+        }
+
+        if (State.DX.Clipper != NULL)
+        {
+            State.DX.Clipper->Release();
+            State.DX.Clipper = NULL;
+        }
+
+        if (State.DX.GammaControl != NULL)
+        {
+            {
+                const f32 value = 1.0f;
+
+                SelectState(RENDERER_MODULE_STATE_SELECT_GAMMA_CONTROL_STATE, (void*)(u32)(*(u32*)&value));
+            }
+
+            State.DX.GammaControl->Release();
+            State.DX.GammaControl = NULL;
+        }
+
+        ResetTextures();
+
+        State.DX.Active.Instance = NULL;
+
+        State.DX.Active.Surfaces.Main = NULL;
+        State.DX.Active.Surfaces.Back = NULL;
+        State.DX.Active.Surfaces.Active.Main = NULL;
+        State.DX.Active.Surfaces.Active.Back = NULL;
+
+        State.DX.Surfaces.Window = NULL;
+
+        State.Window.Index = 0;
+
+        if (State.DX.Surfaces.Depth != NULL)
+        {
+            State.DX.Device->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
+            State.DX.Device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
+
+            State.DX.Surfaces.Depth->Release();
+            State.DX.Surfaces.Depth = NULL;
+        }
+
+        if (State.DX.Device != NULL)
+        {
+            State.DX.Device->Release();
+            State.DX.Device = NULL;
+        }
+
+        if (State.DX.DirectX != NULL)
+        {
+            State.DX.DirectX->Release();
+            State.DX.DirectX = NULL;
+        }
+
+        State.DX.Active.IsInit = FALSE;
+
+        State.Scene.IsActive = FALSE;
+
+        ReleaseRendererWindows();
+    }
+
+    // 0x60001980
+    void ReleaseRendererWindows(void)
+    {
+        for (u32 x = 0; x < State.Window.Count + WINDOW_OFFSET; x++)
+        {
+            if (State.Windows[x + WINDOW_OFFSET].Surface != NULL)
+            {
+                State.Windows[x + WINDOW_OFFSET].Surface->Release();
+                State.Windows[x + WINDOW_OFFSET].Surface = NULL;
+            }
+        }
+
+        State.Window.Count = 0;
+    }
+
     // 0x6000a130
     // a.k.a. createzbuffer
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height, IDirectDrawSurface7* depth, IDirectDrawSurface7* surf)
@@ -867,19 +1210,6 @@ namespace RendererModule
         if (ds != NULL) { ds->Release(); }
 
         return FALSE;
-    }
-
-    // 0x6000a450
-    HRESULT CALLBACK EnumerateRendererDevicePixelFormats(LPDDPIXELFORMAT format, LPVOID context)
-    {
-        if ((format->dwFlags & DDPF_ZBUFFER) && format->dwRGBBitCount == State.Window.Bits)
-        {
-            CopyMemory(context, format, sizeof(DDPIXELFORMAT));
-
-            return D3DENUMRET_CANCEL;
-        }
-
-        return D3DENUMRET_OK;
     }
 
     // 0x60006f10
