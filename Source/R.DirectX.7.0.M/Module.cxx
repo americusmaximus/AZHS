@@ -138,7 +138,19 @@ namespace RendererModule
     // NOTE: Never being called by the application.
     DLLAPI u32 STDCALLAPI CreateGameWindow(const u32 width, const u32 height, const u32 format, const u32)
     {
-        // TODO NOT IMPLEMENTED
+        if (DAT_6005ab5c != 0
+            && (format == RENDERER_PIXEL_FORMAT_R5G5B5 || format == RENDERER_PIXEL_FORMAT_R5G6B5 || format == RENDERER_PIXEL_FORMAT_A8R8G8B8))
+        {
+            State.Window.Count = State.Window.Count + 1;
+
+            State.Windows[State.Window.Count + WINDOW_OFFSET].Texture = AllocateRendererTexture(width, height, format, 0, 0, TRUE);
+
+            InitializeRendererDeviceDepthSurfaces(width, height,
+                State.Windows[State.Window.Count + WINDOW_OFFSET].Surface,
+                State.Windows[State.Window.Count + WINDOW_OFFSET].Texture->Texture);
+
+            if (State.Windows[State.Window.Count + WINDOW_OFFSET].Texture != NULL) { return State.Window.Count + WINDOW_OFFSET; }
+        }
 
         return RENDERER_MODULE_FAILURE;
     }

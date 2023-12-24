@@ -34,6 +34,7 @@ namespace RendererModuleValues
     f32 RendererClearDepth = CLEAR_DEPTH_VALUE;
 
     u32 RendererVertexType = D3DFVF_TLVERTEX;
+    u32 RendererTextureHint = RENDERER_MODULE_TEXTURE_HINT_DYNAMIC;
 
     D3DPRIMITIVETYPE RendererPrimitiveType = D3DPT_TRIANGLELIST;
 
@@ -54,5 +55,10 @@ namespace RendererModuleValues
     s32 UnknownArray06[6] =
     {
         0, 0, 0, 0, 5, -1
+    }; // TODO
+
+    u32 UnknownFormatValues[MAX_USABLE_TEXTURE_FORMAT_COUNT] =
+    {
+       0, 1, 1, 2, 2, 3, 4, 2, 1, 2, 2, 2, 3, 0, 0, 0, 0, 0, 2, 3, 2, 0
     }; // TODO
 }

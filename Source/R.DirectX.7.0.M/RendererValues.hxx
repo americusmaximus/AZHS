@@ -35,6 +35,7 @@ namespace RendererModuleValues
     extern f32 RendererClearDepth; // 0x600170e0
 
     extern u32 RendererVertexType; // 0x600170f0
+    extern u32 RendererTextureHint; // 0x600170f4
 
     extern D3DPRIMITIVETYPE RendererPrimitiveType; // 0x60017104
 
@@ -50,4 +51,6 @@ namespace RendererModuleValues
     extern s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x60017010
 
     extern s32 UnknownArray06[6]; // 0x60017068 // TODO
+
+    extern u32 UnknownFormatValues[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x600171c8
 }
