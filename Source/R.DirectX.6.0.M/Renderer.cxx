@@ -286,7 +286,7 @@ namespace RendererModule
         DWORD options = (State.Device.Capabilities.IsDepthAvailable && State.Window.Bits != 0)
             ? (D3DCLEAR_ZBUFFER | D3DCLEAR_TARGET) : D3DCLEAR_TARGET;
 
-        if (State.Device.Capabilities.IsStencilBuffer) { options = options | D3DCLEAR_STENCIL; }
+        if (State.Device.Capabilities.IsStencilBufferAvailable) { options = options | D3DCLEAR_STENCIL; }
 
         if (x1 == 0)
         {
@@ -1690,7 +1690,7 @@ namespace RendererModule
 
         CopyMemory(&desc.ddpfPixelFormat, &format, sizeof(DDPIXELFORMAT));
 
-        State.Device.Capabilities.IsStencilBuffer = (format.dwFlags & DDPF_STENCILBUFFER) != 0;
+        State.Device.Capabilities.IsStencilBufferAvailable = (format.dwFlags & DDPF_STENCILBUFFER) != 0;
 
         desc.ddsCaps.dwCaps = State.Device.Capabilities.IsAccelerated
             ? DDSCAPS_ZBUFFER | DDSCAPS_VIDEOMEMORY

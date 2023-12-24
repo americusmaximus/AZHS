@@ -2170,7 +2170,7 @@ namespace RendererModule
 
         CopyMemory(&desc.ddpfPixelFormat, &format, sizeof(DDPIXELFORMAT));
 
-        State.Device.Capabilities.IsStencilBuffer = (format.dwFlags & DDPF_STENCILBUFFER) != 0;
+        State.Device.Capabilities.IsStencilBufferAvailable = (format.dwFlags & DDPF_STENCILBUFFER) != 0;
 
         desc.ddsCaps.dwCaps = State.Device.Capabilities.IsAccelerated
             ? DDSCAPS_ZBUFFER | DDSCAPS_VIDEOMEMORY
@@ -2303,15 +2303,15 @@ namespace RendererModule
     }
 
     // 0x60008dc0
-    u32 ClearRendererViewPort(const u32 x0, const u32 y0, const u32 x1, const u32 y1, const BOOL mode)
+    u32 ClearRendererViewPort(const u32 x0, const u32 y0, const u32 x1, const u32 y1, const BOOL window)
     {
         D3DRECT rect;
 
-        DWORD options = (mode == FALSE); // D3DCLEAR_TARGET
+        DWORD options = (window == FALSE); // D3DCLEAR_TARGET
         
         if (State.Device.Capabilities.IsDepthAvailable && State.Window.Bits != 0) { options = options | D3DCLEAR_ZBUFFER; }
 
-        if (State.Device.Capabilities.IsStencilBuffer) { options = options | D3DCLEAR_STENCIL; }
+        if (State.Device.Capabilities.IsStencilBufferAvailable) { options = options | D3DCLEAR_STENCIL; }
 
         if (x1 == 0)
         {

@@ -1199,7 +1199,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_STENCIL_STATE:
         {
-            if (!State.Device.Capabilities.IsStencilBuffer) { return RENDERER_MODULE_FAILURE; }
+            if (!State.Device.Capabilities.IsStencilBufferAvailable) { return RENDERER_MODULE_FAILURE; }
 
             switch ((u32)value)
             {
@@ -1211,7 +1211,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_STENCIL_FUNCTION:
         {
-            if (!State.Device.Capabilities.IsStencilBuffer) { return RENDERER_MODULE_FAILURE; }
+            if (!State.Device.Capabilities.IsStencilBufferAvailable) { return RENDERER_MODULE_FAILURE; }
 
             switch ((u32)value)
             {
@@ -1229,7 +1229,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_STENCIL_FAIL_STATE:
         {
-            if (!State.Device.Capabilities.IsStencilBuffer) { return RENDERER_MODULE_FAILURE; }
+            if (!State.Device.Capabilities.IsStencilBufferAvailable) { return RENDERER_MODULE_FAILURE; }
 
             switch ((u32)value)
             {
@@ -1247,7 +1247,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_STENCIL_DEPTH_FAIL_STATE:
         {
-            if (!State.Device.Capabilities.IsStencilBuffer) { return RENDERER_MODULE_FAILURE; }
+            if (!State.Device.Capabilities.IsStencilBufferAvailable) { return RENDERER_MODULE_FAILURE; }
 
             switch ((u32)value)
             {
@@ -1265,7 +1265,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_STENCIL_PASS_STATE:
         {
-            if (!State.Device.Capabilities.IsStencilBuffer) { return RENDERER_MODULE_FAILURE; }
+            if (!State.Device.Capabilities.IsStencilBufferAvailable) { return RENDERER_MODULE_FAILURE; }
 
             switch ((u32)value)
             {

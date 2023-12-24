@@ -289,7 +289,7 @@ namespace RendererModule
                 BOOL IsAnisotropyAvailable; // 0x6005ab3c
                 BOOL IsGammaAvailable; // 0x6005ab40
                 BOOL IsSpecularGouraudBlending; // 0x6005ab44
-                BOOL IsStencilBuffer; // 0x6005ab48
+                BOOL IsStencilBufferAvailable; // 0x6005ab48
                 BOOL IsSpecularBlending; // 0x6005ab4c
 
                 BOOL IsTextureIndependentUVs; // 0x6005ab54
@@ -507,7 +507,7 @@ namespace RendererModule
     u32 AcquireDirectDrawDeviceCount(GUID** uids, HMONITOR** monitors, const char* section);
     u32 AcquirePixelFormat(const DDPIXELFORMAT* format);
     u32 AcquireRendererDeviceCount(void);
-    u32 ClearRendererViewPort(const u32 x0, const u32 y0, const u32 x1, const u32 y1, const BOOL mode);
+    u32 ClearRendererViewPort(const u32 x0, const u32 y0, const u32 x1, const u32 y1, const BOOL window);
     u32 DisposeRendererTexture(Renderer::RendererTexture* tex);
     u32 InitializeRendererDevice(void);
     u32 InitializeRendererDeviceAcceleration(void);

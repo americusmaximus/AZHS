@@ -305,4 +305,67 @@ namespace RendererModule
         desc->MemoryType = AcquireSettingsValue(desc->MemoryType, section, "textureramtype");
         desc->DXV = AcquireSettingsValue(desc->DXV, section, "dxversion");
     }
+
+    // 0x60008dc0
+    u32 ClearRendererViewPort(const u32 x0, const u32 y0, const u32 x1, const u32 y1, const BOOL window)
+    {
+        AttemptRenderScene();
+
+        D3DRECT rect;
+
+        DWORD options = (window == FALSE); // D3DCLEAR_TARGET
+
+        if (State.Device.Capabilities.IsDepthAvailable && State.Window.Bits != 0) { options = options | D3DCLEAR_ZBUFFER; }
+
+        if (State.Device.Capabilities.IsStencilBufferAvailable) { options = options | D3DCLEAR_STENCIL; }
+
+        if (x1 == 0)
+        {
+            rect.x1 = 0;
+            rect.y1 = 0;
+            rect.x2 = State.Window.Width;
+            rect.y2 = State.Window.Height;
+        }
+        else
+        {
+            rect.x1 = x0;
+            rect.x2 = x1;
+            rect.y1 = y0;
+            rect.y2 = y1;
+        }
+
+        return State.DX.Device->Clear(1, &rect, options, RendererClearColor, RendererClearDepth, 0) == DD_OK;
+    }
+
+    // 0x60006f10
+    void AttemptRenderScene(void)
+    {
+        if (State.Data.Vertexes.Count != 0) { RendererRenderScene(); }
+    }
+
+    // 0x60006f20
+    void RendererRenderScene(void)
+    {
+        if (State.Data.Vertexes.Count != 0 && State.Data.Indexes.Count != 0)
+        {
+            if (!State.Scene.IsActive) { BeginRendererScene(); }
+
+            State.DX.Device->DrawIndexedPrimitive(RendererPrimitiveType, RendererVertexType,
+                State.Data.Vertexes.Vertexes, State.Data.Vertexes.Count,
+                State.Data.Indexes.Indexes, State.Data.Indexes.Count, 0);
+
+            State.Data.Vertexes.Count = 0;
+            State.Data.Indexes.Count = 0;
+        }
+    }
+
+    // 0x60008810
+    BOOL BeginRendererScene(void)
+    {
+        if (State.Lock.IsActive) { UnlockGameWindow(NULL); }
+
+        State.Scene.IsActive = State.DX.Device->BeginScene() == DD_OK;
+
+        return State.Scene.IsActive;
+    }
 }

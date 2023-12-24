@@ -31,6 +31,14 @@ namespace RendererModuleValues
     s32 RendererState = STATE_INITIAL;
     s32 RendererDeviceIndex = INVALID_DEVICE_INDEX;
 
+    f32 RendererClearDepth = CLEAR_DEPTH_VALUE;
+
+    u32 RendererVertexType = D3DFVF_TLVERTEX;
+
+    D3DPRIMITIVETYPE RendererPrimitiveType = D3DPT_TRIANGLELIST;
+
+    u32 RendererClearColor = GRAPCHICS_COLOR_WHITE;
+
     u32 RendererVersion = RENDERER_MODULE_VERSION_107;
 
     RendererModuleDescriptor ModuleDescriptor;

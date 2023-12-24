@@ -209,7 +209,7 @@ namespace RendererModule
                 BOOL IsColorBlending; // 0x6004e62c
                 BOOL IsAnisotropyAvailable; // 0x6004e630
                 BOOL IsPrimaryGammaAvailable; // 0x6004e634
-                BOOL IsStencilBuffer; // 0x6004e638
+                BOOL IsStencilBufferAvailable; // 0x6004e638
                 BOOL IsSpecularBlending; // 0x6004e63c
 
                 BOOL IsMipMapBiasAvailable; // 0x6004e644

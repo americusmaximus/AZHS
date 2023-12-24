@@ -32,6 +32,14 @@ namespace RendererModuleValues
     extern s32 RendererState; // 0x600170b8
     extern s32 RendererDeviceIndex; // 0x600170bc
 
+    extern f32 RendererClearDepth; // 0x600170e0
+
+    extern u32 RendererVertexType; // 0x600170f0
+
+    extern D3DPRIMITIVETYPE RendererPrimitiveType; // 0x60017104
+
+    extern u32 RendererClearColor; // 0x60017118
+
     extern u32 RendererVersion; // 0x60017128
 
     extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x600fc7c0
