@@ -109,9 +109,28 @@ namespace RendererModule
     // a.k.a. THRASH_clip
     DLLAPI u32 STDCALLAPI ClipGameWindow(const u32 x0, const u32 y0, const u32 x1, const u32 y1)
     {
-        // TODO NOT IMPLEMENTED
+        State.ViewPort.X0 = x0;
+        State.ViewPort.Y0 = y0;
+        State.ViewPort.X1 = x1 - x0;
+        State.ViewPort.Y1 = y1 - y0;
 
-        return RENDERER_MODULE_FAILURE;
+        AttemptRenderScene();
+
+        if (State.Scene.IsActive) { EndRendererScene(); }
+
+        D3DVIEWPORT7 vp;
+        ZeroMemory(&vp, sizeof(D3DVIEWPORT7));
+
+        vp.dwX = x0;
+        vp.dwY = y0;
+        vp.dvMinZ = 0.0f;
+        vp.dvMaxZ = 0.9999847f;
+        vp.dwWidth = x1 - x0;
+        vp.dwHeight = y1 - y0;
+
+        State.DX.Device->SetViewport(&vp);
+
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x60001880

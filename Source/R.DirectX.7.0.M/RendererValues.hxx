@@ -42,6 +42,8 @@ namespace RendererModuleValues
 
     extern u32 RendererVersion; // 0x60017128
 
+    extern f32 RendererDepthBias; // 0x6001885c
+
     extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x600fc7c0
     extern RendererModule::RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_DEVICE_CAPABILITIES_COUNT]; // 0x60017250
 

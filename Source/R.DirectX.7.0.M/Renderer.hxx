@@ -221,6 +221,7 @@ namespace RendererModule
     BOOL AcquireRendererDeviceAccelerationState(const u32 indx);
     BOOL BeginRendererScene(void);
     BOOL CALLBACK EnumerateDirectDrawDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context, HMONITOR monitor);
+    BOOL EndRendererScene(void);
     s32 AcquireSettingsValue(const s32 value, const char* section, const char* name);
     u32 AcquireDirectDrawDeviceCount(GUID** uids, HMONITOR** monitors, const char* section);
     u32 AcquireRendererDeviceCount(void);

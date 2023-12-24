@@ -368,4 +368,23 @@ namespace RendererModule
 
         return State.Scene.IsActive;
     }
+
+    // 0x60008860
+    BOOL EndRendererScene(void)
+    {
+        if (State.Data.Vertexes.Count != 0) { RendererRenderScene(); }
+
+        if (State.Scene.IsActive)
+        {
+            RendererDepthBias = 0.0f;
+
+            const HRESULT result = State.DX.Device->EndScene();
+
+            State.Scene.IsActive = FALSE;
+
+            return result == DD_OK;
+        }
+
+        return TRUE;
+    }
 }

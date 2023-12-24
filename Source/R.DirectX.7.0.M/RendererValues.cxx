@@ -41,6 +41,8 @@ namespace RendererModuleValues
 
     u32 RendererVersion = RENDERER_MODULE_VERSION_107;
 
+    f32 RendererDepthBias;
+
     RendererModuleDescriptor ModuleDescriptor;
     RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_DEVICE_CAPABILITIES_COUNT];
 
