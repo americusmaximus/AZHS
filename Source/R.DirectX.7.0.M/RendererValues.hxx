@@ -24,12 +24,20 @@ SOFTWARE.
 
 #include "Renderer.hxx"
 
-#define DEFAULT_RENDERER_DEVICE_INDEX 0
-#define INVALID_RENDERER_DEVICE_INDEX (-1)
-
-#define DEFAULT_RENDERER_STATE (-1)
+#define DEFAULT_DEVICE_INDEX 0
+#define INVALID_DEVICE_INDEX (-1)
 
 namespace RendererModuleValues
 {
     extern s32 RendererState; // 0x600170b8
+    extern s32 RendererDeviceIndex; // 0x600170bc
+
+    extern u32 RendererVersion; // 0x60017128
+
+    extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x600fc7c0
+    extern RendererModule::RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_DEVICE_CAPABILITIES_COUNT]; // 0x60017250
+
+    extern s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x60017010
+
+    extern s32 UnknownArray06[6]; // 0x60017068 // TODO
 }

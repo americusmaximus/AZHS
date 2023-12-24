@@ -21,12 +21,15 @@ SOFTWARE.
 */
 
 #include "Graphics.Basic.hxx"
+#include "Mathematics.Basic.hxx"
 #include "Module.hxx"
 #include "RendererValues.hxx"
 #include "Settings.hxx"
 
+#include <math.h>
 #include <stdlib.h>
 
+using namespace Mathematics;
 using namespace Renderer;
 using namespace RendererModuleValues;
 using namespace Settings;
@@ -37,9 +40,60 @@ namespace RendererModule
     // a.k.a. THRASH_about
     DLLAPI RendererModuleDescriptor* STDCALLAPI AcquireDescriptor(void)
     {
-        // TODO NOT IMPLEMENTED
+        ModuleDescriptor.Version = RendererVersion;
+        ModuleDescriptor.Signature = RENDERER_MODULE_SIGNATURE_D3D7;
+        ModuleDescriptor.Unk1 = 0xd0; // TODO
 
-        return NULL;
+        if (State.Device.Capabilities.MinTextureWidth == 0)
+        {
+            ModuleDescriptor.MaximumTextureWidth = 256;
+            ModuleDescriptor.MaximumTextureHeight = 256;
+            ModuleDescriptor.MinimumTextureWidth = 8;
+            ModuleDescriptor.MinimumTextureHeight = 8;
+            ModuleDescriptor.MultipleTextureWidth = 1;
+            ModuleDescriptor.MultipleTextureHeight = 1;
+
+            ModuleDescriptor.Caps = RENDERER_MODULE_CAPS_WINDOWED | ((State.DX.Active.IsSoft & 1) << 4)
+                | RENDERER_MODULE_CAPS_SOFTWARE | RENDERER_MODULE_CAPS_TEXTURE_HEIGHT_POW2
+                | RENDERER_MODULE_CAPS_TEXTURE_WIDTH_POW2 | RENDERER_MODULE_CAPS_TEXTURE_SQUARE | RENDERER_MODULE_CAPS_LINE_WIDTH;
+
+            ModuleDescriptor.MaximumSimultaneousTextures = 1;
+        }
+        else
+        {
+            ModuleDescriptor.MaximumTextureWidth = State.Device.Capabilities.MaxTextureWidth;
+            ModuleDescriptor.MaximumTextureHeight = State.Device.Capabilities.MaxTextureHeight;
+            ModuleDescriptor.MinimumTextureWidth = State.Device.Capabilities.MinTextureWidth;
+            ModuleDescriptor.MinimumTextureHeight = State.Device.Capabilities.MinTextureHeight;
+            ModuleDescriptor.MultipleTextureWidth = State.Device.Capabilities.MultipleTextureWidth;
+            ModuleDescriptor.MultipleTextureHeight = State.Device.Capabilities.MultipleTextureHeight;
+
+            ModuleDescriptor.Caps = RENDERER_MODULE_CAPS_WINDOWED | ((State.DX.Active.IsSoft & 1) << 4)
+                | (State.Device.Capabilities.IsPowerOfTwoTexturesHeight & 1) << 3
+                | (State.Device.Capabilities.IsPowerOfTwoTexturesWidth & 1) << 2
+                | (State.Device.Capabilities.IsSquareOnlyTextures & 1) << 1 | RENDERER_MODULE_CAPS_LINE_WIDTH;
+
+            ModuleDescriptor.MaximumSimultaneousTextures = State.Device.Capabilities.MaximumSimultaneousTextures;
+        }
+
+        ModuleDescriptor.ClipAlign = 0;
+        ModuleDescriptor.DXV = RENDERER_MODULE_VERSION_DX7;
+        ModuleDescriptor.Author = RENDERER_MODULE_AUTHOR;
+        ModuleDescriptor.Unk4 = 0x14; // TODO
+        ModuleDescriptor.TextureFormatStates = RendererTextureFormatStates;
+        ModuleDescriptor.Unk5 = 4; // TODO
+
+        ModuleDescriptor.Unk6 = UnknownArray06;
+
+        ModuleDescriptor.Capabilities.Capabilities = ModuleDescriptorDeviceCapabilities;
+
+        strcpy(ModuleDescriptor.Name, RENDERER_MODULE_NAME);
+
+        SelectRendererDevice();
+
+        AcquireRendererModuleDescriptor(&ModuleDescriptor, ENVIRONMENT_SECTION_NAME);
+
+        return &ModuleDescriptor;
     }
 
     // 0x600012e0
@@ -63,7 +117,7 @@ namespace RendererModule
     // 0x60001880
     // a.k.a. THRASH_createwindow
     // NOTE: Never being called by the application.
-    DLLAPI u32 STDCALLAPI CreateGameWindow(const u32 width, const u32 height, const u32 format, void*)
+    DLLAPI u32 STDCALLAPI CreateGameWindow(const u32 width, const u32 height, const u32 format, const u32)
     {
         // TODO NOT IMPLEMENTED
 
@@ -242,14 +296,15 @@ namespace RendererModule
     // a.k.a. THRASH_init
     DLLAPI u32 STDCALLAPI Init(void)
     {
-        RendererState = RENDERER_STATE_INACTIVE;
+        RendererState = STATE_INACTIVE;
 
         InitializeSettings();
 
         AcquireRendererDeviceCount();
-        FUN_60001f20();
-        _DAT_60018694 = 1;
-        atexit(FUN_600036b0);
+
+        InitializeTextureStateStates();
+
+        atexit(ReleaseRendererModule);
 
         return State.Devices.Count;
     }
@@ -386,7 +441,7 @@ namespace RendererModule
 
     // 0x60008e70
     // a.k.a. THRASH_talloc
-    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, void* p4, const u32 options)
+    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32 state)
     {
         // TODO NOT IMPLEMENTED
 
@@ -424,7 +479,7 @@ namespace RendererModule
     // 0x60008f60
     // a.k.a. THRASH_tupdaterect
     // NOTE: Never being called by the application.
-    DLLAPI u32 STDCALLAPI UpdateTextureRectangle(RendererTexture* tex, const u32* pixels, const u32* palette, const u32 x, const u32 y, const s32 width, const s32 height, const u32 size, void*)
+    DLLAPI RendererTexture* STDCALLAPI UpdateTextureRectangle(RendererTexture* tex, const u32* pixels, const u32* palette, const s32 x, const s32 y, const s32 width, const s32 height, const s32 size, const s32)
     {
         // TODO NOT IMPLEMENTED
 

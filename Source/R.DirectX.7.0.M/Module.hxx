@@ -34,3 +34,8 @@ SOFTWARE.
 
 // ORIGINAL: Daniel Kennett, Thursday 04:50PM Jan 18, 2001
 #define RENDERER_MODULE_AUTHOR "Americus Maximus"
+
+namespace RendererModule
+{
+    void ReleaseRendererModule(void);
+}

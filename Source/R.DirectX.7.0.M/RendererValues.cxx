@@ -20,6 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include "Graphics.Basic.hxx"
 #include "RendererValues.hxx"
 
 using namespace Renderer;
@@ -27,5 +28,21 @@ using namespace RendererModule;
 
 namespace RendererModuleValues
 {
-    s32 RendererState = DEFAULT_RENDERER_STATE;
+    s32 RendererState = STATE_INITIAL;
+    s32 RendererDeviceIndex = INVALID_DEVICE_INDEX;
+
+    u32 RendererVersion = RENDERER_MODULE_VERSION_107;
+
+    RendererModuleDescriptor ModuleDescriptor;
+    RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_DEVICE_CAPABILITIES_COUNT];
+
+    s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT] =
+    {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1
+    }; // TODO
+
+    s32 UnknownArray06[6] =
+    {
+        0, 0, 0, 0, 5, -1
+    }; // TODO
 }
