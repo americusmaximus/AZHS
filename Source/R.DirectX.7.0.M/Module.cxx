@@ -95,7 +95,7 @@ namespace RendererModule
 
         return &ModuleDescriptor;
     }
-
+    
     // 0x600012e0
     // a.k.a. THRASH_clearwindow
     DLLAPI u32 STDCALLAPI ClearGameWindow()
