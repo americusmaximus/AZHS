@@ -52,7 +52,7 @@ The game has multiple DirectX 6 renderers available with slightly different desi
 The original game acquired DirectX 7 renderer with the patch 4.50 in 2001, which brought not only the new renderer, but also removed SafeDisk security features. The renderer is moctly unchanged, besides some extra checks to avoid crashes on modern systems.
 
 1. DirectX 7 A is a renderer based on the original file `d3da.dll` version: 2001.01.18.1651 (8193.1.24.5713) that came with the 4.50 patch in 2001.
-2. DirectX 7 M is a renderer based on the DirectX 7 renderer from the modern patch, which according to the author is based on DirectX 7 renderer from [Motor City Online](https://github.com/americusmaximus/AZMCO).
+2. DirectX 7 M is a renderer based on the DirectX 7 renderer from the modern patch, which is a modified renderer DirectX 7 A.
 
 ## Similar Projects
 ### Predecessors
