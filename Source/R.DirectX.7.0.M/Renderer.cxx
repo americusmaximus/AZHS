@@ -2652,6 +2652,39 @@ namespace RendererModule
             (void*)AcquireSettingsValue(RENDERER_MODULE_LOG_ACTIVE, section, "LOG"));
     }
 
+    // 0x600088b0
+    // NOTE: Looks like the engineers made an interesting decision to extend the API in an unconventional way, such that
+    // a stage index is passed into the function, and not a valid pointer, to reset current texture.
+    BOOL SelectRendererTexture(RendererTexture* tex)
+    {
+        if (!State.Scene.IsActive) { BeginRendererScene(); }
+
+        if (State.Data.Vertexes.Count != 0) { RendererRenderScene(); }
+
+        if ((u32)tex < 16) // TODO
+        {
+            if ((u32)tex == 0) // TODO
+            {
+                HRESULT result = DD_OK;
+
+                for (u32 x = 0; x < State.Device.Capabilities.MaximumSimultaneousTextures; x++)
+                {
+                    result = State.DX.Device->SetTexture(x, NULL);
+                }
+
+                return result == DD_OK;
+            }
+
+            if ((u32)tex == 1) { return State.DX.Device->SetTexture(RENDERER_TEXTURE_STAGE_0, NULL) == DD_OK; } // TODO
+
+            if ((u32)tex == 2) { return State.DX.Device->SetTexture(RENDERER_TEXTURE_STAGE_1, NULL) == DD_OK; } // TODO
+
+            return TRUE;
+        }
+
+        return State.DX.Device->SetTexture(tex->Stage, tex->Texture) == DD_OK;
+    }
+
     // 0x60003570
     u32 ReleaseRendererWindow(void)
     {
@@ -3256,5 +3289,223 @@ namespace RendererModule
         }
 
         State.Window.Count = 0;
+    }
+
+    // 0x6000cf50
+    BOOL UpdateRendererTexture(RendererTexture* tex, const u32* pixels, const u32* palette)
+    {
+        if (pixels == NULL && palette == NULL) { return FALSE; }
+
+        if (pixels != NULL)
+        {
+            tex->Descriptor.dwFlags = DDSD_LPSURFACE;
+
+            tex->Descriptor.lpSurface =
+                (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1 || tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT3)
+                ? (void*)((addr)pixels + (addr)8) : (void*)pixels;
+
+            if (tex->Surface->SetSurfaceDesc(&tex->Descriptor, 0) != DD_OK) { return FALSE; }
+
+            if (State.Scene.IsActive)
+            {
+                AttemptRenderScene();
+                EndRendererScene();
+            }
+
+            if (tex->Texture->Blt(NULL, tex->Surface, NULL, DDBLT_WAIT, NULL) != DD_OK) { return FALSE; }
+        }
+
+        if (palette != NULL && tex->Options != 0)
+        {
+            PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
+
+            for (u32 x = 0; x < MAX_TEXTURE_PALETTE_COLOR_COUNT; x++)
+            {
+                entries[x].peRed = (u8)RGBA_GETRED(palette[x]);
+                entries[x].peGreen = (u8)RGBA_GETGREEN(palette[x]);
+                entries[x].peBlue = (u8)RGBA_GETBLUE(palette[x]);
+                entries[x].peFlags = 0;
+            }
+
+            if (tex->Palette->SetEntries(0, 0, tex->Colors, entries) != DD_OK) { return FALSE; }
+
+            if (tex->Texture->SetPalette(tex->Palette) != DD_OK) { return FALSE; }
+        }
+
+        if (tex->MipMapCount != 0) { UpdateRendererTexture(tex, pixels); }
+
+        return TRUE;
+    }
+
+    // 0x6000d0c0
+    BOOL UpdateRendererTexture(RendererTexture* tex, const u32* pixels)
+    {
+        if (tex->MipMapCount == 0 || tex->MipMapCount == 1) { return TRUE; }
+
+        IDirectDrawSurface7* s1 = tex->Surface;
+        IDirectDrawSurface7* s2 = tex->Texture;
+
+        s1->AddRef();
+        s2->AddRef();
+
+        DDSCAPS2 caps;
+        ZeroMemory(&caps, sizeof(DDSCAPS2));
+
+        DDSURFACEDESC2 desc;
+        ZeroMemory(&desc, sizeof(DDSURFACEDESC2));
+
+        desc.dwSize = sizeof(DDSURFACEDESC2);
+
+        u32 offset = (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1
+            || tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT3) ? 8 : 0; // TODO
+
+        void* allocated = NULL;
+        u32* data = NULL;
+
+        for (u32 x = 0; x < tex->MipMapCount; x++)
+        {
+            if (pixels != NULL)
+            {
+                s1->GetSurfaceDesc(&desc);
+
+                if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1
+                    || tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT3)
+                {
+                    desc.lPitch = desc.lPitch / desc.dwHeight;
+                }
+
+                offset = offset + desc.dwHeight * desc.lPitch;
+
+                caps.dwCaps = DDSCAPS_MIPMAP | DDSCAPS_TEXTURE;
+
+                {
+                    IDirectDrawSurface7* attached = NULL;
+                    s1->GetAttachedSurface(&caps, &attached);
+                    s1->Release();
+
+                    s1 = attached;
+                }
+
+                {
+                    IDirectDrawSurface7* attached = NULL;
+                    s2->GetAttachedSurface(&caps, &attached);
+                    s2->Release();
+
+                    s2 = attached;
+                }
+
+                s1->GetSurfaceDesc(&tex->Descriptor);
+
+                tex->Descriptor.dwFlags = DDSD_LPSURFACE;
+
+                const u32 pitch = (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1
+                    || tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT3)
+                    ? tex->Descriptor.lPitch
+                    : (tex->Descriptor.ddpfPixelFormat.dwRGBBitCount * ((tex->Descriptor.dwWidth + 7) >> 3));
+
+                if (pitch == tex->Descriptor.lPitch)
+                {
+                    tex->Descriptor.lpSurface = (void*)((addr)pixels + (addr)offset);
+                }
+                else
+                {
+                    if (allocated == NULL)
+                    {
+                        allocated = _alloca((desc.lPitch * desc.dwHeight + 3) & 0xfffffffc);
+                        memset(allocated, 0xff, (desc.lPitch * desc.dwHeight + 3) & 0xfffffffc);
+                    }
+
+                    if (data == NULL) { data = (u32*)((addr)pixels + (addr)offset); }
+
+                    tex->Descriptor.lpSurface = allocated;
+
+                    for (u32 xx = 0; xx < tex->Descriptor.dwHeight; xx++)
+                    {
+                        CopyMemory(allocated, &data[xx * pitch], pitch);
+                    }
+                }
+
+                s1->SetSurfaceDesc(&tex->Descriptor, 0);
+                s2->Blt(NULL, s1, NULL, DDBLT_WAIT, NULL);
+            }
+
+            s1->Release();
+            s2->Release();
+        }
+
+        return TRUE;
+    }
+
+    // 0x6000cd50
+    BOOL UpdateRendererTexture(RendererTexture* tex, const u32* pixels, const u32* palette, const u32 x, const u32 y, const u32 width, const u32 height, const u32 size)
+    {
+        if (pixels != NULL)
+        {
+            RECT source;
+
+            source.left = x;
+            source.right = x + width;
+            source.top = y;
+            source.bottom = y + height;
+
+            RECT destination;
+
+            destination.left = 0;
+            destination.right = width;
+            destination.top = 0;
+            destination.bottom = height;
+
+            tex->Descriptor.dwFlags = DDSD_LPSURFACE;
+
+            tex->Descriptor.lpSurface =
+                (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1 || tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT3)
+                ? (void*)((addr)pixels + (addr)8) : (void*)pixels;
+
+            if (tex->Descriptor.lPitch != size)
+            {
+                void* allocated = _alloca((tex->Descriptor.lPitch * height + 3) & 0xfffffffc);
+                memset(allocated, 0xff, (tex->Descriptor.lPitch * height + 3) & 0xfffffffc);
+
+                tex->Descriptor.lpSurface = (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1
+                    || tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT3)
+                    ? (void*)((addr)allocated + (addr)8) : allocated;
+
+                for (u32 xx = 0; xx < height; xx++)
+                {
+                    CopyMemory(allocated, &pixels[xx * size], size);
+                }
+            }
+
+            if (tex->Surface->SetSurfaceDesc(&tex->Descriptor, 0) != DD_OK) { return FALSE; }
+
+            if (State.Scene.IsActive)
+            {
+                AttemptRenderScene();
+                EndRendererScene();
+            }
+
+            if (tex->Texture->Blt(&source, tex->Surface, &destination, DDBLT_WAIT, NULL) != DD_OK) { return FALSE; }
+        }
+
+        if (palette != NULL && tex->Options != 0)
+        {
+            PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
+
+            for (u32 x = 0; x < MAX_TEXTURE_PALETTE_COLOR_COUNT; x++)
+            {
+                entries[x].peRed = (u8)RGBA_GETRED(palette[x]);
+                entries[x].peGreen = (u8)RGBA_GETGREEN(palette[x]);
+                entries[x].peBlue = (u8)RGBA_GETBLUE(palette[x]);
+                entries[x].peFlags = 0;
+            }
+
+            if (tex->Palette->SetEntries(0, 0, tex->Colors, entries) != DD_OK) { return FALSE; }
+
+            if (tex->Texture->SetPalette(tex->Palette) != DD_OK) { return FALSE; }
+        }
+
+        if (tex->MipMapCount != 0) { UpdateRendererTexture(tex, pixels); }
+
+        return TRUE;
     }
 }

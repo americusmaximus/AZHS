@@ -405,6 +405,8 @@ namespace RendererModule
 
             Renderer::RendererTexture* Current; // 0x60058e2c
 
+            Renderer::RendererTexture* Recent; // 0x60018858
+
             TextureStage Stages[MAX_TEXTURE_STAGE_COUNT]; // 0x6005a940
 
             TextureStageState StageStates[MAX_TEXTURE_STATE_STATE_COUNT]; // 0x6007b8a0
@@ -470,7 +472,11 @@ namespace RendererModule
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height, IDirectDrawSurface7* depth, IDirectDrawSurface7* surf);
     BOOL RestoreRendererSurfaces(void);
     BOOL SelectRendererState(const D3DRENDERSTATETYPE type, const DWORD value);
+    BOOL SelectRendererTexture(Renderer::RendererTexture* tex);
     BOOL SelectRendererTextureStage(const u32 stage, const D3DTEXTURESTAGESTATETYPE type, const DWORD value);
+    BOOL UpdateRendererTexture(Renderer::RendererTexture* tex, const u32* pixels);
+    BOOL UpdateRendererTexture(Renderer::RendererTexture* tex, const u32* pixels, const u32* palette);
+    BOOL UpdateRendererTexture(Renderer::RendererTexture* tex, const u32* pixels, const u32* palette, const u32 x, const u32 y, const u32 width, const u32 height, const u32 size);
     const char* AcquireRendererMessage(const HRESULT code);
     const char* AcquireRendererMessageDescription(const HRESULT code);
     HRESULT CALLBACK EnumerateDirectDrawAcceleratedDevices(LPSTR description, LPSTR name, LPD3DDEVICEDESC7 desc, LPVOID context);

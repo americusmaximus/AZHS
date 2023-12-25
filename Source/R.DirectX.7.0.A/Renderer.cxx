@@ -2765,7 +2765,7 @@ namespace RendererModule
             (void*)AcquireSettingsValue(RENDERER_MODULE_LOG_ACTIVE, section, "LOG"));
     }
 
-    // 9x600088b0
+    // 0x600088b0
     // NOTE: Looks like the engineers made an interesting decision to extend the API in an unconventional way, such that
     // a stage index is passed into the function, and not a valid pointer, to reset current texture.
     BOOL SelectRendererTexture(RendererTexture* tex)

@@ -2381,7 +2381,18 @@ namespace RendererModule
     // a.k.a. THRASH_settexture
     DLLAPI u32 STDCALLAPI SelectTexture(RendererTexture* tex)
     {
-        // TODO NOT IMPLEMENTED
+        RendererTexture* active = (RendererTexture*)AcquireState(RENDERER_MODULE_STATE_SELECT_TEXTURE);
+
+        if (State.DX.Device == NULL) { return RENDERER_MODULE_FAILURE; }
+
+        if (active == tex) { return RENDERER_MODULE_SUCCESS; }
+
+        if (SelectRendererTexture(tex))
+        {
+            SelectRendererStateValue(RENDERER_MODULE_STATE_SELECT_TEXTURE, tex);
+
+            return RENDERER_MODULE_SUCCESS;
+        }
 
         return RENDERER_MODULE_FAILURE;
     }
@@ -2491,7 +2502,13 @@ namespace RendererModule
     // a.k.a. THRASH_talloc
     DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32 state)
     {
-        // TODO NOT IMPLEMENTED
+        if (State.DX.Active.Instance != NULL)
+        {
+            if (State.DX.Active.Instance->TestCooperativeLevel() == DD_OK)
+            {
+                return AllocateRendererTexture(width, height, format, options, state, FALSE);
+            }
+        }
 
         return NULL;
     }
@@ -2501,25 +2518,85 @@ namespace RendererModule
     // NOTE: Never being called by the application.
     DLLAPI u32 STDCALLAPI ReleaseTexture(RendererTexture* tex)
     {
-        // TODO NOT IMPLEMENTED
+        if (State.Textures.Recent == NULL) { return RENDERER_MODULE_FAILURE; }
 
-        return RENDERER_MODULE_FAILURE;
+        // Attempt to remove the input texture from the linked list.
+        {
+            RendererTexture* current = State.Textures.Recent;
+            RendererTexture* previous = State.Textures.Recent;
+
+            while (current != tex)
+            {
+                previous = current;
+                current = current->Previous;
+
+                if (current == NULL) { return RENDERER_MODULE_FAILURE; }
+            }
+
+            previous->Previous = current->Previous;
+        }
+
+        if (tex->Palette != NULL) { tex->Palette->Release(); }
+        if (tex->Texture != NULL) { tex->Texture->Release(); }
+        if (tex->Surface != NULL) { tex->Surface->Release(); }
+
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x60008fc0
     // a.k.a. THRASH_treset
     DLLAPI u32 STDCALLAPI ResetTextures(void)
     {
-        // TODO NOT IMPLEMENTED
+        State.Textures.Count = 0;
 
-        return RENDERER_MODULE_FAILURE;
+        State.Textures.Recent = NULL;
+
+        if (State.DX.DirectX == NULL) { return RENDERER_MODULE_FAILURE; }
+
+        SelectRendererTexture(NULL);
+
+        if (State.Scene.IsActive)
+        {
+            FlushGameWindow();
+            SyncGameWindow(0);
+            Idle();
+
+            State.Scene.IsActive = FALSE;
+        }
+
+        while (State.Textures.Current != NULL)
+        {
+            if (State.Textures.Current->Palette != NULL) { State.Textures.Current->Palette->Release(); }
+            if (State.Textures.Current->Texture != NULL) { State.Textures.Current->Texture->Release(); }
+            if (State.Textures.Current->Surface != NULL) { State.Textures.Current->Surface->Release(); }
+
+            RendererTexture* tex = State.Textures.Current;
+
+            State.Textures.Current = State.Textures.Current->Previous;
+
+            ReleaseRendererTexture(tex);
+        }
+
+        State.Textures.Current = NULL;
+
+        State.Textures.Illegal = FALSE;
+
+        InitializeRenderState55();
+
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x60008f20
     // a.k.a. THRASH_tupdate
     DLLAPI RendererTexture* STDCALLAPI UpdateTexture(RendererTexture* tex, const u32* pixels, const u32* palette)
     {
-        // TODO NOT IMPLEMENTED
+        if (State.DX.Active.Instance != NULL)
+        {
+            if (State.DX.Active.Instance->TestCooperativeLevel() == DD_OK && tex != NULL)
+            {
+                return UpdateRendererTexture(tex, pixels, palette) ? tex : NULL;
+            }
+        }
 
         return NULL;
     }
@@ -2529,9 +2606,12 @@ namespace RendererModule
     // NOTE: Never being called by the application.
     DLLAPI RendererTexture* STDCALLAPI UpdateTextureRectangle(RendererTexture* tex, const u32* pixels, const u32* palette, const s32 x, const s32 y, const s32 width, const s32 height, const s32 size, const s32)
     {
-        // TODO NOT IMPLEMENTED
+        if (tex != NULL && pixels != NULL && 0 < width && 0 < height)
+        {
+            return UpdateRendererTexture(tex, pixels, palette, x, y, width, height, size) ? tex : NULL;
+        }
 
-        return RENDERER_MODULE_FAILURE;
+        return NULL;
     }
 
     // 0x60001830
