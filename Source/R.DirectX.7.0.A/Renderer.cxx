@@ -400,7 +400,7 @@ namespace RendererModule
                 }
                 else
                 {
-                    State.Settings.MaxAvailableMemory = 0;
+                    State.Settings.MaxAvailableMemory = MIN_DEVICE_AVAIABLE_VIDEO_MEMORY;
 
                     ModuleDescriptor.MemorySize = 0;
                     ModuleDescriptor.MemoryType = 0; // TODO
@@ -785,7 +785,7 @@ namespace RendererModule
                         }
                         else
                         {
-                            State.Settings.MaxAvailableMemory = 0;
+                            State.Settings.MaxAvailableMemory = MIN_DEVICE_AVAIABLE_VIDEO_MEMORY;
 
                             ModuleDescriptor.MemorySize = 0;
                             ModuleDescriptor.MemoryType = 0; // TODO
@@ -1865,7 +1865,7 @@ namespace RendererModule
         return result;
     }
 
-    //0x6000c110
+    // 0x6000c110
     void AcquireRendererDeviceTextureFormats(void)
     {
         State.Textures.Formats.Count = 0;
@@ -2249,7 +2249,7 @@ namespace RendererModule
 
         return D3DENUMRET_OK;
     }
-
+    
     // 0x60002060
     void SelectRendererDevice(void)
     {
@@ -2305,6 +2305,8 @@ namespace RendererModule
     // 0x60008dc0
     u32 ClearRendererViewPort(const u32 x0, const u32 y0, const u32 x1, const u32 y1, const BOOL window)
     {
+        AttemptRenderScene();
+
         D3DRECT rect;
 
         DWORD options = (window == FALSE); // D3DCLEAR_TARGET

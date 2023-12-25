@@ -53,7 +53,6 @@ namespace RendererModuleValues
 
     extern u32 RendererVersion; // 0x60017128
     extern u32 RendererLineVertexSize; // 0x6001712c
-
     extern u32 RendererIndexSize; // 0x60017130
 
     extern f32 RendererFogStart; // 0x6001884c

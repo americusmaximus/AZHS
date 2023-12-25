@@ -44,8 +44,12 @@ namespace RendererModuleValues
     u32 RendererClearColor = GRAPCHICS_COLOR_WHITE;
 
     u32 RendererVersion = RENDERER_MODULE_VERSION_107;
+    u32 RendererLineVertexSize = sizeof(RTLVX);
+    u32 RendererIndexSize = RENDERER_MODULE_INDEX_SIZE_4;
 
     f32 RendererDepthBias;
+
+    s32 RendererDeviceType;
 
     RendererModule::MinMax MinMax[6] =
     {

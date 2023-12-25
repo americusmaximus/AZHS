@@ -83,10 +83,6 @@ inline void LOGMESSAGE(...) { }
 #define LOGMESSAGE(...) Message(RENDERER_MODULE_MESSAGE_SEVERITY_MESSAGE, __VA_ARGS__)
 #endif
 
-#if _MSC_VER <= 1200
-#define isnan _isnan
-#endif
-
 namespace Renderer
 {
     struct RendererTexture
@@ -145,7 +141,7 @@ namespace RendererModule
         u32 DXTT; // Type
         u32 DXTN; // Name
     };
-
+    
     struct TextureStage
     {
         s32 Unk01; // TODO

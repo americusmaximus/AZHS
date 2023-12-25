@@ -52,7 +52,6 @@ namespace RendererModuleValues
 
     u32 RendererVersion = RENDERER_MODULE_VERSION_107;
     u32 RendererLineVertexSize = sizeof(RTLVX);
-
     u32 RendererIndexSize = RENDERER_MODULE_INDEX_SIZE_4;
 
     f32 RendererFogStart = DEFAULT_FOG_START;

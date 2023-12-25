@@ -546,9 +546,47 @@ namespace RendererModule
     // a.k.a. THRASH_selectdisplay
     DLLAPI u32 STDCALLAPI SelectDevice(const s32 indx)
     {
-        // TODO NOT IMPLEMENTED
+        State.Device.Identifier = NULL;
 
-        return RENDERER_MODULE_FAILURE;
+        if (State.DX.Instance != NULL) { RestoreGameWindow(); }
+
+        const char* name = NULL;
+
+        if (indx < DEFAULT_DEVICE_INDEX || State.Devices.Count <= indx)
+        {
+            RendererDeviceIndex = DEFAULT_DEVICE_INDEX;
+            State.Device.Identifier = State.Devices.Indexes[DEFAULT_DEVICE_INDEX];
+            name = State.Devices.Enumeration.Names[DEFAULT_DEVICE_INDEX];
+        }
+        else
+        {
+            RendererDeviceIndex = indx;
+            State.Device.Identifier = State.Devices.Indexes[indx];
+            name = State.Devices.Enumeration.Names[indx];
+        }
+
+        strncpy(State.Device.Name, name, MAX_ENUMERATE_DEVICE_NAME_LENGTH);
+
+        if (State.Lambdas.Lambdas.Execute != NULL)
+        {
+            State.Lambdas.Lambdas.Execute(RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_DEVICE, (RENDERERMODULEEXECUTECALLBACK)InitializeRendererDeviceExecute);
+            State.Lambdas.Lambdas.Execute(RENDERER_MODULE_WINDOW_MESSAGE_RELEASE_DEVICE, (RENDERERMODULEEXECUTECALLBACK)ReleaseRendererDeviceExecute);
+            State.Lambdas.Lambdas.Execute(RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_SURFACES, (RENDERERMODULEEXECUTECALLBACK)InitializeRendererDeviceSurfacesExecute);
+
+            if (State.Lambdas.Lambdas.Execute != NULL)
+            {
+                if (GetWindowThreadProcessId(State.Window.Parent.HWND, NULL) != GetCurrentThreadId())
+                {
+                    InitializeRendererDeviceLambdas();
+
+                    return RENDERER_MODULE_SUCCESS;
+                }
+            }
+        }
+
+        InitializeRendererDevice();
+
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x60003ca0
