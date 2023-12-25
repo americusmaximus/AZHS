@@ -2478,7 +2478,6 @@ namespace RendererModule
             }
             else
             {
-
                 output[x] = (u8)(MAX_OUTPUT_FOG_ALPHA_VALUE - input[indx]);
             }
         }

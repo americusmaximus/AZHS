@@ -33,11 +33,18 @@ namespace RendererModuleValues
 
     u32 RendererToggleOptions = DDFLIP_WAIT;
     u32 RendererBlitOptions = DDBLT_DONOTWAIT;
-
+    D3DCMPFUNC RendererDepthFunction = D3DCMP_LESSEQUAL;
+    D3DCMPFUNC RendererAlphaFunction = D3DCMP_GREATER;
+    f32 RendererFogEnd = DEFAULT_FOG_END;
     f32 RendererClearDepth = CLEAR_DEPTH_VALUE;
-
+    u32 RendererFogColor = DEFAULT_FOG_COLOR;
+    f32 RendererFogDensity = DEFAULT_FOG_DINSITY;
+    u32 RendererShadeMode = RENDERER_MODULE_SHADE_GOURAUD;
     u32 RendererVertexType = D3DFVF_TLVERTEX;
     u32 RendererTextureHint = RENDERER_MODULE_TEXTURE_HINT_DYNAMIC;
+
+    u32 RendererVertexSize = sizeof(RTLVX);
+    u32 MaximumRendererVertexCount = MAX_VERTEX_COUNT;
 
     D3DPRIMITIVETYPE RendererPrimitiveType = D3DPT_TRIANGLELIST;
 
@@ -47,9 +54,13 @@ namespace RendererModuleValues
     u32 RendererLineVertexSize = sizeof(RTLVX);
     u32 RendererIndexSize = RENDERER_MODULE_INDEX_SIZE_4;
 
+    f32 RendererFogStart = DEFAULT_FOG_START;
+
     f32 RendererDepthBias;
 
     s32 RendererDeviceType;
+
+    u8 RendererFogAlphas[MAX_OUTPUT_FOG_ALPHA_COUNT];
 
     RendererModule::MinMax MinMax[6] =
     {

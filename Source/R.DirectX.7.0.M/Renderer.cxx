@@ -46,6 +46,7 @@ namespace RendererModule
 {
     RendererModuleState State;
 
+    u32 DAT_60018850; // TODO
     u32 DAT_60058df4; // TODO
     u32 DAT_60058df8; // TODO
     u32 DAT_6005ab50; // TODO
@@ -2300,6 +2301,105 @@ namespace RendererModule
         }
 
         return RENDERER_MODULE_SUCCESS;
+    }
+
+    // 0x60008a10
+    BOOL SelectRendererState(const D3DRENDERSTATETYPE type, const DWORD value)
+    {
+        if (!State.Scene.IsActive) { BeginRendererScene(); }
+
+        if (State.Data.Vertexes.Count != 0) { RendererRenderScene(); }
+
+        return State.DX.Device->SetRenderState(type, value) == DD_OK;
+    }
+
+    // 0x600089d0
+    BOOL SelectRendererTextureStage(const u32 stage, const D3DTEXTURESTAGESTATETYPE type, const DWORD value)
+    {
+        if (!State.Scene.IsActive) { BeginRendererScene(); }
+
+        if (State.Data.Vertexes.Count != 0) { RendererRenderScene(); }
+
+        return State.DX.Device->SetTextureStageState(stage, type, value) == DD_OK;
+    }
+
+    // 0x60008d00
+    void SelectRendererMaterial(const u32 color)
+    {
+        D3DMATERIAL7 material;
+        ZeroMemory(&material, sizeof(D3DMATERIAL7));
+
+        RendererClearColor = color;
+
+        const f32 red = RGBA_GETRED(color) / 255.0f;
+        const f32 green = RGBA_GETGREEN(color) / 255.0f;
+        const f32 blue = RGBA_GETBLUE(color) / 255.0f;
+
+        material.diffuse.r = red;
+        material.diffuse.g = green;
+        material.diffuse.b = blue;
+
+        material.ambient.r = red;
+        material.ambient.g = green;
+        material.ambient.b = blue;
+
+        State.DX.Device->SetMaterial(&material);
+    }
+
+    // 0x60006e50
+    void SelectRendererFogAlphas(const u8* input, u8* output)
+    {
+        if (input == NULL) { return; }
+
+        for (u32 x = 0; x < MAX_OUTPUT_FOG_ALPHA_COUNT; x++)
+        {
+            const f32 value = roundf(x / 255.0f) * 63.0f;
+            const u32 indx = (u32)value;
+
+            const f32 diff = value - indx;
+
+            if (0.0f < diff)
+            {
+                const u8 result = (u8)roundf(input[indx] + (input[indx + 1] - input[indx]) * diff);
+                output[x] = (u8)(MAX_OUTPUT_FOG_ALPHA_VALUE - result);
+            }
+            else
+            {
+                output[x] = (u8)(MAX_OUTPUT_FOG_ALPHA_VALUE - input[indx]);
+            }
+        }
+    }
+
+    // 0x60008c80
+    BOOL RestoreRendererSurfaces(void)
+    {
+        for (u32 x = 0; x < 5000; x++)
+        {
+            if (State.DX.Active.Instance->TestCooperativeLevel() == DD_OK)
+            {
+                return State.DX.Active.Instance->RestoreAllSurfaces() == DD_OK;
+            }
+
+            Sleep(100);
+        }
+
+        LOGERROR("WARNING! STATE_RESTORESURFACES failed. Focus/Mode not regained before timeout.\n");
+
+        return FALSE;
+    }
+
+    // 0x60006fa0
+    void SelectRendererVertexCount(void)
+    {
+        AttemptRenderScene();
+
+        MaximumRendererVertexCount = MAX_VERTEX_COUNT / RendererVertexSize;
+    }
+
+    // 0x600094f0
+    void SelectRendererDeviceType(const u32 type)
+    {
+        RendererDeviceType = type;
     }
 
     // 0x6000b2c0
