@@ -611,16 +611,99 @@ namespace RendererModule
     // a.k.a. THRASH_setvideomode
     DLLAPI u32 STDCALLAPI SelectVideoMode(const u32 mode, const u32 pending, const u32 depth)
     {
-        // TODO NOT IMPLEMENTED
+        State.Window.Bits = depth;
 
-        return RENDERER_MODULE_FAILURE;
+        if (depth == 1) { State.Window.Bits = GRAPHICS_BITS_PER_PIXEL_16; } // TODO
+        else if (depth == 2) { State.Window.Bits = GRAPHICS_BITS_PER_PIXEL_32; } // TODO
+
+        if (State.Scene.IsActive) { LOGWARNING("D3D Setting videomode in 3d scene !!!!\n"); }
+
+        SelectRendererDevice();
+
+        if (ModuleDescriptor.Capabilities.Capabilities[mode].Bits < State.Window.Bits) { State.Window.Bits = GRAPHICS_BITS_PER_PIXEL_16; }
+
+        u32 result = RENDERER_MODULE_FAILURE;
+
+        if (State.DX.Instance != NULL)
+        {
+            if (State.Lambdas.Lambdas.AcquireWindow == NULL)
+            {
+                InitializeRendererDeviceSurfacesExecute(0, State.Window.HWND, RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_SURFACES, mode, pending, NULL);
+            }
+            else
+            {
+                if (GetWindowThreadProcessId(State.Window.Parent.HWND, NULL) == GetCurrentThreadId())
+                {
+                    InitializeRendererDeviceSurfacesExecute(0, State.Window.HWND, RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_SURFACES, mode, pending, NULL);
+                }
+                else
+                {
+                    SetForegroundWindow(State.Window.HWND);
+                    PostMessageA(State.Window.HWND, RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_SURFACES, mode, pending);
+                    WaitForSingleObject(State.Mutex, 30000);
+                }
+            }
+
+            if (State.DX.Code == DD_OK)
+            {
+                DDSURFACEDESC2 desc;
+                ZeroMemory(&desc, sizeof(DDSURFACEDESC2));
+
+                desc.dwSize = sizeof(DDSURFACEDESC2);
+
+                const HRESULT code = State.DX.Surfaces.Active[1]->GetSurfaceDesc(&desc);
+
+                if (code != DD_OK) { LOGWARNING("DX7_setvideomode:  Error getting Surface Description %8x\n", code); }
+            }
+            else { LOGERROR("DX7_setdisplay - error\n"); }
+
+            result = State.DX.Code == DD_OK;
+        }
+
+        InitializeRendererModuleState(mode, pending, depth, ENVIRONMENT_SECTION_NAME);
+        SelectBasicRendererState(RENDERER_MODULE_STATE_62, (void*)(DAT_60058df8 + 1));
+
+        SelectGameWindow(1); // TODO
+
+        const RendererModuleWindowLock* lock = LockGameWindow();
+
+        UnlockGameWindow(lock);
+
+        SelectGameWindow(0); // TODO
+
+        ZeroMemory(&State.Settings.Lock, sizeof(RendererModuleWindowLock));
+
+        if (lock != NULL)
+        {
+            State.Settings.Lock.Data = NULL;
+
+            State.Settings.Lock.Stride = lock->Stride;
+            State.Settings.Lock.Format = lock->Format;
+            State.Settings.Lock.Width = lock->Width;
+            State.Settings.Lock.Height = lock->Height;
+
+            SelectRendererStateValue(RENDERER_MODULE_STATE_SELECT_WINDOW_LOCK_STATE, &State.Settings.Lock);
+        }
+
+        ResetTextures();
+
+        RendererState = STATE_INACTIVE;
+
+        return result;
     }
 
     // 0x60001380
     // a.k.a. THRASH_sync
-    DLLAPI u32 STDCALLAPI SyncGameWindow(const u32)
+    DLLAPI u32 STDCALLAPI SyncGameWindow(const u32 type)
     {
-        // TODO NOT IMPLEMENTED
+        if (type == 0) // TODO
+        {
+            UnlockGameWindow(RendererLock(LOCK_WRITE));
+        }
+        else if (type == 2) // TODO
+        {
+            State.DX.Active.Instance->WaitForVerticalBlank(DDWAITVB_BLOCKBEGIN, NULL);
+        }
 
         return RENDERER_MODULE_FAILURE;
     }
@@ -676,26 +759,98 @@ namespace RendererModule
     // a.k.a. THRASH_unlockwindow
     DLLAPI u32 STDCALLAPI UnlockGameWindow(const RendererModuleWindowLock* state)
     {
-        // TODO NOT IMPLEMENTED
+        if (State.Lock.IsActive && State.Lock.Surface != NULL)
+        {
+            if (State.Lock.Surface->Unlock(NULL) != DD_OK) { return RENDERER_MODULE_FAILURE; }
 
-        return RENDERER_MODULE_FAILURE;
+            State.Lock.Surface = NULL;
+            State.Lock.IsActive = FALSE;
+
+            if (State.Lambdas.Lambdas.LockWindow != NULL) { State.Lambdas.Lambdas.LockWindow(FALSE); }
+        }
+
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x600011a0
     // a.k.a. THRASH_window
     DLLAPI u32 STDCALLAPI SelectGameWindow(const u32 indx)
     {
-        // TODO NOT IMPLEMENTED
+        SelectRendererStateValue(RENDERER_MODULE_STATE_SELECT_GAME_WINDOW_INDEX, (void*)indx);
 
-        return RENDERER_MODULE_FAILURE;
+        if (indx < 9) // TODO
+        {
+            if (9 <= State.Window.Index) // TODO
+            {
+                const HRESULT result = State.DX.Device->SetRenderTarget(State.DX.Surfaces.Back == NULL
+                    ? State.DX.Surfaces.Main : State.DX.Surfaces.Back, 0);
+
+                if (result != DD_OK)
+                {
+                    LOGERROR("Could not attach itself to PRIMARY window!\n%s", AcquireRendererMessage(result));
+                }
+            }
+        }
+        else
+        {
+            State.DX.Surfaces.Window = State.Windows[indx].Texture->Texture;
+            State.Window.Index = indx;
+
+            const HRESULT result = State.DX.Device->SetRenderTarget(State.DX.Surfaces.Window, 0);
+
+            if (result != DD_OK)
+            {
+                LOGERROR("Could not attach itself to user render window!\n%s", AcquireRendererMessage(result));
+            }
+        }
+
+        State.DX.Surfaces.Window = State.DX.Surfaces.Depth;
+
+        if (indx != 3 && indx != 5) // TODO
+        {
+            if (indx == 2 && State.DX.Surfaces.Active[2] == NULL) // TODO
+            {
+                State.DX.Surfaces.Window = State.DX.Surfaces.Active[1]; // TODO
+                State.Window.Index = 1;
+
+                return State.DX.Surfaces.Active[1] != NULL;
+            }
+
+            State.DX.Surfaces.Window = State.DX.Surfaces.Active[indx];
+
+            if (indx == 0)
+            {
+                State.Window.Index = 0;
+                State.DX.Surfaces.Window = NULL;
+
+                return FALSE;
+            }
+        }
+
+        State.Window.Index = indx;
+
+        return State.DX.Surfaces.Window != NULL;
     }
 
     // 0x60003c00
     // a.k.a. THRASH_writerect
-    DLLAPI u32 STDCALLAPI WriteRectangle(const u32 x, const u32 y, const u32 width, const u32 height, const u32* data)
+    DLLAPI u32 STDCALLAPI WriteRectangle(const u32 x, const u32 y, const u32 width, const u32 height, const u32* pixels)
     {
-        // TODO NOT IMPLEMENTED
+        RendererModuleWindowLock* state = RendererLock(LOCK_WRITE);
 
-        return RENDERER_MODULE_FAILURE;
+        if (state == NULL) { return RENDERER_MODULE_FAILURE; }
+
+        const u32 multiplier = (state->Format == RENDERER_PIXEL_FORMAT_A8R8G8B8)
+            ? 4 : (state->Format == RENDERER_PIXEL_FORMAT_R8G8B8) ? 3 : 2; // TODO
+        const u32 length = multiplier * width;
+
+        for (u32 xx = 0; xx < height; xx++)
+        {
+            const addr address = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
+
+            CopyMemory((void*)((addr)state->Data + address), &pixels[xx * length], length);
+        }
+
+        return UnlockGameWindow(state);
     }
 }

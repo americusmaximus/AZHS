@@ -384,6 +384,8 @@ namespace RendererModule
             u32 Acceleration; // 0x60018844
 
             DDGAMMARAMP GammaControl; // 0x6007b240
+
+            RendererModuleWindowLock Lock; // 0x6007c7a0
         } Settings;
 
         struct
@@ -492,6 +494,7 @@ namespace RendererModule
     void AcquireWindowModeCapabilities(void);
     void AttemptRenderScene(void);
     void InitializeConcreteRendererDevice(void);
+    void InitializeRendererModuleState(const u32 mode, const u32 pending, const u32 depth, const char* section);
     void InitializeRendererState(void);
     void InitializeRenderState55(void); // TODO
     void InitializeTextureStateStates(void);
