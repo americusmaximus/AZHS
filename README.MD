@@ -39,6 +39,8 @@ The original game requires the sound system to be present, no graceful error han
 One more thing regarding the callbacks, some are required to be called during the `Serve` call, without it the game goes into endless loop when player attempts to start a race.
 
 ### Renderer Modules
+The renderer modules were implemented with minor changes, such as omission of write-only variables, making calls to functions when result is not used, as well as addition of configuration file and reading values from it, which is useful in a few cases.
+
 #### DirectX 6
 The game has multiple DirectX 6 renderers available with slightly different design and capabilities. I added all of them, with appropriate patches for proper operation these days. The patches mostly include fixes to crashes caused by writing out of array bounds in a few places, and some tweaks to settings values, as well as configuration file support. Here are the DirectX 6 renderers:
 
@@ -52,7 +54,7 @@ The original game acquired DirectX 7 renderer with the patch 4.50 in 2001, which
 1. DirectX 7 A is a renderer based on the original file `d3da.dll` version: 2001.01.18.1651 (8193.1.24.5713) that came with the 4.50 patch in 2001.
 2. DirectX 7 M is a renderer based on the DirectX 7 renderer from the modern patch, which according to the author is based on DirectX 7 renderer from [Motor City Online](https://github.com/americusmaximus/AZMCO).
 
-## Other Similar Projects
+## Similar Projects
 ### Predecessors
 1. [AutoZone Hot Pursuit](https://github.com/americusmaximus/AZHP)
 
