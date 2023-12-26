@@ -68,6 +68,7 @@ SOFTWARE.
 #define MAX_TEXTURE_STAGE_COUNT 8
 #define MAX_TEXTURE_STATE_STATE_COUNT 120
 #define MAX_USABLE_TEXTURE_FORMAT_COUNT 22
+#define MAX_USABLE_TEXTURE_FORMAT_INDEX_COUNT 32
 #define MAX_VERTEX_COUNT 32768
 #define MAX_WINDOW_COUNT 65536
 #define MIN_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x200000 (2 MB) */
@@ -417,7 +418,7 @@ namespace RendererModule
                 u32 Count; // 0x6005a840
 
                 TextureFormat Formats[MAX_TEXTURE_FORMAT_COUNT]; // 0x60059440
-                s32 Indexes[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x6005a860
+                s32 Indexes[MAX_USABLE_TEXTURE_FORMAT_INDEX_COUNT]; // 0x6005a860
 
                 struct
                 {

@@ -852,7 +852,7 @@ namespace RendererModule
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Height = GRAPHICS_RESOLUTION_600;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Bits = GRAPHICS_BITS_PER_PIXEL_16;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Format = RENDERER_PIXEL_FORMAT_R5G6B5;
-                ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Unk03 = 1;
+                ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Unk03 = 2;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].Unk04 = 1;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_800_600_16].IsActive = TRUE;
 
@@ -1298,6 +1298,8 @@ namespace RendererModule
         State.Device.Capabilities.IsColorBlending = (caps.dpcTriCaps.dwShadeCaps & (D3DPSHADECAPS_COLORPHONGRGB | D3DPSHADECAPS_COLORGOURAUDRGB)) != 0;
         State.Device.Capabilities.IsSpecularBlending = (caps.dpcTriCaps.dwShadeCaps & (D3DPSHADECAPS_SPECULARPHONGRGB | D3DPSHADECAPS_SPECULARGOURAUDRGB)) != 0;
 
+        if (!State.Device.Capabilities.IsColorBlending) { State.Device.Capabilities.IsSourceAlphaBlending = FALSE; }
+
         if (isnan(caps.dvGuardBandLeft) == (caps.dvGuardBandLeft == 0.0))
         {
             State.Device.Capabilities.GuardBandLeft = caps.dvGuardBandLeft;
@@ -1571,7 +1573,7 @@ namespace RendererModule
             State.DX.Device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
         }
 
-        State.DX.Device->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE, FALSE);
+        State.DX.Device->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE, TRUE);
 
         State.DX.Device->SetTextureStageState(RENDERER_TEXTURE_STAGE_0, D3DTSS_MAGFILTER, D3DTFN_LINEAR);
         State.DX.Device->SetTextureStageState(RENDERER_TEXTURE_STAGE_0, D3DTSS_MINFILTER, D3DTFN_LINEAR);

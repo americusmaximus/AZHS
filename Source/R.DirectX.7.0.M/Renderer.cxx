@@ -754,6 +754,7 @@ namespace RendererModule
 
                 State.DX.Instance->EnumDisplayModes(DDEDM_NONE, NULL,
                     &ModuleDescriptor.Capabilities.Count, EnumerateRendererDeviceModes);
+
                 IDirect3D7* dx = NULL;
                 State.DX.Instance->QueryInterface(IID_IDirect3D7, (void**)&dx);
 
@@ -1185,6 +1186,8 @@ namespace RendererModule
         State.Device.Capabilities.IsColorBlending = (caps.dpcTriCaps.dwShadeCaps & (D3DPSHADECAPS_COLORPHONGRGB | D3DPSHADECAPS_COLORGOURAUDRGB)) != 0;
         State.Device.Capabilities.IsSpecularBlending = (caps.dpcTriCaps.dwShadeCaps & (D3DPSHADECAPS_SPECULARPHONGRGB | D3DPSHADECAPS_SPECULARGOURAUDRGB)) != 0;
 
+        if (!State.Device.Capabilities.IsColorBlending) { State.Device.Capabilities.IsSourceAlphaBlending = FALSE; }
+
         if (isnan(caps.dvGuardBandLeft) == (caps.dvGuardBandLeft == 0.0))
         {
             State.Device.Capabilities.GuardBandLeft = caps.dvGuardBandLeft;
@@ -1458,7 +1461,7 @@ namespace RendererModule
             State.DX.Device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
         }
 
-        State.DX.Device->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE, FALSE);
+        State.DX.Device->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE, TRUE);
 
         State.DX.Device->SetTextureStageState(RENDERER_TEXTURE_STAGE_0, D3DTSS_MAGFILTER, D3DTFN_LINEAR);
         State.DX.Device->SetTextureStageState(RENDERER_TEXTURE_STAGE_0, D3DTSS_MINFILTER, D3DTFN_LINEAR);
