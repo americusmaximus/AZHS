@@ -58,7 +58,7 @@ namespace RendererModule
     DLLAPI RendererModuleWindowLock* STDCALLAPI LockGameWindow(void);
     DLLAPI u32 STDCALLAPI ToggleGameWindow(void);
     DLLAPI u32 STDCALLAPI ReadRectangle(const u32 x, const u32 y, const u32 width, const u32 height, u32* pixels);
-    DLLAPI u32 STDCALLAPI ReadRectangles(void*, void*, void*, void*, void*, void*); // TODO
+    DLLAPI u32 STDCALLAPI ReadRectangles(const u32 x, const u32 y, const u32 width, const u32 height, u32* pixels, const u32 stride);
     DLLAPI u32 STDCALLAPI RestoreGameWindow(void);
     DLLAPI u32 STDCALLAPI SelectDevice(const s32 indx);
     DLLAPI u32 STDCALLAPI SelectState(const u32 state, void* value);
@@ -73,5 +73,5 @@ namespace RendererModule
     DLLAPI u32 STDCALLAPI UnlockGameWindow(const RendererModuleWindowLock* state);
     DLLAPI u32 STDCALLAPI SelectGameWindow(const u32 indx);
     DLLAPI u32 STDCALLAPI WriteRectangle(const u32 x, const u32 y, const u32 width, const u32 height, const u32* pixels);
-    DLLAPI u32 STDCALLAPI WriteRectangles(void*, void*, void*, void*, void*, void*); // TODO
+    DLLAPI u32 STDCALLAPI WriteRectangles(const u32 x, const u32 y, const u32 width, const u32 height, const u32* pixels, const u32 stride);
 }

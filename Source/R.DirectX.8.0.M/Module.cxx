@@ -56,7 +56,7 @@ namespace RendererModule
     // 0x60001630
     // a.k.a. THRASH_createwindow
     // NOTE: Never being called by the application.
-    DLLAPI u32 STDCALLAPI CreateGameWindow(const u32 width, const u32 height, const u32 format, void*)
+    DLLAPI u32 STDCALLAPI CreateGameWindow(const u32 width, const u32 height, const u32 format, const u32 options)
     {
         // TODO NOT IMPLEMENTED
 
@@ -264,7 +264,7 @@ namespace RendererModule
 
     // 0x60003070
     // a.k.a. THRASH_readrect
-    DLLAPI u32 STDCALLAPI ReadRectangle(const u32 x, const u32 y, const u32 width, const u32 height, u32* data)
+    DLLAPI u32 STDCALLAPI ReadRectangle(const u32 x, const u32 y, const u32 width, const u32 height, u32* pixels)
     {
         // TODO NOT IMPLEMENTED
 
@@ -274,7 +274,7 @@ namespace RendererModule
     // 0x60004f20
     // a.k.a. THRASH_readrect
     // NOTE: Never being called by the application.
-    DLLAPI u32 STDCALLAPI ReadRectangles(void*, void*, void*, void*, void*, void*)
+    DLLAPI u32 STDCALLAPI ReadRectangles(const u32 x, const u32 y, const u32 width, const u32 height, u32* pixels, const u32 stride)
     {
         // TODO NOT IMPLEMENTED
 
@@ -337,7 +337,7 @@ namespace RendererModule
 
     // 0x600077c0
     // a.k.a. THRASH_talloc
-    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, void*, const u32 options)
+    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32 state)
     {
         // TODO NOT IMPLEMENTED
 
@@ -373,7 +373,7 @@ namespace RendererModule
 
     // 0x60007a20
     // a.k.a. THRASH_tupdaterect
-    DLLAPI u32 STDCALLAPI UpdateTextureRectangle(RendererTexture* tex, const u32* pixels, const u32* palette, const u32 x, const u32 y, const s32 width, const s32 height, const u32 size, void*)
+    DLLAPI RendererTexture* STDCALLAPI UpdateTextureRectangle(RendererTexture* tex, const u32* pixels, const u32* palette, const s32 x, const s32 y, const s32 width, const s32 height, const s32 size, const s32 level)
     {
         // TODO NOT IMPLEMENTED
 
@@ -400,7 +400,7 @@ namespace RendererModule
 
     // 0x600030a0
     // a.k.a. THRASH_writerect
-    DLLAPI u32 STDCALLAPI WriteRectangle(const u32 x, const u32 y, const u32 width, const u32 height, const u32* data)
+    DLLAPI u32 STDCALLAPI WriteRectangle(const u32 x, const u32 y, const u32 width, const u32 height, const u32* pixels)
     {
         // TODO NOT IMPLEMENTED
 
@@ -410,7 +410,7 @@ namespace RendererModule
     // 0x60004fd0
     // a.k.a. THRASH_writerect
     // NOTE: Never being called by the application.
-    DLLAPI u32 STDCALLAPI WriteRectangles(void*, void*, void*, void*, void*, void*)
+    DLLAPI u32 STDCALLAPI WriteRectangles(const u32 x, const u32 y, const u32 width, const u32 height, const u32* pixels, const u32 stride)
     {
         // TODO NOT IMPLEMENTED
 

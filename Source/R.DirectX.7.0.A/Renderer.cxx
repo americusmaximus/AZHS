@@ -3291,8 +3291,8 @@ namespace RendererModule
                 if (State.DX.Surfaces.Window == State.DX.Surfaces.Active[1]) // TODO
                 {
                     desc.lpSurface = (void*)((addr)desc.lpSurface
-                        + (addr)((desc.ddpfPixelFormat.dwRGBBitCount >> 3) * State.Lock.State.Rect.left)
-                        + (addr)(desc.lPitch * State.Lock.State.Rect.top));
+                        + (addr)((desc.ddpfPixelFormat.dwRGBBitCount >> 3) * rect.left)
+                        + (addr)(desc.lPitch * rect.top));
                 }
             }
 

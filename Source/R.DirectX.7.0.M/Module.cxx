@@ -503,8 +503,8 @@ namespace RendererModule
                 if (State.DX.Surfaces.Window == State.DX.Surfaces.Active[1]) // TODO
                 {
                     desc.lpSurface = (void*)((addr)desc.lpSurface
-                        + (addr)((desc.ddpfPixelFormat.dwRGBBitCount >> 3) * State.Lock.State.Rect.left)
-                        + (addr)(desc.lPitch * State.Lock.State.Rect.top));
+                        + (addr)((desc.ddpfPixelFormat.dwRGBBitCount >> 3) * rect.left)
+                        + (addr)(desc.lPitch * rect.top));
                 }
             }
 
@@ -542,7 +542,8 @@ namespace RendererModule
 
         if (state == NULL) { return RENDERER_MODULE_FAILURE; }
 
-        const u32 multiplier = state->Format == RENDERER_PIXEL_FORMAT_R8G8B8 ? 4 : 2;
+        const u32 multiplier = (state->Format == RENDERER_PIXEL_FORMAT_A8R8G8B8)
+            ? 4 : (state->Format == RENDERER_PIXEL_FORMAT_R8G8B8) ? 3 : 2; // TODO
         const u32 length = multiplier * width;
 
         for (u32 xx = 0; xx < height; xx++)
