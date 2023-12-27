@@ -2414,13 +2414,21 @@ namespace RendererModule
         {
             result = State.Device.Capabilities.IsModulateBlending;
 
-            if (!result) { return RENDERER_MODULE_FAILURE; }
+            if (result == RENDERER_MODULE_FAILURE) { return RENDERER_MODULE_FAILURE; }
+
+            break;
+        }
+        default:
+        {
+            result = SelectBasicRendererState(actual, value);
+
+            if (result == RENDERER_MODULE_FAILURE) { return RENDERER_MODULE_FAILURE; }
 
             break;
         }
         }
 
-        SelectRendererStateValue(state, value);
+        SelectRendererStateValue(actual, value);
 
         return result;
     }
