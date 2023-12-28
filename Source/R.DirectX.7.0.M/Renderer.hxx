@@ -193,7 +193,6 @@ namespace RendererModule
 
             IDirectDrawClipper* Clipper; // 0x60018698
             IDirectDrawGammaControl* GammaControl; // 0x6001869c
-
             IDirectDraw7* Instance; // 0x600186a0
 
             IDirect3D7* DirectX; // 0x60058d98
