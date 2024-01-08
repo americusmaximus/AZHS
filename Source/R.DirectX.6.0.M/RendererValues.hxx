@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Americus Maximus
+Copyright (c) 2023 - 2024 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -62,6 +62,6 @@ namespace RendererModuleValues
 
     extern u32 UnknownFormatValues[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x600190dc
 
-    extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x6004ece0
+    extern RendererModule::RendererModuleDescriptor2 ModuleDescriptor; // 0x6004ece0
     extern RendererModule::RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_DEVICE_CAPABILITIES_COUNT]; // 0x60052000
 }

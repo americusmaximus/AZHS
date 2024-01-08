@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Americus Maximus
+Copyright (c) 2023 - 2024 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,6 @@ SOFTWARE.
 #define MAX_DEVICE_CAPABILITIES_COUNT 128 /* ORIGINAL: 30, MODIFIED: 100 */
 #define MAX_DEVICE_CAPABILITIES_MODE_SCORE 10000
 #define MAX_ENUMERATE_DEVICE_COUNT 16
-#define MAX_ENUMERATE_DEVICE_NAME_LENGTH 80
 #define MAX_INDEX_COUNT 16192
 #define MAX_INPUT_FOG_ALPHA_COUNT 64
 #define MAX_LARGE_INDEX_COUNT 65536
@@ -186,8 +185,6 @@ namespace RendererModule
         {
             GUID* Identifier; // 0x6001ce84
 
-            char Name[MAX_ENUMERATE_DEVICE_NAME_LENGTH]; // 0x6004ed60
-
             struct
             {
                 BOOL IsAccelerated; // 0x6004e5e0
@@ -240,7 +237,7 @@ namespace RendererModule
                 u32 Count; // 0x6002d4b8
                 BOOL IsAvailable; // 0x6002d4bc
 
-                char Names[MAX_ENUMERATE_DEVICE_COUNT][MAX_ENUMERATE_DEVICE_NAME_LENGTH]; // 0x6001caf0
+                char Names[MAX_ENUMERATE_DEVICE_COUNT][MAX_RENDERER_MODULE_DEVICE_LONG_NAME_LENGTH]; // 0x6001caf0
 
                 struct
                 {

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Americus Maximus
+Copyright (c) 2023 - 2024 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ namespace RendererModule
     {
         ModuleDescriptor.Signature = RENDERER_MODULE_SIGNATURE_D3D6;
         ModuleDescriptor.Version = RendererVersion;
-        ModuleDescriptor.Unk1 = 0xd0; // TODO
+        ModuleDescriptor.Size = sizeof(RendererModuleDescriptor2);
 
         if (State.Device.Capabilities.MinimumTextureWidth == 0)
         {
@@ -88,9 +88,9 @@ namespace RendererModule
 
         SelectRendererDevice();
 
-        AcquireRendererModuleDescriptor(&ModuleDescriptor, ENVIRONMENT_SECTION_NAME);
+        AcquireRendererModuleDescriptor((RendererModuleDescriptor*)&ModuleDescriptor, ENVIRONMENT_SECTION_NAME);
 
-        return &ModuleDescriptor;
+        return (RendererModuleDescriptor*)&ModuleDescriptor;
     }
 
     // 0x60001220
@@ -466,7 +466,7 @@ namespace RendererModule
             name = State.Devices.Enumeration.Names[indx];
         }
 
-        strncpy(State.Device.Name, name, MAX_ENUMERATE_DEVICE_NAME_LENGTH);
+        strncpy(ModuleDescriptor.DeviceName, name, MAX_RENDERER_MODULE_DEVICE_LONG_NAME_LENGTH);
 
         if (State.Lambdas.Lambdas.AcquireWindow == NULL)
         {

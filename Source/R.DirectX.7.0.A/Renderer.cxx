@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Americus Maximus
+Copyright (c) 2023 - 2024 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -147,7 +147,7 @@ namespace RendererModule
 
                 dd->GetDeviceIdentifier(&identifier, DDGDI_GETHOSTIDENTIFIER);
 
-                strncpy(State.Devices.Enumeration.Names[indx], identifier.szDescription, MAX_ENUMERATE_DEVICE_NAME_LENGTH);
+                strncpy(State.Devices.Enumeration.Names[indx], identifier.szDescription, MAX_RENDERER_MODULE_DEVICE_LONG_NAME_LENGTH);
 
                 if (dd != NULL) { dd->Release(); dd = NULL; }
                 if (instance != NULL) { instance->Release(); instance = NULL; }

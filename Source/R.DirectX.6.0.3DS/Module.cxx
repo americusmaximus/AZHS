@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Americus Maximus
+Copyright (c) 2023 - 2024 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ namespace RendererModule
             | (RENDERER_MODULE_CAPS_WINDOWED | RENDERER_MODULE_CAPS_TEXTURE_HEIGHT_POW2 | RENDERER_MODULE_CAPS_TEXTURE_WIDTH_POW2 | RENDERER_MODULE_CAPS_TEXTURE_SQUARE | RENDERER_MODULE_CAPS_LINE_WIDTH);
         ModuleDescriptor.Author = RENDERER_MODULE_AUTHOR;
         ModuleDescriptor.Signature = RENDERER_MODULE_SIGNATURE_D3D6;
-        ModuleDescriptor.Unk1 = 0x80; // TOOD
+        ModuleDescriptor.Size = sizeof(RendererModuleDescriptor);
         ModuleDescriptor.MinimumTextureWidth = 8;
         ModuleDescriptor.MultipleTextureWidth = 1;
         ModuleDescriptor.MinimumTextureHeight = 8;
