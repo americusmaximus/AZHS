@@ -56,7 +56,7 @@ namespace RendererModuleValues
     RendererModuleDescriptor2 ModuleDescriptor;
     RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_DEVICE_CAPABILITIES_COUNT];
 
-    s32 UnknownArray06[6] =
+    s32 UnknownArray06[MAX_UNKNOWN_COUNT] =
     {
         0, 0, 0, 0, 5, -1
     }; // TODO

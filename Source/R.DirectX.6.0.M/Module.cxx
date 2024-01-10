@@ -76,11 +76,12 @@ namespace RendererModule
         ModuleDescriptor.Author = RENDERER_MODULE_AUTHOR;
         ModuleDescriptor.ClipAlign = 0;
         ModuleDescriptor.DXV = RENDERER_MODULE_VERSION_DX6;
-        ModuleDescriptor.Unk4 = 0xc; // TODO
-        ModuleDescriptor.TextureFormatStates = RendererTextureFormatStates;
-        ModuleDescriptor.Unk5 = 4; // TODO
 
-        ModuleDescriptor.Unk6 = UnknownArray06;
+        ModuleDescriptor.ActiveTextureFormatStatesCount = MAX_ACTIVE_USABLE_TEXTURE_FORMAT_COUNT;
+        ModuleDescriptor.TextureFormatStates = RendererTextureFormatStates;
+
+        ModuleDescriptor.ActiveUnknownValuesCount = MAX_ACTIVE_UNKNOWN_COUNT;
+        ModuleDescriptor.UnknownValues = UnknownArray06;
 
         ModuleDescriptor.Capabilities.Capabilities = ModuleDescriptorDeviceCapabilities;
 

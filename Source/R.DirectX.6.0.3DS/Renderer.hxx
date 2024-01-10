@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Americus Maximus
+Copyright (c) 2023 - 2024 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,11 +30,6 @@ SOFTWARE.
 
 #include "DirectDraw.hxx"
 
-#define DEPTH_BIT_MASK_32_BIT 0x100
-#define DEPTH_BIT_MASK_24_BIT 0x200
-#define DEPTH_BIT_MASK_16_BIT 0x400
-#define DEPTH_BIT_MASK_8_BIT 0x800
-
 #define DEFAULT_FOG_COLOR 0x00FFFFFF
 #define DEFAULT_FOG_DINSITY (0.5f)
 #define DEFAULT_FOG_END (1.0f)
@@ -42,6 +37,8 @@ SOFTWARE.
 #define INVALID_TEXTURE_FORMAT_COUNT (-1)
 #define INVALID_TEXTURE_FORMAT_INDEX (-1)
 #define MAX_ACTIVE_SURFACE_COUNT 8
+#define MAX_ACTIVE_UNKNOWN_COUNT 4
+#define MAX_ACTIVE_USABLE_TEXTURE_FORMAT_COUNT 12
 #define MAX_DEVICE_CAPABILITIES_COUNT 128 /* ORIGINAL: 30, MODIFIED: 100 */
 #define MAX_DEVICE_COUNT 16 /* ORIGINAL: 10 */
 #define MAX_DEVICE_NAME_LENGTH 32
@@ -53,7 +50,8 @@ SOFTWARE.
 #define MAX_SMALL_INDEX_COUNT 256
 #define MAX_TEXTURE_FORMAT_COUNT 128 /* ORIGINAL: 14 */
 #define MAX_TEXTURE_PALETTE_COLOR_COUNT 256
-#define MAX_USABLE_TEXTURE_FORMAT_COUNT 14
+#define MAX_UNKNOWN_COUNT (MAX_ACTIVE_UNKNOWN_COUNT + 2)
+#define MAX_USABLE_TEXTURE_FORMAT_COUNT (MAX_ACTIVE_USABLE_TEXTURE_FORMAT_COUNT + 2)
 #define MAX_VERTEX_COUNT 253
 #define MIN_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x200000 (2 MB) */
 

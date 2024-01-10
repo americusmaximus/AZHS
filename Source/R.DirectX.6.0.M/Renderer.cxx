@@ -1433,7 +1433,7 @@ namespace RendererModule
             if (!State.Device.Capabilities.IsColorBlending) { State.Device.Capabilities.IsSourceAlphaBlending = FALSE; }
 
             if (State.Window.Bits == GRAPHICS_BITS_PER_PIXEL_32
-                && (hal.dwDeviceZBufferBitDepth & (DEPTH_BIT_MASK_24_BIT | DEPTH_BIT_MASK_32_BIT)) == 0)
+                && (hal.dwDeviceZBufferBitDepth & (RENDERER_MODULE_DEPTH_BIT_MASK_24_BIT | RENDERER_MODULE_DEPTH_BIT_MASK_32_BIT)) == 0)
             {
                 State.Window.Bits = GRAPHICS_BITS_PER_PIXEL_16;
             }
@@ -1445,10 +1445,10 @@ namespace RendererModule
 
                 switch (ModuleDescriptor.Capabilities.Capabilities[x].Bits)
                 {
-                case GRAPHICS_BITS_PER_PIXEL_8: { value = hal.dwDeviceRenderBitDepth & DEPTH_BIT_MASK_8_BIT; found = TRUE; break; }
-                case GRAPHICS_BITS_PER_PIXEL_16: { value = hal.dwDeviceRenderBitDepth & DEPTH_BIT_MASK_16_BIT; found = TRUE; break; }
-                case GRAPHICS_BITS_PER_PIXEL_24: { value = hal.dwDeviceRenderBitDepth & DEPTH_BIT_MASK_24_BIT; found = TRUE; break; }
-                case GRAPHICS_BITS_PER_PIXEL_32: { value = hal.dwDeviceRenderBitDepth & DEPTH_BIT_MASK_32_BIT; found = TRUE; break; }
+                case GRAPHICS_BITS_PER_PIXEL_8: { value = hal.dwDeviceRenderBitDepth & RENDERER_MODULE_DEPTH_BIT_MASK_8_BIT; found = TRUE; break; }
+                case GRAPHICS_BITS_PER_PIXEL_16: { value = hal.dwDeviceRenderBitDepth & RENDERER_MODULE_DEPTH_BIT_MASK_16_BIT; found = TRUE; break; }
+                case GRAPHICS_BITS_PER_PIXEL_24: { value = hal.dwDeviceRenderBitDepth & RENDERER_MODULE_DEPTH_BIT_MASK_24_BIT; found = TRUE; break; }
+                case GRAPHICS_BITS_PER_PIXEL_32: { value = hal.dwDeviceRenderBitDepth & RENDERER_MODULE_DEPTH_BIT_MASK_32_BIT; found = TRUE; break; }
                 }
 
                 if (found && value == 0)
@@ -1489,11 +1489,11 @@ namespace RendererModule
             State.Device.Capabilities.IsDepthBufferRemovalAvailable = AcquireRendererDeviceDepthBufferRemovalCapabilities();
         }
 
-        if ((State.Device.Capabilities.DepthBits & DEPTH_BIT_MASK_32_BIT) == 0)
+        if ((State.Device.Capabilities.DepthBits & RENDERER_MODULE_DEPTH_BIT_MASK_32_BIT) == 0)
         {
-            if ((State.Device.Capabilities.DepthBits & DEPTH_BIT_MASK_24_BIT) == 0)
+            if ((State.Device.Capabilities.DepthBits & RENDERER_MODULE_DEPTH_BIT_MASK_24_BIT) == 0)
             {
-                if ((State.Device.Capabilities.DepthBits & DEPTH_BIT_MASK_16_BIT) == 0)
+                if ((State.Device.Capabilities.DepthBits & RENDERER_MODULE_DEPTH_BIT_MASK_16_BIT) == 0)
                 {
                     State.Device.Capabilities.DepthBits = (State.Device.Capabilities.DepthBits >> 8) & 8;
                 }

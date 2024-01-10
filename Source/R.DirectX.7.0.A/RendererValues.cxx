@@ -80,7 +80,7 @@ namespace RendererModuleValues
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1
     }; // TODO
 
-    s32 UnknownArray06[6] =
+    s32 UnknownArray06[MAX_UNKNOWN_COUNT] =
     {
         0, 0, 0, 0, 5, -1
     }; // TODO

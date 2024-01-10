@@ -39,9 +39,10 @@ namespace RendererModule
         ModuleDescriptor.MaximumTextureWidth = 256;
         ModuleDescriptor.MaximumTextureHeight = 256;
         ModuleDescriptor.DXV = RENDERER_MODULE_VERSION_DX6; // ORIGINAL: 4
-        ModuleDescriptor.Unk5 = 4; // TODO
+
         ModuleDescriptor.Caps = (State.DX.Active.IsSoft & 1) << 4
             | (RENDERER_MODULE_CAPS_WINDOWED | RENDERER_MODULE_CAPS_TEXTURE_HEIGHT_POW2 | RENDERER_MODULE_CAPS_TEXTURE_WIDTH_POW2 | RENDERER_MODULE_CAPS_TEXTURE_SQUARE | RENDERER_MODULE_CAPS_LINE_WIDTH);
+
         ModuleDescriptor.Author = RENDERER_MODULE_AUTHOR;
         ModuleDescriptor.Signature = RENDERER_MODULE_SIGNATURE_D3D6;
         ModuleDescriptor.Size = sizeof(RendererModuleDescriptor);
@@ -50,10 +51,12 @@ namespace RendererModule
         ModuleDescriptor.MinimumTextureHeight = 8;
         ModuleDescriptor.MultipleTextureHeight = 1;
         ModuleDescriptor.ClipAlign = 0;
-        ModuleDescriptor.Unk4 = 0xc; // TODO
+
+        ModuleDescriptor.ActiveTextureFormatStatesCount = MAX_ACTIVE_USABLE_TEXTURE_FORMAT_COUNT;
         ModuleDescriptor.TextureFormatStates = RendererTextureFormatStates;
 
-        ModuleDescriptor.Unk6 = UnknownArray06;
+        ModuleDescriptor.ActiveUnknownValuesCount = MAX_ACTIVE_UNKNOWN_COUNT;
+        ModuleDescriptor.UnknownValues = UnknownArray06;
 
         ModuleDescriptor.Capabilities.Capabilities = ModuleDescriptorDeviceCapabilities;
 

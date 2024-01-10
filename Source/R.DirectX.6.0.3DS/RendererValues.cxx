@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Americus Maximus
+Copyright (c) 2023 - 2024 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,7 @@ namespace RendererModuleValues
     RendererModuleDescriptor ModuleDescriptor;
     RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_DEVICE_CAPABILITIES_COUNT];
 
-    s32 UnknownArray06[6] =
+    s32 UnknownArray06[MAX_UNKNOWN_COUNT] =
     {
         0, 0, 0, 0, 5, -1
     }; // TODO

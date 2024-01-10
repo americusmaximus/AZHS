@@ -62,6 +62,11 @@ SOFTWARE.
 #define MAX_RENDERER_MODULE_DEVICE_NAME_LENGTH 32
 #define MAX_RENDERER_MODULE_DEVICE_LONG_NAME_LENGTH 80
 
+#define RENDERER_MODULE_DEPTH_BIT_MASK_32_BIT 0x100
+#define RENDERER_MODULE_DEPTH_BIT_MASK_24_BIT 0x200
+#define RENDERER_MODULE_DEPTH_BIT_MASK_16_BIT 0x400
+#define RENDERER_MODULE_DEPTH_BIT_MASK_8_BIT  0x800
+
 #define RENDERER_MODULE_TEXTURE_LOCATION_SYSTEM_MEMORY 0
 #define RENDERER_MODULE_TEXTURE_LOCATION_LOCAL_VIDEO_MEMORY 1
 #define RENDERER_MODULE_TEXTURE_LOCATION_NON_LOCAL_VIDEO_MEMORY 2
@@ -746,12 +751,11 @@ namespace RendererModule
         u32 MultipleTextureHeight;
         u32 ClipAlign;
 
-        s32 Unk4; // TODO
-
+        u32 ActiveTextureFormatStatesCount;
         s32* TextureFormatStates; // TODO
 
-        s32 Unk5; // TODO
-        s32* Unk6; // TODO
+        u32 ActiveUnknownValuesCount; // TODO
+        s32* UnknownValues; // TODO
 
         struct
         {
@@ -787,12 +791,11 @@ namespace RendererModule
         u32 MultipleTextureHeight;
         u32 ClipAlign;
 
-        s32 Unk4; // TODO
-
+        u32 ActiveTextureFormatStatesCount;
         s32* TextureFormatStates; // TODO
 
-        s32 Unk5; // TODO
-        s32* Unk6; // TODO
+        u32 ActiveUnknownValuesCount; // TODO
+        s32* UnknownValues; // TODO
 
         struct
         {

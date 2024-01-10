@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Americus Maximus
+Copyright (c) 2023 - 2024 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -1035,11 +1035,11 @@ namespace RendererModule
             State.Device.Capabilities.IsDepthBufferRemovalAvailable = AcquireRendererDeviceDepthBufferRemovalCapabilities();
         }
 
-        if ((State.Device.Capabilities.DepthBits & DEPTH_BIT_MASK_32_BIT) == 0)
+        if ((State.Device.Capabilities.DepthBits & RENDERER_MODULE_DEPTH_BIT_MASK_32_BIT) == 0)
         {
-            if ((State.Device.Capabilities.DepthBits & DEPTH_BIT_MASK_24_BIT) == 0)
+            if ((State.Device.Capabilities.DepthBits & RENDERER_MODULE_DEPTH_BIT_MASK_24_BIT) == 0)
             {
-                if ((State.Device.Capabilities.DepthBits & DEPTH_BIT_MASK_16_BIT) == 0)
+                if ((State.Device.Capabilities.DepthBits & RENDERER_MODULE_DEPTH_BIT_MASK_16_BIT) == 0)
                 {
                     State.Device.Capabilities.DepthBits = (State.Device.Capabilities.DepthBits >> 8) & 8;
                 }

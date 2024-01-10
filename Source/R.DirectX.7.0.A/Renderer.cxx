@@ -878,8 +878,8 @@ namespace RendererModule
 
                     BOOL invalid = FALSE;
 
-                    if (bits == GRAPHICS_BITS_PER_PIXEL_16) { invalid = (State.Device.Capabilities.RendererDeviceDepthBits & DEPTH_BIT_MASK_16_BIT) == 0; }
-                    else if (bits == GRAPHICS_BITS_PER_PIXEL_32) { invalid = (State.Device.Capabilities.RendererDeviceDepthBits & DEPTH_BIT_MASK_32_BIT) == 0; }
+                    if (bits == GRAPHICS_BITS_PER_PIXEL_16) { invalid = (State.Device.Capabilities.RendererDeviceDepthBits & RENDERER_MODULE_DEPTH_BIT_MASK_16_BIT) == 0; }
+                    else if (bits == GRAPHICS_BITS_PER_PIXEL_32) { invalid = (State.Device.Capabilities.RendererDeviceDepthBits & RENDERER_MODULE_DEPTH_BIT_MASK_32_BIT) == 0; }
 
                     if (invalid)
                     {
@@ -1316,7 +1316,7 @@ namespace RendererModule
         }
 
         if (State.Window.Bits == GRAPHICS_BITS_PER_PIXEL_32
-            && (caps.dwDeviceZBufferBitDepth & (DEPTH_BIT_MASK_24_BIT | DEPTH_BIT_MASK_32_BIT)) == 0)
+            && (caps.dwDeviceZBufferBitDepth & (RENDERER_MODULE_DEPTH_BIT_MASK_24_BIT | RENDERER_MODULE_DEPTH_BIT_MASK_32_BIT)) == 0)
         {
             State.Window.Bits = GRAPHICS_BITS_PER_PIXEL_16;
         }
@@ -1328,10 +1328,10 @@ namespace RendererModule
 
             switch (ModuleDescriptor.Capabilities.Capabilities[x].Bits)
             {
-            case GRAPHICS_BITS_PER_PIXEL_8: { value = caps.dwDeviceRenderBitDepth & DEPTH_BIT_MASK_8_BIT; found = TRUE; break; }
-            case GRAPHICS_BITS_PER_PIXEL_16: { value = caps.dwDeviceRenderBitDepth & DEPTH_BIT_MASK_16_BIT; found = TRUE; break; }
-            case GRAPHICS_BITS_PER_PIXEL_24: { value = caps.dwDeviceRenderBitDepth & DEPTH_BIT_MASK_24_BIT; found = TRUE; break; }
-            case GRAPHICS_BITS_PER_PIXEL_32: { value = caps.dwDeviceRenderBitDepth & DEPTH_BIT_MASK_32_BIT; found = TRUE; break; }
+            case GRAPHICS_BITS_PER_PIXEL_8: { value = caps.dwDeviceRenderBitDepth & RENDERER_MODULE_DEPTH_BIT_MASK_8_BIT; found = TRUE; break; }
+            case GRAPHICS_BITS_PER_PIXEL_16: { value = caps.dwDeviceRenderBitDepth & RENDERER_MODULE_DEPTH_BIT_MASK_16_BIT; found = TRUE; break; }
+            case GRAPHICS_BITS_PER_PIXEL_24: { value = caps.dwDeviceRenderBitDepth & RENDERER_MODULE_DEPTH_BIT_MASK_24_BIT; found = TRUE; break; }
+            case GRAPHICS_BITS_PER_PIXEL_32: { value = caps.dwDeviceRenderBitDepth & RENDERER_MODULE_DEPTH_BIT_MASK_32_BIT; found = TRUE; break; }
             }
 
             if (found && value == 0)
@@ -1379,11 +1379,11 @@ namespace RendererModule
 
         State.Device.Capabilities.IsDepthBufferRemovalAvailable = AcquireRendererDeviceDepthBufferRemovalCapabilities();
 
-        if ((State.Device.Capabilities.RendererDeviceDepthBits & DEPTH_BIT_MASK_32_BIT) == 0)
+        if ((State.Device.Capabilities.RendererDeviceDepthBits & RENDERER_MODULE_DEPTH_BIT_MASK_32_BIT) == 0)
         {
-            if ((State.Device.Capabilities.RendererDepthBits & DEPTH_BIT_MASK_24_BIT) == 0)
+            if ((State.Device.Capabilities.RendererDepthBits & RENDERER_MODULE_DEPTH_BIT_MASK_24_BIT) == 0)
             {
-                if ((State.Device.Capabilities.RendererDepthBits & DEPTH_BIT_MASK_16_BIT) == 0)
+                if ((State.Device.Capabilities.RendererDepthBits & RENDERER_MODULE_DEPTH_BIT_MASK_16_BIT) == 0)
                 {
                     State.Device.Capabilities.RendererDepthBits = (State.Device.Capabilities.RendererDepthBits >> 8) & 8;
                 }
