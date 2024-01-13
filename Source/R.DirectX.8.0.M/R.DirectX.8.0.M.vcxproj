@@ -20,8 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.Resources.hxx" />
+    <ClInclude Include="DirectX.hxx" />
     <ClInclude Include="Module.hxx" />
     <ClInclude Include="Renderer.hxx" />
+    <ClInclude Include="RendererValues.hxx" />
+    <ClInclude Include="Settings.hxx" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="App.Resources.rc" />
@@ -33,6 +36,8 @@
   <ItemGroup>
     <ClCompile Include="Module.cxx" />
     <ClCompile Include="Renderer.cxx" />
+    <ClCompile Include="RendererValues.cxx" />
+    <ClCompile Include="Settings.cxx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -89,25 +94,27 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)Bin\x86\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Obj\x86\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\AZX</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\AZX;..\..\SDK\DX80\Include</IncludePath>
     <TargetName>$(ProjectName).x86</TargetName>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);..\..\SDK\DX80\Lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Bin\x86\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Obj\x86\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\AZX</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\AZX;..\..\SDK\DX80\Include</IncludePath>
     <TargetName>$(ProjectName).x86</TargetName>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);..\..\SDK\DX80\Lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Bin\x64\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Obj\x64\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\AZX</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\AZX;..\..\SDK\DX80\Include</IncludePath>
     <TargetName>$(ProjectName).x64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Bin\x64\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Obj\x64\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\AZX</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\AZX;..\..\SDK\DX80\Include</IncludePath>
     <TargetName>$(ProjectName).x64</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -132,7 +139,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>Renderer.Module.Watcom.def</ModuleDefinitionFile>
-      <AdditionalDependencies>%(AdditionalDependencies);ddraw.lib;dxguid.lib</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);dxguid.lib;d3d8.lib</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
@@ -163,7 +170,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>Renderer.Module.Watcom.def</ModuleDefinitionFile>
-      <AdditionalDependencies>%(AdditionalDependencies);ddraw.lib;dxguid.lib</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);dxguid.lib;d3d8.lib</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
@@ -192,7 +199,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>Renderer.Module.MSVC.def</ModuleDefinitionFile>
-      <AdditionalDependencies>%(AdditionalDependencies);ddraw.lib;dxguid.lib</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);dxguid.lib;d3d8.lib</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
@@ -222,7 +229,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>Renderer.Module.MSVC.def</ModuleDefinitionFile>
-      <AdditionalDependencies>%(AdditionalDependencies);ddraw.lib;dxguid.lib</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);dxguid.lib;d3d8.lib</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>

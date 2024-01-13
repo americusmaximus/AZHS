@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Americus Maximus
+Copyright (c) 2023 - 2024 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +21,12 @@ SOFTWARE.
 */
 
 #include "Module.hxx"
+#include "RendererValues.hxx"
+#include "Settings.hxx"
 
 using namespace Renderer;
+using namespace RendererModuleValues;
+using namespace Settings;
 
 namespace RendererModule
 {
@@ -30,9 +34,38 @@ namespace RendererModule
     // a.k.a. THRASH_about
     DLLAPI RendererModuleDescriptor* STDCALLAPI AcquireDescriptor(void)
     {
-        // TODO NOT IMPLEMENTED
+        ModuleDescriptor.Version = RendererVersion;
 
-        return NULL;
+        ModuleDescriptor.Caps = RENDERER_MODULE_CAPS_UNKNOWN | RENDERER_MODULE_CAPS_WINDOWED | RENDERER_MODULE_CAPS_LINE_WIDTH
+            | (((State.Device.Capabilities.IsPowerOfTwoTexturesHeight & 1) << 3) | ((State.Device.Capabilities.IsPowerOfTwoTexturesWidth & 1) << 2) | ((State.Device.Capabilities.IsSquareOnlyTextures & 1) << 1));
+
+        ModuleDescriptor.MinimumTextureWidth = State.Device.Capabilities.MinTextureWidth;
+        ModuleDescriptor.MaximumTextureWidth = State.Device.Capabilities.MaxTextureWidth;
+        ModuleDescriptor.MultipleTextureWidth = State.Device.Capabilities.MultipleTextureWidth;
+        ModuleDescriptor.MinimumTextureHeight = State.Device.Capabilities.MinTextureHeight;
+        ModuleDescriptor.MaximumTextureHeight = State.Device.Capabilities.MaxTextureHeight;
+        ModuleDescriptor.MultipleTextureHeight = State.Device.Capabilities.MultipleTextureHeight;
+        ModuleDescriptor.MaximumSimultaneousTextures = State.Device.Capabilities.MaximumSimultaneousTextures;
+
+        ModuleDescriptor.SubType = State.Device.SubType;
+
+        ModuleDescriptor.Signature = RENDERER_MODULE_SIGNATURE_D3D8;
+
+        ModuleDescriptor.Size = sizeof(RendererModuleDescriptor2);
+        ModuleDescriptor.ClipAlign = 0;
+        ModuleDescriptor.DXV = RENDERER_MODULE_VERSION_DX8;
+        ModuleDescriptor.Author = RENDERER_MODULE_AUTHOR;
+        ModuleDescriptor.ActiveTextureFormatStatesCount = MAX_USABLE_TEXTURE_FORMAT_COUNT;
+        ModuleDescriptor.TextureFormatStates = RendererTextureFormatStates;
+        ModuleDescriptor.ActiveUnknownValuesCount = MAX_ACTIVE_UNKNOWN_COUNT;
+        ModuleDescriptor.UnknownValues = UnknownArray06;
+        ModuleDescriptor.Capabilities.Capabilities = ModuleDescriptorDeviceCapabilities;
+
+        strcpy(ModuleDescriptor.Name, RENDERER_MODULE_NAME);
+
+        AcquireRendererModuleDescriptor((RendererModuleDescriptor*)&ModuleDescriptor, ENVIRONMENT_SECTION_NAME);
+
+        return (RendererModuleDescriptor*)&ModuleDescriptor;
     }
 
     // 0x600012d0
@@ -230,18 +263,52 @@ namespace RendererModule
     // a.k.a. THRASH_init
     DLLAPI u32 STDCALLAPI Init(void)
     {
-        // TODO NOT IMPLEMENTED
+        InitializeSettings();
 
-        return RENDERER_MODULE_FAILURE;
+        if (State.DX.Instance == NULL)
+        {
+            State.DX.Instance = Direct3DCreate8(D3D_SDK_VERSION);
+
+            if (State.DX.Instance == NULL) { return RENDERER_MODULE_FAILURE; }
+        }
+
+        AcquireRendererDeviceCount();
+
+        AcquireRendererDeviceFormats();
+
+        InitializeTextureStateStates();
+
+        if (State.Lambdas.Lambdas.Execute != NULL)
+        {
+            State.Lambdas.Lambdas.Execute(RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_DEVICE, (RENDERERMODULEEXECUTECALLBACK)InitializeRendererDeviceExecute);
+            State.Lambdas.Lambdas.Execute(RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_SURFACES, (RENDERERMODULEEXECUTECALLBACK)InitializeRendererDeviceSurfacesExecute);
+        }
+
+        atexit(ReleaseRendererModule);
+
+        for (u32 x = 0; x < MAX_OUTPUT_FOG_ALPHA_COUNT; x++)
+        {
+            RendererFogAlphas[x] = MAX_OUTPUT_FOG_ALPHA_VALUE - x;
+        }
+
+        for (u32 x = 0; x < MAX_WINDOW_COUNT; x++)
+        {
+            State.Windows[x].Texture = NULL;
+            State.Windows[x].Stencil = NULL;
+
+            ZeroMemory(&State.Windows[x].Details, sizeof(RendererModuleWindowDetail));
+        }
+
+        State.DX.IsInit = TRUE;
+
+        return State.Devices.Count;
     }
 
     // 0x60004f10
     // a.k.a. THRASH_is
     DLLAPI u32 STDCALLAPI Is(void)
     {
-        // TODO NOT IMPLEMENTED
-
-        return RENDERER_MODULE_FAILURE;
+        return RENDERER_MODULE_DX8_ACCELERATION_AVAILABLE;
     }
 
     // 0x600014c0
