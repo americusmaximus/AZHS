@@ -95,7 +95,6 @@ namespace Renderer
 
 namespace RendererModule
 {
-    extern u32 DAT_6001d030; // 0x6001d030 // TODO
     extern u32 DAT_6001d5b0; // 0x6001d5b0 // TODO
 
     struct TextureFormat
@@ -289,6 +288,7 @@ namespace RendererModule
 
             DDGAMMARAMP GammaControl; // 0x6004e680
 
+            u32 FogState; // 0x6001d030
             BOOL IsFogActive; // 0x6001d034
 
             u32 Cull; // 0x6001d5d4

@@ -107,7 +107,6 @@ namespace Renderer
 
 namespace RendererModule
 {
-    extern u32 DAT_60018850; // 0x60018850
     extern u32 DAT_60058df4; // 0x60058df4
     extern u32 DAT_60058df8; // 0x60058df8
     extern u32 DAT_6005ab50; // 0x6005ab50
@@ -387,6 +386,7 @@ namespace RendererModule
             u32 Acceleration; // 0x60018844
             u32 ClipPlaneState; // 0x60018848
 
+            u32 FogState; // 0x60018850
             BOOL IsFogActive; // 0x60018854
 
             DDGAMMARAMP GammaControl; // 0x6007b240

@@ -967,8 +967,7 @@ namespace RendererModule
             SelectRendererState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_NONE);
 
             State.Settings.IsFogActive = TRUE;
-
-            DAT_60018850 = 0x10; // TODO
+            State.Settings.FogState = RENDERER_MODULE_FOG_ACTIVE_ALPHAS;
 
             result = RENDERER_MODULE_SUCCESS; break;
         }
@@ -990,7 +989,7 @@ namespace RendererModule
                 {
                     SelectRendererState(D3DRENDERSTATE_FOGENABLE, TRUE);
 
-                    if (DAT_60018850 == 16) { State.Settings.IsFogActive = TRUE; } // TODO
+                    if (State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS) { State.Settings.IsFogActive = TRUE; }
                 }
 
                 break;
@@ -999,9 +998,8 @@ namespace RendererModule
             {
                 if (!State.Device.Capabilities.IsWFogAvailable) { return RENDERER_MODULE_FAILURE; }
 
-                DAT_60018850 = (u32)value;
-
                 State.Settings.IsFogActive = FALSE;
+                State.Settings.FogState = RENDERER_MODULE_FOG_ACTIVE_LINEAR;
 
                 SelectRendererState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_LINEAR);
                 SelectRendererState(D3DRENDERSTATE_FOGVERTEXMODE, D3DFOG_NONE);
@@ -1010,22 +1008,19 @@ namespace RendererModule
                 SelectRendererState(D3DRENDERSTATE_FOGSTART, *(DWORD*)&RendererFogStart);
                 SelectRendererState(D3DRENDERSTATE_FOGEND, *(DWORD*)&RendererFogEnd);
 
-                State.Settings.IsFogActive = FALSE;
-
                 break;
             }
             case RENDERER_MODULE_FOG_ACTIVE_EXP:
             {
                 if (!State.Device.Capabilities.IsWFogAvailable) { return RENDERER_MODULE_FAILURE; }
 
-                DAT_60018850 = (u32)value;
+                State.Settings.IsFogActive = FALSE;
+                State.Settings.FogState = RENDERER_MODULE_FOG_ACTIVE_EXP;
 
                 SelectRendererState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_EXP);
                 SelectRendererState(D3DRENDERSTATE_FOGVERTEXMODE, D3DFOG_NONE);
                 SelectRendererState(D3DRENDERSTATE_FOGCOLOR, RendererFogColor);
                 SelectRendererState(D3DRENDERSTATE_FOGDENSITY, *(DWORD*)&RendererFogDensity);
-
-                State.Settings.IsFogActive = FALSE;
 
                 break;
             }
@@ -1033,16 +1028,13 @@ namespace RendererModule
             {
                 if (!State.Device.Capabilities.IsWFogAvailable) { return RENDERER_MODULE_FAILURE; }
 
-                DAT_60018850 = (u32)value;
-
                 State.Settings.IsFogActive = FALSE;
+                State.Settings.FogState = RENDERER_MODULE_FOG_ACTIVE_EXP2;
 
                 SelectRendererState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_EXP2);
                 SelectRendererState(D3DRENDERSTATE_FOGVERTEXMODE, D3DFOG_NONE);
                 SelectRendererState(D3DRENDERSTATE_FOGCOLOR, RendererFogColor);
                 SelectRendererState(D3DRENDERSTATE_FOGDENSITY, *(DWORD*)&RendererFogDensity);
-
-                State.Settings.IsFogActive = FALSE;
 
                 break;
             }
@@ -1099,8 +1091,8 @@ namespace RendererModule
         case RENDERER_MODULE_STATE_72:
         case RENDERER_MODULE_STATE_SELECT_TEXTURE_MIN_FILTER_STATE:
         case RENDERER_MODULE_STATE_SELECT_TEXTURE_MAG_FILTER_STATE:
-        case RENDERER_MODULE_STATE_75:
-        case RENDERER_MODULE_STATE_76:
+        case RENDERER_MODULE_STATE_SELECT_VERTEX_MIN_DEPTH:
+        case RENDERER_MODULE_STATE_SELECT_VERTEX_MAX_DEPTH:
         case RENDERER_MODULE_STATE_77:
         case RENDERER_MODULE_STATE_78:
         case RENDERER_MODULE_STATE_79:
@@ -1414,7 +1406,7 @@ namespace RendererModule
                 {
                     SelectRendererTextureStage(RENDERER_TEXTURE_STAGE_0, D3DTSS_COLOROP, D3DTOP_DOTPRODUCT3);
                     SelectRendererTextureStage(RENDERER_TEXTURE_STAGE_0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-                    SelectRendererTextureStage(RENDERER_TEXTURE_STAGE_0, D3DTSS_COLORARG2, D3DTA_CURRENT);
+                    SelectRendererTextureStage(RENDERER_TEXTURE_STAGE_0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
                     SelectRendererTextureStage(RENDERER_TEXTURE_STAGE_0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
                     SelectRendererTextureStage(RENDERER_TEXTURE_STAGE_0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
                 }
@@ -1689,6 +1681,8 @@ namespace RendererModule
                     output->Right = right;
                     output->Top = top;
                     output->Bottom = bottom;
+
+                    return RENDERER_MODULE_SUCCESS;
                 }
             }
 

@@ -46,7 +46,6 @@ namespace RendererModule
 {
     RendererModuleState State;
 
-    u32 DAT_60018850; // TODO
     u32 DAT_60058df4; // TODO
     u32 DAT_60058df8; // TODO
     u32 DAT_6005ab50; // TODO
@@ -3532,7 +3531,7 @@ namespace RendererModule
 
                 if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
 
-                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                if (State.Settings.IsFogActive && State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS)
                 {
                     vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
                 }
@@ -3552,7 +3551,7 @@ namespace RendererModule
 
                 if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
 
-                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                if (State.Settings.IsFogActive && State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS)
                 {
                     vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
                 }
@@ -3594,7 +3593,7 @@ namespace RendererModule
 
                     if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
 
-                    if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                    if (State.Settings.IsFogActive && State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS)
                     {
                         vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
                     }
@@ -3618,7 +3617,7 @@ namespace RendererModule
 
                     if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
 
-                    if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                    if (State.Settings.IsFogActive && State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS)
                     {
                         vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
                     }
@@ -3648,7 +3647,7 @@ namespace RendererModule
 
             if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
 
-            if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+            if (State.Settings.IsFogActive && State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS)
             {
                 vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
             }
@@ -3679,7 +3678,7 @@ namespace RendererModule
 
                 if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
 
-                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                if (State.Settings.IsFogActive && State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS)
                 {
                     vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
                 }
@@ -3699,7 +3698,7 @@ namespace RendererModule
 
                 if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
 
-                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                if (State.Settings.IsFogActive && State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS)
                 {
                     vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
                 }
@@ -3719,7 +3718,7 @@ namespace RendererModule
 
                 if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
 
-                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                if (State.Settings.IsFogActive && State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS)
                 {
                     vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
                 }
@@ -3739,7 +3738,7 @@ namespace RendererModule
 
                 if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
 
-                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                if (State.Settings.IsFogActive && State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS)
                 {
                     vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
                 }
@@ -3804,7 +3803,7 @@ namespace RendererModule
 
                 if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
 
-                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                if (State.Settings.IsFogActive && State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS)
                 {
                     vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
                 }
@@ -3824,7 +3823,7 @@ namespace RendererModule
 
                 if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
 
-                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                if (State.Settings.IsFogActive && State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS)
                 {
                     vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
                 }
@@ -3844,7 +3843,7 @@ namespace RendererModule
 
                 if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
 
-                if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                if (State.Settings.IsFogActive && State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS)
                 {
                     vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
                 }
@@ -3926,7 +3925,7 @@ namespace RendererModule
 
                     if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
 
-                    if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                    if (State.Settings.IsFogActive && State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS)
                     {
                         vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
                     }
@@ -3948,7 +3947,7 @@ namespace RendererModule
 
                     if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
 
-                    if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                    if (State.Settings.IsFogActive && State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS)
                     {
                         vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
                     }
@@ -3970,7 +3969,7 @@ namespace RendererModule
 
                     if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertex->Color = GRAPCHICS_COLOR_WHITE; }
 
-                    if (State.Settings.IsFogActive && DAT_60018850 == 16) // TODO
+                    if (State.Settings.IsFogActive && State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS)
                     {
                         vertex->Specular = ((u32)RendererFogAlphas[(u32)(vertex->XYZ.Z * 255.0f)]) << 24;
                     }

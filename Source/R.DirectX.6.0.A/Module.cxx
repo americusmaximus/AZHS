@@ -825,13 +825,14 @@ namespace RendererModule
             {
                 SelectRendererState(D3DRENDERSTATE_FOGENABLE, TRUE);
 
-                if (DAT_6001d030 == 16) { State.Settings.IsFogActive = TRUE; } // TODO
+                if (State.Settings.FogState == RENDERER_MODULE_FOG_ACTIVE_ALPHAS) { State.Settings.IsFogActive = TRUE; }
 
                 break;
             }
             case RENDERER_MODULE_FOG_ACTIVE_LINEAR:
             {
-                DAT_6001d030 = (u32)value;
+                State.Settings.IsFogActive = FALSE;
+                State.Settings.FogState = RENDERER_MODULE_FOG_ACTIVE_LINEAR;
 
                 SelectRendererState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_LINEAR);
                 SelectRendererState(D3DRENDERSTATE_FOGCOLOR, RendererFogColor);
@@ -839,13 +840,12 @@ namespace RendererModule
                 SelectRendererState(D3DRENDERSTATE_FOGSTART, *(DWORD*)&RendererFogStart);
                 SelectRendererState(D3DRENDERSTATE_FOGEND, *(DWORD*)&RendererFogEnd);
 
-                State.Settings.IsFogActive = FALSE;
-
                 break;
             }
             case RENDERER_MODULE_FOG_ACTIVE_EXP:
             {
-                DAT_6001d030 = (u32)value;
+                State.Settings.IsFogActive = FALSE;
+                State.Settings.FogState = RENDERER_MODULE_FOG_ACTIVE_EXP;
 
                 SelectRendererState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_EXP);
                 SelectRendererState(D3DRENDERSTATE_FOGCOLOR, RendererFogColor);
@@ -853,21 +853,18 @@ namespace RendererModule
                 SelectRendererState(D3DRENDERSTATE_FOGSTART, *(DWORD*)&RendererFogStart);
                 SelectRendererState(D3DRENDERSTATE_FOGEND, *(DWORD*)&RendererFogEnd);
 
-                State.Settings.IsFogActive = FALSE;
-
                 break;
             }
             case RENDERER_MODULE_FOG_ACTIVE_EXP2:
             {
-                DAT_6001d030 = (u32)value;
+                State.Settings.IsFogActive = FALSE;
+                State.Settings.FogState = RENDERER_MODULE_FOG_ACTIVE_EXP2;
 
                 SelectRendererState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_EXP2);
                 SelectRendererState(D3DRENDERSTATE_FOGCOLOR, RendererFogColor);
                 SelectRendererState(D3DRENDERSTATE_FOGDENSITY, *(DWORD*)&RendererFogDensity);
                 SelectRendererState(D3DRENDERSTATE_FOGSTART, *(DWORD*)&RendererFogStart);
                 SelectRendererState(D3DRENDERSTATE_FOGEND, *(DWORD*)&RendererFogEnd);
-
-                State.Settings.IsFogActive = FALSE;
 
                 break;
             }
@@ -1336,8 +1333,7 @@ namespace RendererModule
             SelectRendererState(D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_NONE);
 
             State.Settings.IsFogActive = TRUE;
-
-            DAT_6001d030 = 0x10; // TODO
+            State.Settings.FogState = RENDERER_MODULE_FOG_ACTIVE_ALPHAS;
 
             result = RENDERER_MODULE_SUCCESS; break;
         }
