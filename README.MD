@@ -1,4 +1,5 @@
 # AutoZone High Stakes
+![Auto Zone](./Extras/Logo.png)
 
 ## Project
 AZHS is an open source implementation of Electronic Arts' [Need For Speed: High Stakes](https://en.wikipedia.org/wiki/Need_for_Speed:_High_Stakes) version 4.50 from 1999.
