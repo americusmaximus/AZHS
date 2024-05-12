@@ -2644,8 +2644,10 @@ namespace RendererModule
 
         u32 offset = 0;
 
-        void* allocated = _alloca((desc.lPitch * desc.dwHeight + 3) & 0xfffffffc);
-        memset(allocated, 0xff, (desc.lPitch * desc.dwHeight + 3) & 0xfffffffc);
+        const u32 length = (desc.lPitch * desc.dwHeight + 3) & 0xfffffffc;
+
+        void* allocated = _alloca(length);
+        memset(allocated, 0xff, length);
 
         u32* data = NULL;
 
@@ -2698,7 +2700,9 @@ namespace RendererModule
 
                     for (u32 xx = 0; xx < tex->Descriptor.dwHeight; xx++)
                     {
-                        CopyMemory(allocated, &data[xx * pitch], pitch);
+                        CopyMemory(allocated, (void*)((addr)data + (addr)(xx * pitch)), pitch);
+
+                        allocated = (void*)((addr)allocated + (addr)tex->Descriptor.lPitch);
                     }
                 }
 

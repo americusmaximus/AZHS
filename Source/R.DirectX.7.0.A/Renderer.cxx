@@ -3525,8 +3525,10 @@ namespace RendererModule
                 {
                     if (allocated == NULL)
                     {
-                        allocated = _alloca((desc.lPitch * desc.dwHeight + 3) & 0xfffffffc);
-                        memset(allocated, 0xff, (desc.lPitch * desc.dwHeight + 3) & 0xfffffffc);
+                        const u32 length = (desc.lPitch * desc.dwHeight + 3) & 0xfffffffc;
+
+                        allocated = _alloca(length);
+                        memset(allocated, 0xff, length);
                     }
 
                     if (data == NULL) { data = (u32*)((addr)pixels + (addr)offset); }
@@ -3535,7 +3537,9 @@ namespace RendererModule
 
                     for (u32 xx = 0; xx < tex->Descriptor.dwHeight; xx++)
                     {
-                        CopyMemory(allocated, &data[xx * pitch], pitch);
+                        CopyMemory(allocated, (void*)((addr)data + (addr)(xx * pitch)), pitch);
+
+                        allocated = (void*)((addr)allocated + (addr)tex->Descriptor.lPitch);
                     }
                 }
 
@@ -3551,7 +3555,7 @@ namespace RendererModule
     }
 
     // 0x6000cd50
-    BOOL UpdateRendererTexture(RendererTexture* tex, const u32* pixels, const u32* palette, const u32 x, const u32 y, const u32 width, const u32 height, const u32 size)
+    BOOL UpdateRendererTexture(RendererTexture* tex, const u32* pixels, const u32* palette, const u32 x, const u32 y, const u32 width, const u32 height, const u32 stride)
     {
         if (pixels != NULL)
         {
@@ -3575,10 +3579,12 @@ namespace RendererModule
                 (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1 || tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT3)
                 ? (void*)((addr)pixels + (addr)8) : (void*)pixels;
 
-            if (tex->Descriptor.lPitch != size)
+            if (tex->Descriptor.lPitch != stride)
             {
-                void* allocated = _alloca((tex->Descriptor.lPitch * height + 3) & 0xfffffffc);
-                memset(allocated, 0xff, (tex->Descriptor.lPitch * height + 3) & 0xfffffffc);
+                const u32 length = (tex->Descriptor.lPitch * height + 3) & 0xfffffffc;
+
+                void* allocated = _alloca(length);
+                memset(allocated, 0xff, length);
 
                 tex->Descriptor.lpSurface = (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1
                     || tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT3)
@@ -3586,7 +3592,9 @@ namespace RendererModule
 
                 for (u32 xx = 0; xx < height; xx++)
                 {
-                    CopyMemory(allocated, &pixels[xx * size], size);
+                    CopyMemory(allocated, (void*)((addr)pixels + (addr)(xx * stride)), stride);
+
+                    allocated = (void*)((addr)allocated + (addr)tex->Descriptor.lPitch);
                 }
             }
 
