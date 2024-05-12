@@ -1653,11 +1653,11 @@ namespace RendererModule
 
         const s32 result = InitializeRendererTextureDetails(tex);
 
-        if (result < 1) // TODO
+        if (result != RENDERER_INITIALIZE_TEXTURE_DETAILS_OK)
         {
             ReleaseRendererTexture(tex);
 
-            if (result != -1) { State.Textures.Illegal = TRUE; } // TODO
+            if (result != RENDERER_INITIALIZE_TEXTURE_DETAILS_INVALID) { State.Textures.Illegal = TRUE; }
 
             return NULL;
         }

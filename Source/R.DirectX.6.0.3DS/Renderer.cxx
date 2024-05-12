@@ -1730,7 +1730,7 @@ namespace RendererModule
     }
 
     // 0x60007230
-    s32 InitializeRendererTextureDetails(RendererTexture* tex) // TODO returns -1, 0, 1, where 1 is success, -1 is total failure and no further allocations allowed
+    s32 InitializeRendererTextureDetails(RendererTexture* tex)
     {
         DDSURFACEDESC2 desc;
         CopyMemory(&desc, &State.Textures.Formats.Formats[tex->FormatIndex].Descriptor, sizeof(DDSURFACEDESC2));
@@ -1750,9 +1750,7 @@ namespace RendererModule
                 }
                 else
                 {
-                    const int count = atoi(value);
-
-                    if (count == 0) // TODO
+                    if (!atoi(value))
                     {
                         desc.dwFlags = DDSD_MIPMAPCOUNT | DDSD_PIXELFORMAT | DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
                         desc.dwMipMapCount = tex->MipMapCount;
@@ -1788,7 +1786,7 @@ namespace RendererModule
             {
                 const HRESULT result = State.DX.Active.Instance->CreateSurface(&desc, &surf, NULL);
 
-                if (result != DD_OK) { return (result != DDERR_INVALIDPIXELFORMAT) - 1; } // TODO
+                if (result != DD_OK) { return (result != DDERR_INVALIDPIXELFORMAT) - 1; }
             }
 
             IDirectDrawSurface4* surface = NULL;
@@ -1796,7 +1794,7 @@ namespace RendererModule
             {
                 if (surf != NULL) { surf->Release(); }
 
-                return 0; // TODO
+                return RENDERER_INITIALIZE_TEXTURE_DETAILS_ERROR;
             }
 
             surf->Release();
@@ -1806,7 +1804,7 @@ namespace RendererModule
             {
                 if (surface != NULL) { surface->Release(); }
 
-                return 0; // TODO
+                return RENDERER_INITIALIZE_TEXTURE_DETAILS_ERROR;
             }
 
             tex->Surface1 = surface;
@@ -1821,7 +1819,7 @@ namespace RendererModule
                 if (surface != NULL) { surface->Release(); }
                 if (texture != NULL) { texture->Release(); }
 
-                return 0; // TODO
+                return RENDERER_INITIALIZE_TEXTURE_DETAILS_ERROR;
             }
         }
 
@@ -1840,9 +1838,7 @@ namespace RendererModule
                 }
                 else
                 {
-                    const int count = atoi(value);
-
-                    if (count == 0)
+                    if (!atoi(value))
                     {
                         desc.dwFlags = DDSD_MIPMAPCOUNT | DDSD_PIXELFORMAT | DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
                         desc.dwMipMapCount = tex->MipMapCount;
@@ -1884,7 +1880,7 @@ namespace RendererModule
                     if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
                     if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
 
-                    return (result != DDERR_INVALIDPIXELFORMAT) - 1; // TODO
+                    return (result != DDERR_INVALIDPIXELFORMAT) - 1;
                 }
             }
 
@@ -1897,7 +1893,7 @@ namespace RendererModule
                 if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
                 if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
 
-                return 0; // TODO
+                return RENDERER_INITIALIZE_TEXTURE_DETAILS_ERROR;
             }
 
             surf->Release();
@@ -1918,7 +1914,7 @@ namespace RendererModule
                     if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
                     if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
 
-                    return 0; // TODO
+                    return RENDERER_INITIALIZE_TEXTURE_DETAILS_ERROR;
                 }
 
                 if (surface->SetPalette(palette) != DD_OK)
@@ -1930,7 +1926,7 @@ namespace RendererModule
 
                     if (palette != NULL) { palette->Release(); }
 
-                    return 0; // TODO
+                    return RENDERER_INITIALIZE_TEXTURE_DETAILS_ERROR;
                 }
 
                 tex->Palette = palette;
@@ -1949,7 +1945,7 @@ namespace RendererModule
                     if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
                     if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
 
-                    return 0; // TODO
+                    return RENDERER_INITIALIZE_TEXTURE_DETAILS_ERROR;
                 }
 
                 if (surface->SetPalette(palette) != DD_OK)
@@ -1961,7 +1957,7 @@ namespace RendererModule
 
                     if (palette != NULL) { palette->Release(); }
 
-                    return 0; // TODO
+                    return RENDERER_INITIALIZE_TEXTURE_DETAILS_ERROR;
                 }
 
                 tex->Palette = palette;
@@ -1983,7 +1979,7 @@ namespace RendererModule
 
                 if (palette != NULL) { palette->Release(); }
 
-                return 0; // TODO
+                return RENDERER_INITIALIZE_TEXTURE_DETAILS_ERROR;
             }
 
             if (surface->Blt(NULL, tex->Surface1, NULL, DDBLT_WAIT, NULL) != DD_OK)
@@ -1997,7 +1993,7 @@ namespace RendererModule
 
                 if (palette != NULL) { palette->Release(); }
 
-                return 0; // TODO
+                return RENDERER_INITIALIZE_TEXTURE_DETAILS_ERROR;
             }
 
             ZeroMemory(&desc, sizeof(DDSURFACEDESC2));
@@ -2025,10 +2021,10 @@ namespace RendererModule
             tex->Surface2 = surface;
             tex->Texture2 = texture;
 
-            return 1; // TODO
+            return RENDERER_INITIALIZE_TEXTURE_DETAILS_OK;
         }
 
-        return 0; // TODO
+        return RENDERER_INITIALIZE_TEXTURE_DETAILS_ERROR;
     }
 
     // 0x60006890
