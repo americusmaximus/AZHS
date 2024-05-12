@@ -56,6 +56,10 @@ SOFTWARE.
 #define MAX_VERTEX_COUNT 8096
 #define MIN_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x200000 (2 MB) */
 
+#define RENDERER_CULL_MODE_CLOCK_WISE           0x00000000
+#define RENDERER_CULL_MODE_NONE                 0x00000001
+#define RENDERER_CULL_MODE_COUNTER_CLOCK_WISE   0x80000000
+
 #if !defined(__WATCOMC__) && _MSC_VER <= 1200
 inline void LOGERROR(...) { }
 inline void LOGWARNING(...) { }
@@ -367,7 +371,7 @@ namespace RendererModule
     HRESULT CALLBACK EnumerateRendererDeviceModes(LPDDSURFACEDESC2 desc, LPVOID context);
     HRESULT CALLBACK EnumerateRendererDevicePixelFormats(LPDDPIXELFORMAT format, LPVOID context);
     HRESULT CALLBACK EnumerateRendererDeviceTextureFormats(LPDDPIXELFORMAT format, LPVOID context);
-    inline f32 AcquireNormal(const f32x3* a, const f32x3* b, const f32x3* c) { return (b->X - a->X) * (c->Y - a->Y) - (c->X - a->X) * (b->Y - a->Y); }
+    inline u32 AcquireNormal(const f32x3* a, const f32x3* b, const f32x3* c) { const s32 value = (s32)((b->X - a->X) * (c->Y - a->Y) - (c->X - a->X) * (b->Y - a->Y)); return *(u32*)&value; }
     inline u32 AcquireFogAlphaIndex(const f32 value) { return (u32)((1.0f - value * 0.000015259022f) * 255.0f + 0.5f); }
     Renderer::RendererTexture* AllocateRendererTexture(const u32 size);
     Renderer::RendererTexture* InitializeRendererTexture(void);

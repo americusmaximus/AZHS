@@ -2527,7 +2527,7 @@ namespace RendererModule
             {
             case RENDERER_MODULE_CULL_NONE:
             {
-                State.Settings.Cull = 1; // TODO
+                State.Settings.Cull = RENDERER_CULL_MODE_NONE;
 
                 SelectRendererStateValue(state, (void*)RENDERER_MODULE_CULL_NONE);
 
@@ -2535,7 +2535,7 @@ namespace RendererModule
             }
             case RENDERER_MODULE_CULL_COUNTER_CLOCK_WISE:
             {
-                State.Settings.Cull = 0x80000000; // TODO
+                State.Settings.Cull = RENDERER_CULL_MODE_COUNTER_CLOCK_WISE;
 
                 SelectRendererStateValue(state, (void*)RENDERER_MODULE_CULL_COUNTER_CLOCK_WISE);
 
@@ -2543,7 +2543,7 @@ namespace RendererModule
             }
             case RENDERER_MODULE_CULL_CLOCK_WISE:
             {
-                State.Settings.Cull = 0; // TODO
+                State.Settings.Cull = RENDERER_CULL_MODE_CLOCK_WISE;
 
                 SelectRendererStateValue(state, (void*)RENDERER_MODULE_CULL_CLOCK_WISE);
 
@@ -3891,7 +3891,7 @@ namespace RendererModule
             RVX* c = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * ic));
             RVX* d = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * id));
 
-            if (State.Settings.Cull == 1 || ((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad(a, b, c, d); } // TODO
+            if (State.Settings.Cull == RENDERER_CULL_MODE_NONE || (AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & RENDERER_CULL_MODE_COUNTER_CLOCK_WISE) != State.Settings.Cull) { RenderQuad(a, b, c, d); }
         }
     }
 
@@ -4009,7 +4009,7 @@ namespace RendererModule
             RVX* b = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * ib));
             RVX* c = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * ic));
 
-            if (State.Settings.Cull == 1 || ((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderTriangle(a, b, c); } // TODO
+            if (State.Settings.Cull == RENDERER_CULL_MODE_NONE || (AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & RENDERER_CULL_MODE_COUNTER_CLOCK_WISE) != State.Settings.Cull) { RenderTriangle(a, b, c); }
         }
     }
 

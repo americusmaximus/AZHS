@@ -2804,9 +2804,9 @@ namespace RendererModule
         {
             switch ((u32)value)
             {
-            case RENDERER_MODULE_CULL_NONE: { State.Settings.Cull = 1; break; } // TODO
-            case RENDERER_MODULE_CULL_COUNTER_CLOCK_WISE: { State.Settings.Cull = 0x80000000; break; }  // TODO
-            case RENDERER_MODULE_CULL_CLOCK_WISE: { State.Settings.Cull = 0; break; } // TODO
+            case RENDERER_MODULE_CULL_NONE: { State.Settings.Cull = RENDERER_CULL_MODE_NONE; break; }
+            case RENDERER_MODULE_CULL_COUNTER_CLOCK_WISE: { State.Settings.Cull = RENDERER_CULL_MODE_COUNTER_CLOCK_WISE; break; }
+            case RENDERER_MODULE_CULL_CLOCK_WISE: { State.Settings.Cull = RENDERER_CULL_MODE_CLOCK_WISE; break; }
             default: { return RENDERER_MODULE_FAILURE; }
             }
 
@@ -3074,7 +3074,7 @@ namespace RendererModule
             RVX* c = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * indexes[x * 4 + 2]));
             RVX* d = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * indexes[x * 4 + 3]));
 
-            if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad(a, b, c, d); } // TODO
+            if ((AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & RENDERER_CULL_MODE_COUNTER_CLOCK_WISE) != State.Settings.Cull) { RenderQuad(a, b, c, d); }
         }
     }
 
@@ -3203,7 +3203,7 @@ namespace RendererModule
             RVX* b = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * indexes[x * 3 + 1]));
             RVX* c = (RVX*)((addr)vertexes + (addr)(RendererVertexSize * indexes[x * 3 + 2]));
 
-            if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderTriangle(a, b, c); } // TODO
+            if ((AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & RENDERER_CULL_MODE_COUNTER_CLOCK_WISE) != State.Settings.Cull) { RenderTriangle(a, b, c); }
         }
     }
 

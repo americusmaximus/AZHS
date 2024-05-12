@@ -242,7 +242,7 @@ namespace RendererModule
     // a.k.a. THRASH_drawquad
     DLLAPI void STDCALLAPI DrawQuad(RVX* a, RVX* b, RVX* c, RVX* d)
     {
-        if (State.Settings.Cull == 1 || ((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad(a, b, c, d); } // TODO
+        if (State.Settings.Cull == RENDERER_CULL_MODE_NONE || (AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & RENDERER_CULL_MODE_COUNTER_CLOCK_WISE) != State.Settings.Cull) { RenderQuad(a, b, c, d); }
     }
 
     // 0x60001af0
@@ -293,7 +293,7 @@ namespace RendererModule
     // a.k.a. THRASH_drawtri
     DLLAPI void STDCALLAPI DrawTriangle(RVX* a, RVX* b, RVX* c)
     {
-        if (State.Settings.Cull == 1 || ((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderTriangle(a, b, c); } // TODO
+        if (State.Settings.Cull == RENDERER_CULL_MODE_NONE || (AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & RENDERER_CULL_MODE_COUNTER_CLOCK_WISE) != State.Settings.Cull) { RenderTriangle(a, b, c); }
     }
 
     // 0x60001cf0
@@ -671,7 +671,7 @@ namespace RendererModule
             {
                 SelectRendererState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE);
 
-                State.Settings.Cull = 1; // TODO
+                State.Settings.Cull = RENDERER_CULL_MODE_NONE;
 
                 break;
             }
@@ -679,7 +679,7 @@ namespace RendererModule
             {
                 SelectRendererState(D3DRENDERSTATE_CULLMODE, D3DCULL_CCW);
 
-                State.Settings.Cull = 0x80000000; // TODO
+                State.Settings.Cull = RENDERER_CULL_MODE_COUNTER_CLOCK_WISE;
 
                 break;
             }
@@ -687,7 +687,7 @@ namespace RendererModule
             {
                 SelectRendererState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW);
 
-                State.Settings.Cull = 0; // TODO
+                State.Settings.Cull = RENDERER_CULL_MODE_CLOCK_WISE;
 
                 break;
             }
