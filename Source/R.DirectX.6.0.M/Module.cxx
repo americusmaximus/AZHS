@@ -96,7 +96,7 @@ namespace RendererModule
 
     // 0x60001220
     // a.k.a. THRASH_clearwindow
-    DLLAPI u32 STDCALLAPI ClearGameWindow()
+    DLLAPI u32 STDCALLAPI ClearGameWindow(void)
     {
         return ClearRendererViewPort(State.ViewPort.X0, State.ViewPort.Y0, State.ViewPort.X1, State.ViewPort.Y1);
     }
@@ -114,7 +114,7 @@ namespace RendererModule
     }
 
     // 0x60001690
-    // // a.k.a. THRASH_drawline
+    // a.k.a. THRASH_drawline
     DLLAPI void STDCALLAPI DrawLine(RVX* a, RVX* b)
     {
         RTLVX vertexes[2];
