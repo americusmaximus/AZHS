@@ -8,7 +8,7 @@ EXPORTS
     _THRASH_drawline = DrawLine                             @6
     _THRASH_drawlinemesh = DrawLineMesh                     @7
     _THRASH_drawlinestrip = DrawLineStrip                   @9
-    _THRASH_drawlinestrips = DrawLineStrips                 @8
+    _THRASH_drawlinestrip = DrawLineStrips                  @8
     _THRASH_drawpoint = DrawPoint                           @10
     _THRASH_drawpointmesh = DrawPointMesh                   @11
     _THRASH_drawpointstrip = DrawPointStrip                 @12
@@ -18,10 +18,10 @@ EXPORTS
     _THRASH_drawspritemesh = DrawSpriteMesh                 @16
     _THRASH_drawtri = DrawTriangle                          @17
     _THRASH_drawtrifan = DrawTriangleFan                    @19
-    _THRASH_drawtrifans = DrawTriangleFans                  @18
+    _THRASH_drawtrifan = DrawTriangleFans                   @18
     _THRASH_drawtrimesh = DrawTriangleMesh                  @20
     _THRASH_drawtristrip = DrawTriangleStrip                @22
-    _THRASH_drawtristrips = DrawTriangleStrips              @21
+    _THRASH_drawtristrip = DrawTriangleStrips               @21
     _THRASH_flushwindow = FlushGameWindow                   @23
     _THRASH_getstate = AcquireState                         @24
     _THRASH_getwindowtexture = AcquireGameWindowTexture     @25
