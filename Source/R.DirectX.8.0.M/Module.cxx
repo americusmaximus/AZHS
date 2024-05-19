@@ -322,11 +322,9 @@ namespace RendererModule
 
     // 0x60001310
     // a.k.a. THRASH_pageflip
-    DLLAPI u32 STDCALLAPI ToggleGameWindow(void)
+    DLLAPI void STDCALLAPI ToggleGameWindow(void)
     {
         // TODO NOT IMPLEMENTED
-
-        return RENDERER_MODULE_FAILURE;
     }
 
     // 0x60003070

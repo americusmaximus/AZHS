@@ -126,7 +126,7 @@ namespace RendererModule
     typedef const u32(STDCALLAPI* RENDERERINIT)(void);
     typedef const u32(STDCALLAPI* RENDERERIS)(void);
     typedef const RendererModuleWindowLock* (STDCALLAPI* RENDERERLOCKGAMEWINDOW)(void);
-    typedef const u32(STDCALLAPI* RENDERERTOGGLEGAMEWINDOW)(void);
+    typedef const void (STDCALLAPI* RENDERERTOGGLEGAMEWINDOW)(void);
     typedef const u32(STDCALLAPI* RENDERERREADRECTANGLE)(const u32 x, const u32 y, const u32 width, const u32 height, u32* pixels);
     typedef const u32(STDCALLAPI* RENDERERRESTOREGAMEWINDOW)(void);
     typedef const u32(STDCALLAPI* RENDERERSELECTDEVICE)(const s32 indx);

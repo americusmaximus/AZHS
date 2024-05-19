@@ -384,13 +384,13 @@ namespace RendererModule
 
     // 0x60001260
     // a.k.a. THRASH_pageflip
-    DLLAPI u32 STDCALLAPI ToggleGameWindow(void)
+    DLLAPI void STDCALLAPI ToggleGameWindow(void)
     {
         if (State.Scene.IsActive) { EndRendererScene(); }
 
         if (State.Lock.IsActive) { LOGERROR("D3D pageflip called in while locked\n"); }
 
-        return ToggleRenderer();
+        ToggleRenderer();
     }
 
     // 0x60003ae0
