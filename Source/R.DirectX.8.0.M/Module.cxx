@@ -402,7 +402,7 @@ namespace RendererModule
 
     // 0x600077c0
     // a.k.a. THRASH_talloc
-    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32 state)
+    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const BOOL palette, const u32 state)
     {
         // TODO NOT IMPLEMENTED
 

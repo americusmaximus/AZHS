@@ -97,7 +97,7 @@ namespace Renderer
         u32 Width;
         u32 Height;
         s32 FormatIndexValue; // TODO
-        u32 Options;
+        u32 IsPalette;
         s32 MipMapCount;
         u32 Stage;
         RendererTexture* Previous;
@@ -493,7 +493,7 @@ namespace RendererModule
     HRESULT CALLBACK EnumerateRendererDeviceTextureFormats(LPDDPIXELFORMAT format, LPVOID context);
     inline u32 AcquireNormal(const f32x3* a, const f32x3* b, const f32x3* c) { const s32 value = (s32)((b->X - a->X) * (c->Y - a->Y) - (c->X - a->X) * (b->Y - a->Y)); return *(u32*)&value; }
     Renderer::RendererTexture* AllocateRendererTexture(const u32 size);
-    Renderer::RendererTexture* AllocateRendererTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32 state, const BOOL destination);
+    Renderer::RendererTexture* AllocateRendererTexture(const u32 width, const u32 height, const u32 format, const BOOL palette, const u32 state, const BOOL destination);
     Renderer::RendererTexture* InitializeRendererTexture(void);
     RendererModuleWindowLock* RendererLock(const u32 mode);
     s32 AcquireMinimumRendererDeviceResolutionModeIndex(const u32 width, const u32 height, const u32 bpp);

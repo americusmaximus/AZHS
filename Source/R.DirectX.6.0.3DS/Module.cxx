@@ -1147,7 +1147,7 @@ namespace RendererModule
 
     // 0x60004130
     // a.k.a. THRASH_talloc
-    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32)
+    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const BOOL palette, const u32)
     {
         if (State.Textures.Illegal) { return NULL; }
 
@@ -1164,7 +1164,7 @@ namespace RendererModule
 
         tex->Is16Bit = (format == RENDERER_PIXEL_FORMAT_R5G5B5 || format == RENDERER_PIXEL_FORMAT_R4G4B4);
 
-        tex->Options = options;
+        tex->IsPalette = palette;
         tex->MemoryType = RENDERER_MODULE_TEXTURE_LOCATION_SYSTEM_MEMORY;
 
         tex->Surface1 = NULL;
@@ -1199,7 +1199,7 @@ namespace RendererModule
         if (State.Scene.IsActive)
         {
             FlushGameWindow();
-            SyncGameWindow(0);
+            SyncGameWindow(RENDERER_MODULE_SYNC_NORMAL);
             Idle();
 
             State.Scene.IsActive = FALSE;

@@ -398,7 +398,7 @@ namespace RendererModule
             if (State.Scene.IsActive)
             {
                 ToggleGameWindow();
-                SyncGameWindow(0);
+                SyncGameWindow(RENDERER_MODULE_SYNC_NORMAL);
             }
 
             ResetTextures();

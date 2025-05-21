@@ -82,7 +82,7 @@ namespace Renderer
         u32 UnknownFormatIndexValue; // TODO
         s32 FormatIndex; // TODO
         s32 FormatIndexValue; // TODO
-        u32 Options;
+        BOOL IsPalette;
         u32 MipMapCount;
         RendererTexture* Previous;
         u32 MemoryType;

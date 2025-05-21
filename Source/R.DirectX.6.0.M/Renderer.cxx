@@ -34,6 +34,10 @@ SOFTWARE.
 #define MAX_SETTINGS_BUFFER_LENGTH 80
 #define MAX_RENDERER_MESSAGE_BUFFER_LENGTH 404
 
+#define ALIGNMENTVALUE  4
+#define ALIGNMENTMASK   0xFFFFFFFC
+#define ALIGN(x)        (((x) + 3) & ALIGNMENTMASK)
+
 using namespace Renderer;
 using namespace RendererModuleValues;
 using namespace Settings;
@@ -584,7 +588,7 @@ namespace RendererModule
         if (AcquireRendererDeviceState() && State.Scene.IsActive)
         {
             FlushGameWindow();
-            SyncGameWindow(0);
+            SyncGameWindow(RENDERER_MODULE_SYNC_NORMAL);
             Idle();
 
             State.Scene.IsActive = FALSE;
@@ -2601,7 +2605,7 @@ namespace RendererModule
             tex->Surface2->Blt(NULL, tex->Surface1, NULL, DDBLT_WAIT, NULL);
         }
 
-        if (palette != NULL && tex->Options != 0)
+        if (palette != NULL && tex->IsPalette)
         {
             PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
 
@@ -2644,7 +2648,7 @@ namespace RendererModule
 
         u32 offset = 0;
 
-        const u32 length = (desc.lPitch * desc.dwHeight + 3) & 0xfffffffc;
+        const u32 length = ALIGN(desc.lPitch * desc.dwHeight);
 
         void* allocated = _alloca(length);
         memset(allocated, 0xff, length);

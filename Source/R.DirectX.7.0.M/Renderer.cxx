@@ -38,6 +38,10 @@ SOFTWARE.
 
 #define MAX_DEVICE_FORMAT_SCORE 10000
 
+#define ALIGNMENTVALUE  4
+#define ALIGNMENTMASK   0xFFFFFFFC
+#define ALIGN(x)        (((x) + 3) & ALIGNMENTMASK)
+
 using namespace Renderer;
 using namespace RendererModuleValues;
 using namespace Settings;
@@ -2721,7 +2725,7 @@ namespace RendererModule
     }
 
     // 0x60009080
-    RendererTexture* AllocateRendererTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32 state, const BOOL destination)
+    RendererTexture* AllocateRendererTexture(const u32 width, const u32 height, const u32 format, const BOOL palette, const u32 state, const BOOL destination)
     {
         if (State.DX.Active.Instance == NULL) { return NULL; }
         if (State.Textures.Illegal) { return NULL; }
@@ -2733,13 +2737,13 @@ namespace RendererModule
         tex->FormatIndex = State.Textures.Formats.Indexes[format];
         tex->UnknownFormatIndexValue = UnknownFormatValues[format];
         tex->Stage = MAKETEXTURESTAGEVALUE(state);
-        tex->FormatIndexValue = format & 0xff;
+        tex->FormatIndexValue = MAKETEXTUREINDEXVALUE(format);
 
         tex->MipMapCount = MAKETEXTUREMIPMAPVALUE(state) != 0 ? (MAKETEXTUREMIPMAPVALUE(state) + 1) : 0;
 
         tex->Is16Bit = (format == RENDERER_PIXEL_FORMAT_R5G5B5 || format == RENDERER_PIXEL_FORMAT_R4G4B4);
 
-        tex->Options = options;
+        tex->IsPalette = palette;
         tex->MemoryType = RENDERER_MODULE_TEXTURE_LOCATION_SYSTEM_MEMORY;
 
         tex->Surface = NULL;
@@ -3213,7 +3217,7 @@ namespace RendererModule
         if (AcquireRendererDeviceState() && State.Scene.IsActive)
         {
             FlushGameWindow();
-            SyncGameWindow(0);
+            SyncGameWindow(RENDERER_MODULE_SYNC_NORMAL);
             Idle();
 
             State.Scene.IsActive = FALSE;
@@ -3317,7 +3321,7 @@ namespace RendererModule
             if (tex->Texture->Blt(NULL, tex->Surface, NULL, DDBLT_WAIT, NULL) != DD_OK) { return FALSE; }
         }
 
-        if (palette != NULL && tex->Options != 0)
+        if (palette != NULL && tex->IsPalette)
         {
             PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
 
@@ -3413,7 +3417,7 @@ namespace RendererModule
                 {
                     if (allocated == NULL)
                     {
-                        const u32 length = (desc.lPitch * desc.dwHeight + 3) & 0xfffffffc;
+                        const u32 length = ALIGN(desc.lPitch * desc.dwHeight);
 
                         allocated = _alloca(length);
                         memset(allocated, 0xff, length);
@@ -3469,7 +3473,7 @@ namespace RendererModule
 
             if (tex->Descriptor.lPitch != stride)
             {
-                const u32 length = (tex->Descriptor.lPitch * height + 3) & 0xfffffffc;
+                const u32 length = ALIGN(tex->Descriptor.lPitch * height);
 
                 void* allocated = _alloca(length);
                 memset(allocated, 0xff, length);
@@ -3497,7 +3501,7 @@ namespace RendererModule
             if (tex->Texture->Blt(&source, tex->Surface, &destination, DDBLT_WAIT, NULL) != DD_OK) { return FALSE; }
         }
 
-        if (palette != NULL && tex->Options != 0)
+        if (palette != NULL && tex->IsPalette)
         {
             PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
 
