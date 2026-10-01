@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 - 2024 Americus Maximus
+Copyright (c) 2023 - 2026 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -558,7 +558,7 @@ namespace RendererModule
             && bits != GRAPHICS_BITS_PER_PIXEL_8 && bits != GRAPHICS_BITS_PER_PIXEL_24
             && (GRAPHICS_RESOLUTION_512 - 1) < desc->dwWidth)
         {
-            const u32 bytes = bits == (GRAPHICS_BITS_PER_PIXEL_16 - 1) ? 2 : (bits >> 3);
+            const u32 bytes = bits == GRAPHICS_BITS_PER_PIXEL_15 ? 2 : (bits >> 3);
 
             const u32 width = desc->dwWidth;
             const u32 height = desc->dwHeight;
@@ -580,7 +580,7 @@ namespace RendererModule
             ModuleDescriptor.Capabilities.Capabilities[indx].Width = width;
             ModuleDescriptor.Capabilities.Capabilities[indx].Height = height;
             ModuleDescriptor.Capabilities.Capabilities[indx].Bits =
-                format == RENDERER_PIXEL_FORMAT_R5G5B5 ? (GRAPHICS_BITS_PER_PIXEL_16 - 1) : bits;
+                format == RENDERER_PIXEL_FORMAT_R5G5B5 ? GRAPHICS_BITS_PER_PIXEL_15 : bits;
 
             ModuleDescriptor.Capabilities.Capabilities[indx].Format = format;
 
@@ -886,7 +886,7 @@ namespace RendererModule
             }
         }
 
-        const u32 bits = ModuleDescriptor.Capabilities.Capabilities[wp].Bits == (GRAPHICS_BITS_PER_PIXEL_16 - 1)
+        const u32 bits = ModuleDescriptor.Capabilities.Capabilities[wp].Bits == GRAPHICS_BITS_PER_PIXEL_15
             ? GRAPHICS_BITS_PER_PIXEL_16 : ModuleDescriptor.Capabilities.Capabilities[wp].Bits;
 
         if (!State.Settings.IsWindowMode)

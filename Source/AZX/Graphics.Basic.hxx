@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Americus Maximus
+Copyright (c) 2023 - 2026 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ SOFTWARE.
 #include "Basic.hxx"
 
 #define GRAPHICS_BITS_PER_PIXEL_8 8
+#define GRAPHICS_BITS_PER_PIXEL_15 15
 #define GRAPHICS_BITS_PER_PIXEL_16 16
 #define GRAPHICS_BITS_PER_PIXEL_24 24
 #define GRAPHICS_BITS_PER_PIXEL_32 32
