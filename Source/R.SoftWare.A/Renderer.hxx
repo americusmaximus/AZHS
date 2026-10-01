@@ -57,7 +57,7 @@ namespace Renderer
         u32 Format1;                    // 0x1C
         u32 Format2;                    // 0x20
         u32 Size;                       // 0x24
-        u32 ColorDepth;                 // 0x28
+        s32 ColorDepth;                 // 0x28
         RendererTexture* Previous;      // 0x2C
     };
 }
