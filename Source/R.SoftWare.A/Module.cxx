@@ -499,7 +499,11 @@ namespace RendererModule
                 texture->Stride = (texture->Bits >> 3) * width;
                 texture->Size = texture->Stride * height;
 
-                // TODO NOT IMPLEMENTED
+                const size_t pal_size = TextureColorDepth * 1024;
+
+                texture->Data = (u16*)malloc(texture->Size + pal_size + 0x20 + width);
+                texture->Palette = (u16*)(((addr)texture->Data + 0x20) & 0xFFFFFFE0);
+                texture->Pixels = (u16*)((addr)texture->Palette + pal_size);
 
                 break;
             }
@@ -510,7 +514,9 @@ namespace RendererModule
                 texture->Stride = (texture->Bits >> 3) * width;
                 texture->Size = texture->Stride * height;
 
-                // TODO NOT IMPLEMENTED
+                texture->Data = (u16*)malloc(texture->Stride * 2 + texture->Size + 0x20);
+                texture->Palette = NULL;
+                texture->Pixels = (u16*)((((addr)texture->Data + 0x20) & 0xFFFFFFE0) + texture->Stride);
 
                 break;
             }
@@ -520,7 +526,9 @@ namespace RendererModule
                 texture->Stride = (texture->Bits >> 3) * width;
                 texture->Size = texture->Stride * height;
 
-                // TODO NOT IMPLEMENTED
+                texture->Data = (u16*)malloc(texture->Stride * 2 + texture->Size + 0x20);
+                texture->Palette = NULL;
+                texture->Pixels = (u16*)((((addr)texture->Data + 0x20) & 0xFFFFFFE0) + texture->Stride);
 
                 break;
             }
@@ -536,9 +544,9 @@ namespace RendererModule
     {
         while (State.Textures.Current != NULL)
         {
-            if (State.Textures.Current->Surface != NULL)
+            if (State.Textures.Current->Data != NULL)
             {
-                free(State.Textures.Current->Surface);
+                free(State.Textures.Current->Data);
             }
 
             RendererTexture* prev = State.Textures.Current->Previous;
@@ -614,7 +622,7 @@ namespace RendererModule
     // a.k.a. THRASH_writerect
     DLLAPI u32 STDCALLAPI WriteRectangle(const u32 x, const u32 y, const u32 width, const u32 height, const u32* pixels)
     {
-        RendererModuleWindowLock* state = LockGameWindow();
+        const RendererModuleWindowLock* state = LockGameWindow();
 
         if (state == NULL) { return RENDERER_MODULE_FAILURE; }
 

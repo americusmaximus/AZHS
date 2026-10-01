@@ -49,9 +49,9 @@ namespace Renderer
     {
         u32 Width;                      // 0x00
         u32 Height;                     // 0x04
-        u16* Surface;                   // 0x08
-        u32 Unk0x0C;                    // 0x0C
-        u32 Unk0x10;                    // 0x10
+        u16* Data;                      // 0x08
+        u16* Pixels;                    // 0x0C
+        u16* Palette;                   // 0x10
         u32 Bits;                       // 0x14
         u32 Stride;                     // 0x18
         u32 Format1;                    // 0x1C
