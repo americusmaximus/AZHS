@@ -421,9 +421,48 @@ namespace RendererModule
     // a.k.a. THRASH_settexture
     DLLAPI u32 STDCALLAPI SelectTexture(RendererTexture* tex)
     {
-        // TODO NOT IMPLEMENTED
+        if (tex == NULL)
+        {
+            State.Renderer.Lambdas.Index = 0;
+            State.Textures.Selected.UnknownSize = 0;
+        }
+        else
+        {
+            State.Textures.Selected.Pixels = tex->Pixels;
+            State.Textures.Selected.Palette = tex->Palette;
+            State.Textures.Selected.Width = tex->Width;
+            State.Textures.Selected.WidthAsFloat = (f32)State.Textures.Selected.Width;
 
-        return RENDERER_MODULE_FAILURE;
+            State.Textures.Selected.WidthRatio1 = 1.0f / (State.Textures.Selected.WidthAsFloat * 2.0f);
+            State.Textures.Selected.WidthSquaredAsFloat =
+                State.Textures.Selected.WidthAsFloat * State.Textures.Selected.WidthAsFloat;
+
+            State.Textures.Selected.Height = tex->Height;
+
+            State.Renderer.Lambdas.Index = tex->Format2;
+
+            State.Textures.Selected.WidthOffset =
+                (State.Textures.Selected.Width == 0 || State.Textures.Selected.Width == 1)
+                ? 0
+                : ((State.Textures.Selected.Width - 1) * 0x8000);
+
+            switch (State.Textures.Selected.Width)
+            {
+            case 1: { State.Textures.Selected.UnknownSize = 0; break; }
+            case 2: { State.Textures.Selected.UnknownSize = 0x10000; break; }
+            case 4: { State.Textures.Selected.UnknownSize = 0x60000; break; }
+            case 8: { State.Textures.Selected.UnknownSize = 0x1c0000; break; }
+            case 16: { State.Textures.Selected.UnknownSize = 0x780000; break; }
+            case 32: { State.Textures.Selected.UnknownSize = 0x1f00000; break; }
+            case 64: { State.Textures.Selected.UnknownSize = 0x7e00000; break; }
+            case 128: { State.Textures.Selected.UnknownSize = 0x1fc00000; break; }
+            case 256: { State.Textures.Selected.UnknownSize = 0x7f800000; break; }
+            }
+        }
+
+        SelectIndexedRendererLambdas();
+
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x60002c80

@@ -65,6 +65,18 @@ namespace Renderer
 
 namespace RendererModule
 {
+    struct RendererModuleRendererLambdaContainer
+    {
+        void* Unk00;
+        void* Unk01;
+        void* Unk02;
+        void* Unk03;
+        void* Unk04;
+        void* Unk05;
+        void* Unk06;
+        void* Unk07;
+    };
+
     struct RendererModuleState
     {
         struct
@@ -145,6 +157,13 @@ namespace RendererModule
                 u32 Width;  // 0x6003f0f8
                 u32 Height; // 0x6003f0fc
             } Settings;
+
+            struct
+            {
+                u32 Index;  // 0x606c1160
+
+                RendererModuleRendererLambdaContainer* Active; // 0x6003f130
+            } Lambdas;
         } Renderer;
 
         struct
@@ -167,6 +186,21 @@ namespace RendererModule
 
         struct {
             Renderer::RendererTexture* Current; // 0x6003f0d4
+
+            struct
+            {
+                u16* Pixels;                // 0x6003f0d8
+                u16* Palette;               // 0x6003f0dc
+                u32 UnknownSize;            // 0x6003f0e0
+                u32 WidthOffset;            // 0x6003f0e4
+
+                f32 WidthRatio1;            // 0x606c1150
+                f32 WidthAsFloat;           // 0x606c1154
+                f32 WidthSquaredAsFloat;    // 0x606c1158
+                u32 Height;                 // 0x606c115c
+
+                u32 Width;                  // 0x606c1168
+            } Selected;
         } Textures;
 
         struct
