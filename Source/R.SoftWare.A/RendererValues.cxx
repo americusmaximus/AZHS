@@ -32,8 +32,8 @@ namespace RendererModuleValues
 
     s32 RendererVideoMode = DEFAULT_RENDERER_MODE;
 
-    u32 TextureColorDepth = 16;
-
+    s32 TexturePaletteCount = 16;
+    s32 CurrentTexturePaletteCount = -1;
     u32 RendererSurfaceStride = DEFAULT_RENDERER_SURFACE_STRIDE;
 
     u32 GreenRendererColorMask = 0x3E0;

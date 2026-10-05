@@ -456,6 +456,173 @@ namespace RendererModule
         return RENDERER_PIXEL_FORMAT_NONE;
     }
 
+    // 0x600038d0
+    void RendererSetTexturePixelsR5G6B5(u16* dst, const u16* src, const u32 count)
+    {
+        for (u32 x = 0; x < count; x++)
+        {
+            const u16 color = src[x];
+            dst[x] = ((color >> 1) & 0x7FE0) | (color & 0x1F);
+        }
+    }
+
+    // 0x60003910
+    BOOL RendererSetTexturePixelsA1R5G6B5(u16* dst, const u16* src, const u32 count)
+    {
+        BOOL match = FALSE;
+
+        for (u32 x = 0; x < count; x++)
+        {
+            u16 color = src[x];
+
+            if ((color & 0x8000) == 0)
+            {
+                match = TRUE;
+                dst[x] = 0x0000;
+            }
+            else
+            {
+                color = ((color & 0xFFE0) << 1) | (color & 0x1F);
+                dst[x] = color == 0x0000 ? 0x20 : color;
+            }
+        }
+
+        return match;
+    }
+
+    // 0x60003980
+    BOOL RendererSetTexturePixelsR5G5B5(u16* dst, const u16* src, const u32 count)
+    {
+        BOOL match = FALSE;
+
+        for (u32 x = 0; x < count; x++)
+        {
+            u16 color = src[x];
+
+            if ((color & 0x8000) == 0)
+            {
+                match = TRUE;
+                dst[x] = 0x0000;
+            }
+            else
+            {
+                dst[x] = color;
+            }
+        }
+
+        return match;
+    }
+
+    // 0x600039d0
+    void RendererSetTexturePixelsA4R4G4B4(u32* dst, const u16* src, const u32 count)
+    {
+        for (u32 x = 0; x < count; x++)
+        {
+            const u16 color = src[x];
+
+            s32 b = (color >> 12) + 1;
+            u32 r = (color >> 8 & 0xF) * b >> 4;
+            u32 g = (color >> 4 & 0xF) * b >> 4;
+
+            if (State.DX.Surfaces.Bits == GRAPHICS_BITS_PER_PIXEL_16)
+            {
+                r = r << 12;
+                g = g << 7;
+            }
+            else
+            {
+                r = r << 11;
+                g = g << 6;
+            }
+
+            dst[x] = (((color & 0xF) * b >> 4) << 1) | g | r | b * -0x10000 + 0x100000U;
+        }
+    }
+
+    // 0x60003a80
+    u32 AcquireWeightedColorValue(u32 color, f32 modifier)
+    {
+        const u32 a = (u32)((color >> 24) * modifier);
+        const u32 r = (u32)(((color >> 16) & 0xFF) * modifier);
+        const u32 g = (u32)(((color >> 8) & 0xFF) * modifier);
+        const u32 b = (u32)((color & 0xFF) * modifier);
+
+        return (a << 24) | (r << 16) | (g << 8) | b;
+    }
+
+    // 0x60003b50
+    BOOL RendererSetPaletteTexturePixels(Renderer::RendererTexture* tex, const u32* pixels)
+    {
+        BOOL match = FALSE;
+
+        u8* dst = (u8*)tex->Pixels;
+        const u8* src = (u8*)pixels;
+
+        for (u32 x = 0; x < tex->Size; x++)
+        {
+            const u8 pixel = pixels[x];
+            dst[x] = pixel;
+
+            if (pixel == 0xFF)
+            {
+                match = TRUE;
+            }
+        }
+
+        return match;
+    }
+
+    // 0x60003b90
+    void RendererSetPaletteTexturePalette(Renderer::RendererTexture* tex, const u32* palette)
+    {
+        u32* dst = (u32*)tex->Palette;
+
+        if (CurrentTexturePaletteCount == -1)
+        {
+            f32 multiplier = 0.0f;
+            const u32* pal = palette;
+
+            for (u32 x = 0; x < tex->PaletteCount; x++)
+            {
+                for (u32 xx = 0; xx < RENDERER_PALETTE_COLOR_COUNT; xx++)
+                {
+                    const u32 c = AcquireWeightedColorValue(pal[xx], multiplier);
+                    const u32 color = CalculateColor(c, c);
+
+                    dst[xx] = color;
+
+                    if ((color & 0xFFFF) == 0)
+                    {
+                        dst[xx] = 1;
+                    }
+                }
+
+                multiplier += 1.0f / (f32)tex->PaletteCount;
+
+                dst[255] = 0x00000000;
+                dst = (u32*)((addr)dst + RENDERER_PALETTE_COLOR_COUNT * sizeof(u32));
+                pal = (u32*)((addr)pal + RENDERER_PALETTE_COLOR_COUNT * sizeof(u32));
+            }
+        }
+        else
+        {
+            if (CurrentTexturePaletteCount < tex->PaletteCount)
+            {
+                dst = (u32*)((addr)dst
+                    + CurrentTexturePaletteCount * RENDERER_PALETTE_COLOR_COUNT);
+
+                for (u32 x = 0; x < RENDERER_PALETTE_COLOR_COUNT; x++)
+                {
+                    dst[x] = CalculateColor(palette[x], palette[x]);
+                }
+            }
+            else
+            {
+                Message("Clut tupdate out of range - change STATE_UPDATECLUTNUM\n");
+            }
+        }
+    }
+
     // 0x60004100
     void SelectRendererColorMasks(const u32 bits)
     {

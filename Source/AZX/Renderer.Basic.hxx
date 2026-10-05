@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Americus Maximus
+Copyright (c) 2023 - 2026 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ SOFTWARE.
 #include "Basic.hxx"
 
 #define RENDERER_PIXEL_FORMAT_NONE 0
+#define RENDERER_PIXEL_FORMAT_1 1
 #define RENDERER_PIXEL_FORMAT_P8 2
 #define RENDERER_PIXEL_FORMAT_R5G5B5 3
 #define RENDERER_PIXEL_FORMAT_R5G6B5 4

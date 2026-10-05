@@ -33,12 +33,12 @@ namespace RendererModuleValues
 
     extern s32 UnknownArray06[MAX_UNKNOWN_COUNT]; // 0x6003f030 // TODO
     
-    extern s32 RendererDeviceIndex; // 0x6003f094
+    extern s32 RendererDeviceIndex;         // 0x6003f094
 
-    extern s32 RendererVideoMode;	// 0x6003f09c
+    extern s32 RendererVideoMode;	        // 0x6003f09c
 
-    extern u32 TextureColorDepth;   // 0x6003f0e8
-
+    extern s32 TexturePaletteCount;         // 0x6003f0e8
+    extern s32 CurrentTexturePaletteCount;  // 0x6003f0ec
     extern u32 RendererSurfaceStride;		// 0x6003f0f0
 
     extern u32 GreenRendererColorMask;      // 0x6003f340

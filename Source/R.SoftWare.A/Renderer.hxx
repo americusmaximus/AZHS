@@ -42,6 +42,7 @@ SOFTWARE.
 #define MIN_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x8000 (32 KB) */
 #define RENDERER_SURFACE_ALIGNMENT_MASK 0xFFFFFF00
 #define RENDERER_SURFACE_SIZE_MODIFIER 256
+#define RENDERER_PALETTE_COLOR_COUNT 256
 
 namespace Renderer
 {
@@ -57,7 +58,7 @@ namespace Renderer
         u32 Format1;                    // 0x1C
         u32 Format2;                    // 0x20
         u32 Size;                       // 0x24
-        s32 ColorDepth;                 // 0x28
+        s32 PaletteCount;               // 0x28
         RendererTexture* Previous;      // 0x2C
     };
 }
@@ -188,6 +189,7 @@ namespace RendererModule
 
     u32 CalculateColor(u32 color, u32 fallback);
     void CalculateVertexColor(s32 x, s32 y, u32 color);
+    u32 AcquireWeightedColorValue(u32 color, f32 modifier);
 
     u32 RendererClearGameWindow(void);
     void* AcquireRendererSurface(void);
@@ -202,4 +204,11 @@ namespace RendererModule
     void ReleaseRendererDeviceSurfaces(void);
     void SelectRendererColorMasks(const u32 bits);
     void SelectRendererSettings(const u32 width, const u32 height, const u32 bits);
+
+    BOOL RendererSetPaletteTexturePixels(Renderer::RendererTexture* tex, const u32* pixels);
+    void RendererSetPaletteTexturePalette(Renderer::RendererTexture* tex, const u32* palette);
+    void RendererSetTexturePixelsA4R4G4B4(u32* dst, const u16* src, const u32 count);
+    BOOL RendererSetTexturePixelsA1R5G6B5(u16* dst, const u16* src, const u32 count);
+    void RendererSetTexturePixelsR5G6B5(u16* dst, const u16* src, const u32 count);
+    BOOL RendererSetTexturePixelsR5G5B5(u16* dst, const u16* src, const u32 count);
 }
