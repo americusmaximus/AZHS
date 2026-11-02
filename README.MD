@@ -18,8 +18,8 @@ There are multiple goals this project tries to achieve:
 The original game was compiled by Watcom C/C++ compiler, it contains the following sting: `WATCOM C/C++32 Run-Time system. (c) Copyright by WATCOM International Corp. 1988-1995. All rights reserved.`.
 
 Examination of the game files, indicates that three calling conventions were used.
-1. The game was compiled with Watcom compiler, and uses watcom calling convention internally and stdcall to call renderer and sound modules.
-2. The sound module was compiled with Watcom compiler, `eacsnd.dll`, uses watcom calling concention internally and exports methods with stdcall convention.
+1. The game was compiled with Watcom compiler, and uses the Watcom calling convention internally and stdcall to call renderer and sound modules.
+2. The sound module was compiled with Watcom compiler, `eacsnd.dll`, uses watcom calling convention internally and exports methods with stdcall convention.
 3. The renderers are a mixed bag:
 	1. DirectX 6 renderer module was compiled with Visual C++ compiler, `d3da.dll`, uses cdecl calling convention internally and exports methods with stdcall convention.
 	2. DirectX 7 renderer module was compiled with Visual C++ compiler, `d3da.dll`, uses cdecl calling convention internally and exports methods with stdcall convention.
@@ -45,9 +45,9 @@ The renderer modules were implemented with minor changes, such as omission of wr
 #### DirectX 6
 The game has multiple DirectX 6 renderers available with slightly different design and capabilities. I added all of them, with appropriate patches for proper operation these days. The patches mostly include fixes to crashes caused by writing out of array bounds in a few places, and some tweaks to settings values, as well as configuration file support. Here are the DirectX 6 renderers:
 
-1. DirectX 6 3DS is a renderer based on the orignal file `d3da.dll` version: 1999.01.15.1121 (6553.1.21.4385) that came with the original game in 1999 and was located in `3dSetup` folder. It looks like it was intended to use with the game, but is totally capable to render the game.
-2. DirectX 6 A is a renderer based on the orignal file `d3da.dll` version: 1999.05.10.1318 (6553.5.16.4888) that came with the original game in 1999.
-3. DirectX 6 M is a a renderer based on the DirectX 6 renderer `dx6a.dll` from the modern patch. Since the patch is a binarry patch to the `DirectX 6 A`, I untangled it as well, for completeness.
+1. DirectX 6 3DS is a renderer based on the original file `d3da.dll` version: 1999.01.15.1121 (6553.1.21.4385) that came with the original game in 1999 and was located in `3dSetup` folder. It looks like it was intended to use with the game, but is totally capable to render the game.
+2. DirectX 6 A is a renderer based on the original file `d3da.dll` version: 1999.05.10.1318 (6553.5.16.4888) that came with the original game in 1999.
+3. DirectX 6 M is a a renderer based on the DirectX 6 renderer `dx6a.dll` from the modern patch. Since the patch is a binary patch to the `DirectX 6 A`, I untangled it as well, for completeness.
 
 #### DirectX 7
 The original game acquired DirectX 7 renderer with the patch 4.50 in 2001, which brought not only the new renderer, but also removed SafeDisk security features. The renderer is mostly unchanged, besides some extra checks to avoid crashes on modern systems.
