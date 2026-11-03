@@ -44,6 +44,9 @@ SOFTWARE.
 #define RENDERER_SURFACE_SIZE_MODIFIER 256
 #define RENDERER_PALETTE_COLOR_COUNT 256
 
+#define MAX_RENDERER_LAMBDA_GROUP_COUNT         2
+#define MAX_RENDERER_LAMBDA_GROUP_ITEM_COUNT    12
+
 namespace Renderer
 {
     struct RendererTexture
@@ -160,9 +163,12 @@ namespace RendererModule
 
             struct
             {
-                u32 Index;  // 0x606c1160
+                RendererModuleRendererLambdaContainer* Active;  // 0x6003f130
+                u32 IndexGroup; // 0x6003f134
 
-                RendererModuleRendererLambdaContainer* Active; // 0x6003f130
+                u32 Index;      // 0x606c1160
+
+                RendererModuleRendererLambdaContainer Lambdas[MAX_RENDERER_LAMBDA_GROUP_COUNT][MAX_RENDERER_LAMBDA_GROUP_ITEM_COUNT];   // 0x606c2090
             } Lambdas;
         } Renderer;
 
@@ -245,4 +251,6 @@ namespace RendererModule
     BOOL RendererSetTexturePixelsA1R5G6B5(u16* dst, const u16* src, const u32 count);
     void RendererSetTexturePixelsR5G6B5(u16* dst, const u16* src, const u32 count);
     BOOL RendererSetTexturePixelsR5G5B5(u16* dst, const u16* src, const u32 count);
+
+    void SelectIndexedRendererLambdas();
 }
