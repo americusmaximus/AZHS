@@ -103,7 +103,56 @@ namespace RendererModule
     // a.k.a. THRASH_drawline
     DLLAPI void STDCALLAPI DrawLine(RVX* a, RVX* b)
     {
-        // TODO NOT IMPLEMENTED
+        RTLVX* begin = (RTLVX*)a;
+        RTLVX* end = (RTLVX*)b;
+
+        if (end->XYZ.X < begin->XYZ.X || end->XYZ.Y < begin->XYZ.Y)
+        {
+            State.Vertexes.Start = a;
+
+            begin = (RTLVX*)b;
+            end = (RTLVX*)a;
+        }
+
+        CalculateVertexColor(end->XYZ.X, end->XYZ.Y, end->Color);
+
+        // Bresenham's line algorithm
+
+        const int x0 = (int)begin->XYZ.X;
+        const int y0 = (int)begin->XYZ.Y;
+        const int x1 = (int)end->XYZ.X;
+        const int y1 = (int)end->XYZ.Y;
+
+        const int dx = abs(x1 - x0);
+        const int dy = abs(y1 - y0);
+        const int sx = (x0 < x1) ? 1 : -1;
+        const int sy = (y0 < y1) ? 1 : -1;
+
+        int err = dx - dy;
+
+        int x = x0;
+        int y = y0;
+
+        while (TRUE)
+        {
+            u16* pixels = (u16*)((addr)State.Renderer.Surface.Surface + RendererSurfaceStride * y);
+            pixels[x] = VertexColor;
+
+            if (x == x1 && y == y1) { break; }
+
+            int e2 = 2 * err;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x += sx;
+            }
+
+            if (e2 < dx)
+            {
+                err += dx;
+                y += sy;
+            }
+        }
     }
 
     // 0x60005320

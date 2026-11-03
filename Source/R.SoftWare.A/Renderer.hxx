@@ -111,7 +111,6 @@ namespace RendererModule
 
         struct
         {
-
             RendererModuleLambdaContainer Lambdas; // 0x600410f0
         } Lambdas;
 
@@ -190,7 +189,8 @@ namespace RendererModule
             u32 Y1;     // 0x6003e0cc
         } ViewPort;
 
-        struct {
+        struct
+        {
             Renderer::RendererTexture* Current; // 0x6003f0d4
 
             struct
@@ -208,6 +208,11 @@ namespace RendererModule
                 u32 Width;                  // 0x606c1168
             } Selected;
         } Textures;
+
+        struct
+        {
+            RTLVX* Start;   // 0x606c23c4
+        } Vertexes;
 
         struct
         {
