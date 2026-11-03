@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Americus Maximus
+Copyright (c) 2023 - 2026 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -63,7 +63,7 @@ namespace RendererModule
     DLLAPI u32 STDCALLAPI SelectDevice(const s32 indx);
     DLLAPI u32 STDCALLAPI SelectState(const u32 state, void* value);
     DLLAPI u32 STDCALLAPI SelectTexture(Renderer::RendererTexture* tex);
-    DLLAPI u32 STDCALLAPI SelectVideoMode(const u32 mode, const u32 pending, const u32 depth);
+    DLLAPI u32 STDCALLAPI SelectVideoMode(const s32 mode, const u32 pending, const u32 depth);
     DLLAPI u32 STDCALLAPI SyncGameWindow(const u32 type);
     DLLAPI Renderer::RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const BOOL palette, const u32 state);
     DLLAPI u32 STDCALLAPI ReleaseTexture(Renderer::RendererTexture* tex);
