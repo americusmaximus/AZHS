@@ -37,6 +37,8 @@ namespace RendererModuleValues
 
     extern s32 RendererVideoMode;	        // 0x6003f09c
 
+    extern s32 CullMode;                    // 0x6003f0a4
+
     extern s32 TexturePaletteCount;         // 0x6003f0e8
     extern s32 CurrentTexturePaletteCount;  // 0x6003f0ec
     extern u32 RendererSurfaceStride;		// 0x6003f0f0

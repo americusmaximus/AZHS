@@ -32,6 +32,8 @@ namespace RendererModuleValues
 
     s32 RendererVideoMode = DEFAULT_RENDERER_MODE;
 
+    s32 CullMode = RENDERER_CULL_MODE_COUNTER_CLOCK_WISE;
+
     s32 TexturePaletteCount = 16;
     s32 CurrentTexturePaletteCount = -1;
     u32 RendererSurfaceStride = DEFAULT_RENDERER_SURFACE_STRIDE;

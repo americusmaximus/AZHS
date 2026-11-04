@@ -677,7 +677,8 @@ namespace RendererModule
             return b | (g >> 2) << 5 | r << 11;
         }
 
-        if (State.DX.Surfaces.Bits == GRAPHICS_BITS_PER_PIXEL_15) {
+        if (State.DX.Surfaces.Bits == GRAPHICS_BITS_PER_PIXEL_15)
+        {
             return b | (g >> 3) << 5 | r << 10;
         }
 
