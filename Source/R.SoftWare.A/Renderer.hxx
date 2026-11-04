@@ -261,4 +261,5 @@ namespace RendererModule
 
     void SelectIndexedRendererLambdas();
     inline u32 AcquireNormal(const f32x3* a, const f32x3* b, const f32x3* c) { const s32 value = (s32)((b->X - a->X) * (c->Y - a->Y) - (c->X - a->X) * (b->Y - a->Y)); return *(u32*)&value; }
+    void  SelectRendererLambdas();
 }

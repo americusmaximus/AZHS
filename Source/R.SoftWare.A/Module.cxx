@@ -324,7 +324,11 @@ namespace RendererModule
     // a.k.a. THRASH_init
     DLLAPI u32 STDCALLAPI Init(void)
     {
-        // TODO NOT IMPLEMENTED
+        SelectRendererLambdas();
+
+        State.Renderer.Lambdas.IndexGroup = 0;
+
+        SelectIndexedRendererLambdas();
 
         return RENDERER_MODULE_SUCCESS;
     }
@@ -500,7 +504,189 @@ namespace RendererModule
     // a.k.a. THRASH_setstate
     DLLAPI u32 STDCALLAPI SelectState(const u32 state, void* value)
     {
-        // TODO NOT IMPLEMENTED
+        switch (state) {
+        case RENDERER_MODULE_STATE_NONE:
+        case RENDERER_MODULE_STATE_SELECT_DITHER_STATE:
+        case RENDERER_MODULE_STATE_SELECT_TEXTURE_FILTER_STATE:
+        case RENDERER_MODULE_STATE_SELECT_ALPHA_BLEND_STATE:
+        case RENDERER_MODULE_STATE_SELECT_TEXTURE_MIP_FILTER_STATE:
+        case RENDERER_MODULE_STATE_SELECT_CHROMATIC_COLOR:
+        case RENDERER_MODULE_STATE_SELECT_FOG_DENSITY:
+        case RENDERER_MODULE_STATE_SELECT_FOG_COLOR:
+        case RENDERER_MODULE_STATE_SELECT_LINE_WIDTH:
+        case RENDERER_MODULE_STATE_SELECT_FLAT_FANS_STATE:
+        case RENDERER_MODULE_STATE_SELECT_FOG_STATE:
+        case RENDERER_MODULE_STATE_SELECT_FOG_START:
+        case RENDERER_MODULE_STATE_SELECT_FOG_END: { return RENDERER_MODULE_SUCCESS; }
+        case RENDERER_MODULE_STATE_SELECT_TEXTURE:
+        {
+            SelectTexture((RendererTexture*)value);
+
+            return RENDERER_MODULE_SUCCESS;
+        }
+        case RENDERER_MODULE_STATE_SELECT_CULL_STATE:
+        {
+            switch ((u32)value)
+            {
+            case RENDERER_MODULE_CULL_NONE:
+            {
+                CullMode = RENDERER_CULL_MODE_NONE;
+
+                return RENDERER_MODULE_SUCCESS;
+            }
+            case RENDERER_MODULE_CULL_COUNTER_CLOCK_WISE:
+            {
+                CullMode = RENDERER_CULL_MODE_COUNTER_CLOCK_WISE;
+
+                return RENDERER_MODULE_SUCCESS;
+            }
+            case RENDERER_MODULE_CULL_CLOCK_WISE:
+            {
+                CullMode = RENDERER_CULL_MODE_CLOCK_WISE;
+
+                return RENDERER_MODULE_SUCCESS;
+            }
+            }
+
+            return RENDERER_MODULE_FAILURE;
+        }
+        case RENDERER_MODULE_STATE_SELECT_MATERIAL:
+        {
+            SelectRendererMaterial(value);
+
+            return RENDERER_MODULE_SUCCESS;
+        }
+        case RENDERER_MODULE_STATE_SELECT_SHADE_STATE:
+        {
+            const u32 depth = (u32)value;
+            if (depth == RENDERER_MODULE_DEPTH_INACTIVE
+                || depth == RENDERER_MODULE_DEPTH_ACTIVE)
+            {
+                SetRendererShadeMode(depth);
+            }
+
+            return RENDERER_MODULE_SUCCESS;
+        }
+        case RENDERER_MODULE_STATE_SELECT_WINDOW_MODE_STATE:
+        {
+            State.Settings.IsWindowMode = (BOOL)value;
+
+            return RENDERER_MODULE_SUCCESS;
+        }
+        case RENDERER_MODULE_STATE_SELECT_LAMBDAS:
+        {
+            CopyMemory(&State.Lambdas.Lambdas, value, sizeof(RendererModuleLambdaContainer));
+
+            return RENDERER_MODULE_SUCCESS;
+        }
+        case RENDERER_MODULE_STATE_SELECT_WINDOW_LOCK_STATE:
+        {
+            if (value == NULL) { return RENDERER_MODULE_SUCCESS; }
+
+            const RendererModuleWindowLock* lock = (RendererModuleWindowLock*)value;
+
+            State.Renderer.Surface.Surface = lock->Data;
+            RendererSurfaceStride = lock->Stride;
+            State.Renderer.Settings.Width = lock->Width;
+            State.Renderer.Settings.Height = lock->Height;
+
+            if (lock->Format == RENDERER_PIXEL_FORMAT_R5G6B5)
+            {
+                State.DX.Surfaces.Bits = GRAPHICS_BITS_PER_PIXEL_16;
+            }
+            else if (lock->Format == RENDERER_PIXEL_FORMAT_A1R5G5B5
+                || lock->Format == RENDERER_PIXEL_FORMAT_R5G5B5)
+            {
+                State.DX.Surfaces.Bits = GRAPHICS_BITS_PER_PIXEL_15;
+            }
+            else
+            {
+                Message("STATE_RENDERINFO -- texture type not supported.\n");
+            }
+
+            SelectRendererColorMasks(State.DX.Surfaces.Bits);
+
+            return RENDERER_MODULE_SUCCESS;
+        }
+        case RENDERER_MODULE_STATE_SELECT_BLEND_STATE_ALTERNATIVE:
+        {
+            FUN_60004200();
+            FUN_600042f0();
+            FUN_60004430();
+
+            return RENDERER_MODULE_SUCCESS;
+        }
+        case RENDERER_MODULE_STATE_701:
+        {
+            FUN_60033fe0();
+            FUN_60004c00();
+
+            return RENDERER_MODULE_SUCCESS;
+        }
+        case RENDERER_MODULE_STATE_702:
+        {
+            switch ((u32)value) {
+            case 0: // TODO
+            {
+                FUN_60004590();
+
+                return RENDERER_MODULE_SUCCESS;
+            }
+            case 3: // TODO
+            {
+                FUN_60004590();
+
+                return RENDERER_MODULE_SUCCESS;
+            }
+            case 4: // TODO
+            {
+                FUN_60004590();
+
+                return RENDERER_MODULE_SUCCESS;
+            }
+            case 7: // TODO
+            {
+                FUN_60004590();
+
+                return RENDERER_MODULE_SUCCESS;
+            }
+            default:
+            {
+                SelectRendererLambdas();
+
+                return RENDERER_MODULE_SUCCESS;
+            }
+            }
+
+            return RENDERER_MODULE_SUCCESS;
+        }
+        case RENDERER_MODULE_STATE_703:
+        {
+            DAT_6003f0a8 = value;
+
+            return RENDERER_MODULE_SUCCESS;
+        }
+        case RENDERER_MODULE_STATE_TEXTURE_PALETTE_COUNT:
+        {
+            TexturePaletteCount = (s32)value;
+            CurrentTexturePaletteCount = (s32)value;
+
+            return RENDERER_MODULE_FAILURE;
+        }
+        case RENDERER_MODULE_STATE_CURRENT_TEXTURE_PALETTE_COUNT:
+        {
+            CurrentTexturePaletteCount = (s32)value;
+
+            return RENDERER_MODULE_FAILURE;
+        }
+        case RENDERER_MODULE_STATE_706:
+        {
+            State.Renderer.Lambdas.IndexGroup = (u32)(value) == 0 ? 0 : 1;
+            SelectIndexedRendererLambdas();
+
+            return RENDERER_MODULE_SUCCESS;
+        }
+        }
 
         return RENDERER_MODULE_FAILURE;
     }
