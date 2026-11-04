@@ -48,7 +48,6 @@ namespace RendererModuleValues
     RendererModuleDescriptor ModuleDescriptor;
 
     u16 VertexColor = 0x000F;
-    u32 OptimizedClearColor;
 
     s32 UnknownArray06[MAX_UNKNOWN_COUNT] =
     {

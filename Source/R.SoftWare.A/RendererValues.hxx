@@ -53,7 +53,6 @@ namespace RendererModuleValues
     extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x60041010
 
     extern u16 VertexColor;					// 0x6003f11c
-    extern u32 OptimizedClearColor;			// 0x6003f120
 
     extern u32 Unknown32BitColors1[MAX_UNKNOWN_COLOR_ARRAY_COUNT];  // 0x6003f140
     extern u32 Unknown32BitColors2[MAX_UNKNOWN_COLOR_ARRAY_COUNT];  // 0x6003f1c0
