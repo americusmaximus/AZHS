@@ -271,4 +271,5 @@ namespace RendererModule
     void SetRendererUnknownMode1(const u32 mode);
     void SetRendererUnknownMode2(const u32 mode);
     void SetRendererUnknownMode3(const u32 mode);
+    void SetRendererUnknownMode4(const u32 mode, const u32 value);
 }

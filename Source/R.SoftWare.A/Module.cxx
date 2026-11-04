@@ -625,28 +625,29 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_702:
         {
-            switch ((u32)value) {
+            switch ((u32)value)
+            {
             case 0: // TODO
             {
-                FUN_60004590();
+                SetRendererUnknownMode4(0, 0);
 
                 return RENDERER_MODULE_SUCCESS;
             }
             case 3: // TODO
             {
-                FUN_60004590();
+                SetRendererUnknownMode4(3, 1);
 
                 return RENDERER_MODULE_SUCCESS;
             }
             case 4: // TODO
             {
-                FUN_60004590();
+                SetRendererUnknownMode4(4, 1);
 
                 return RENDERER_MODULE_SUCCESS;
             }
             case 7: // TODO
             {
-                FUN_60004590();
+                SetRendererUnknownMode4(7, 1);
 
                 return RENDERER_MODULE_SUCCESS;
             }

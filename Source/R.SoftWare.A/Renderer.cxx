@@ -793,6 +793,9 @@ namespace RendererModule
         }
     }
 
+    // 0x60004590
+    void SetRendererUnknownMode4(const u32 mode, const u32 value) { }
+
     // 0x60004760
     void SetRendererShadeMode(const u32 mode)
     {
