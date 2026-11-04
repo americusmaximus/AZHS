@@ -220,6 +220,8 @@ namespace RendererModule
             Renderer::RTLVX* Start;   // 0x606c23c4
         } Vertexes;
 
+        u32 UnknownQuadValue;   // 0x6003f0a8
+
         struct
         {
             u32 Width;  // 0x60041114
