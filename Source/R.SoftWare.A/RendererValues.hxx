@@ -50,6 +50,8 @@ namespace RendererModuleValues
     extern u32 RedColorBitsOffset;			// 0x6003f350
     extern u32 GreenColorBitsSize;			// 0x6003f354
 
+    extern void* UnknownFunction;           // 0x6003f368
+
     extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x60041010
 
     extern u16 VertexColor;					// 0x6003f11c

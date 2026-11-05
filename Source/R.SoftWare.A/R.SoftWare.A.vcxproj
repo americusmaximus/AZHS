@@ -33,6 +33,7 @@
     <ClCompile Include="Module.cxx" />
     <ClCompile Include="Renderer.cxx" />
     <ClCompile Include="RendererValues.cxx" />
+    <ClCompile Include="Rendition.cxx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Renderer.Module.MSVC.def" />

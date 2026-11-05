@@ -953,6 +953,21 @@ namespace RendererModule
             &State.Renderer.Lambdas.Lambdas[State.Renderer.Lambdas.IndexGroup][State.Renderer.Lambdas.Index];
     }
 
+    // 0x60004c00
+    void SetActiveRendererLambda(RendererModuleRendererLambda lambda)
+    {
+        State.Renderer.Lambdas.Configuration.Lambdas[0] = lambda;
+        State.Renderer.Lambdas.Configuration.Lambdas[1] = lambda;
+        State.Renderer.Lambdas.Configuration.Lambdas[2] = lambda;
+        State.Renderer.Lambdas.Configuration.Lambdas[3] = lambda;
+        State.Renderer.Lambdas.Configuration.Lambdas[4] = lambda;
+        State.Renderer.Lambdas.Configuration.Lambdas[5] = lambda;
+        State.Renderer.Lambdas.Configuration.Lambdas[6] = lambda;
+        State.Renderer.Lambdas.Configuration.Lambdas[7] = lambda;
+
+        State.Renderer.Lambdas.Active = &State.Renderer.Lambdas.Configuration;
+    }
+
     // 0x60004c40
     u32 CalculateColor(u32 color, u32 fallback)
     {

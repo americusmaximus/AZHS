@@ -45,6 +45,8 @@ namespace RendererModuleValues
     u32 RedColorBitsOffset = 10;
     u32 GreenColorBitsSize = 5;
 
+    void* UnknownFunction = FUN_60033ff0;
+
     RendererModuleDescriptor ModuleDescriptor;
 
     u16 VertexColor = 0x000F;
