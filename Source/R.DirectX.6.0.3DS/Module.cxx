@@ -76,7 +76,7 @@ namespace RendererModule
 
     // 0x600011f0
     // a.k.a. THRASH_clip
-    DLLAPI u32 STDCALLAPI ClipGameWindow(const u32 x0, const u32 y0, const u32 x1, const u32 y1)
+    DLLAPI u32 STDCALLAPI ClipGameWindow(const s32 x0, const s32 y0, const s32 x1, const s32 y1)
     {
         State.ViewPort.X0 = x0;
         State.ViewPort.Y0 = y0;

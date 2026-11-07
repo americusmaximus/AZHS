@@ -81,13 +81,13 @@ namespace RendererModule
 
     // 0x60003490
     // a.k.a. THRASH_clip
-    DLLAPI u32 STDCALLAPI ClipGameWindow(const u32 x0, const u32 y0, const u32 x1, const u32 y1)
+    DLLAPI u32 STDCALLAPI ClipGameWindow(const s32 x0, const s32 y0, const s32 x1, const s32 y1)
     {
-        const u32 x = (s32)x0 < 0 ? 0 : x0;
-        const u32 y = (s32)y0 < 0 ? 0 : y0;
+        const s32 x = x0 < 0 ? 0 : x0;
+        const s32 y = y0 < 0 ? 0 : y0;
 
-        const u32 width = State.Renderer.Settings.Width < x1 ? State.Renderer.Settings.Width : x1;
-        const u32 height = State.Renderer.Settings.Height < y1 ? State.Renderer.Settings.Height : y1;
+        const s32 width = State.Renderer.Settings.Width < x1 ? State.Renderer.Settings.Width : x1;
+        const s32 height = State.Renderer.Settings.Height < y1 ? State.Renderer.Settings.Height : y1;
 
         State.ViewPort.X0 = x;
         State.ViewPort.Y0 = y;

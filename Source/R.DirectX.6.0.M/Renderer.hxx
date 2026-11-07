@@ -330,10 +330,10 @@ namespace RendererModule
 
         struct
         {
-            u32 X0; // 0x6001c9e8
-            u32 Y0; // 0x6001c9ec
-            u32 X1; // 0x6001c9f0
-            u32 Y1; // 0x6001c9f4
+            s32 X0; // 0x6001c9e8
+            s32 Y0; // 0x6001c9ec
+            s32 X1; // 0x6001c9f0
+            s32 Y1; // 0x6001c9f4
         } ViewPort;
 
         struct

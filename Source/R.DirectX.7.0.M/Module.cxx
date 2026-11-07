@@ -108,7 +108,7 @@ namespace RendererModule
 
     // 0x600013c0
     // a.k.a. THRASH_clip
-    DLLAPI u32 STDCALLAPI ClipGameWindow(const u32 x0, const u32 y0, const u32 x1, const u32 y1)
+    DLLAPI u32 STDCALLAPI ClipGameWindow(const s32 x0, const s32 y0, const s32 x1, const s32 y1)
     {
         State.ViewPort.X0 = x0;
         State.ViewPort.Y0 = y0;
@@ -122,12 +122,12 @@ namespace RendererModule
         D3DVIEWPORT7 vp;
         ZeroMemory(&vp, sizeof(D3DVIEWPORT7));
 
-        vp.dwX = x0;
-        vp.dwY = y0;
+        vp.dwX = (u32)x0;
+        vp.dwY = (u32)y0;
         vp.dvMinZ = 0.0f;
         vp.dvMaxZ = 0.9999847f;
-        vp.dwWidth = x1 - x0;
-        vp.dwHeight = y1 - y0;
+        vp.dwWidth = (u32)(x1 - x0);
+        vp.dwHeight = (u32)(y1 - y0);
 
         State.DX.Device->SetViewport(&vp);
 

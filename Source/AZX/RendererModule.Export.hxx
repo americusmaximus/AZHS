@@ -29,7 +29,7 @@ namespace RendererModule
 {
     DLLAPI RendererModuleDescriptor* STDCALLAPI AcquireDescriptor(void);
     DLLAPI u32 STDCALLAPI ClearGameWindow(void);
-    DLLAPI u32 STDCALLAPI ClipGameWindow(const u32 x0, const u32 y0, const u32 x1, const u32 y1);
+    DLLAPI u32 STDCALLAPI ClipGameWindow(const s32 x0, const s32 y0, const s32 x1, const s32 y1);
     DLLAPI u32 STDCALLAPI CreateGameWindow(const u32 width, const u32 height, const u32 format, const u32 options);
     DLLAPI u32 STDCALLAPI DestroyGameWindow(const u32 indx);
     DLLAPI void STDCALLAPI DrawLine(Renderer::RVX* a, Renderer::RVX* b);
