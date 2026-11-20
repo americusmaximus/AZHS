@@ -329,7 +329,7 @@ namespace RendererModule
     // 0x600030b0
     u32 InitializeRendererDevice(void)
     {
-        if (State.Window.HWND != NULL) { return RENDERER_MODULE_FAILURE; }
+        if (State.Window.HWND == NULL) { return RENDERER_MODULE_FAILURE; }
 
         State.Settings.CooperativeLevel = (State.Settings.CooperativeLevel & ~(DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN))
             | (DDSCL_MULTITHREADED | DDSCL_NORMAL);
